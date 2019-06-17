@@ -12,6 +12,10 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.4.2'
 }
 
+wrapper {
+    distributionType = Wrapper.DistributionType.ALL
+}
+
 test {
     useJUnitPlatform()
 
