@@ -1,27 +1,7 @@
-plugins {
-    id 'java-library'
-}
-
-repositories {
-    jcenter()
-}
-
-dependencies {
-    // JUnit
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.4.2'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.4.2'
-}
-
 wrapper {
     distributionType = Wrapper.DistributionType.ALL
 }
 
-test {
-    useJUnitPlatform()
-
-    dependsOn 'cleanTest'
-
-    testLogging {
-        events "passed", "skipped", "failed"
-    }
-}
+ext.libVersions = [
+        junit: '5.4.2'
+]
