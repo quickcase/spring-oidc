@@ -5,19 +5,3 @@ plugins {
 repositories {
     jcenter()
 }
-
-dependencies {
-    // JUnit
-    testImplementation "org.junit.jupiter:junit-jupiter-api:${libVersions['junit']}"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${libVersions['junit']}"
-}
-
-test {
-    useJUnitPlatform()
-
-    dependsOn 'cleanTest'
-
-    testLogging {
-        events "passed", "skipped", "failed"
-    }
-}
