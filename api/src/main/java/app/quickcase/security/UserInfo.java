@@ -68,6 +68,11 @@ public class UserInfo implements Principal, UserDetails {
     public static class UserInfoBuilder {
         private Set<GrantedAuthority> authorities = new HashSet<>();
 
+        public UserInfoBuilder authorities(Set<GrantedAuthority> authorities) {
+            this.authorities = authorities;
+            return this;
+        }
+
         public UserInfoBuilder authorities(String... authorities) {
             Arrays.stream(authorities)
                   .map(SimpleGrantedAuthority::new)
