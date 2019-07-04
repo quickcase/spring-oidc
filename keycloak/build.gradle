@@ -1,4 +1,5 @@
 plugins {
+    id 'maven-publish'
     id 'io.freefair.lombok' version '3.7.5'
 }
 
@@ -9,3 +10,21 @@ repositories {
 dependencies {
     implementation project(':api')
 }
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            url "s3://maven.app.quickcase.s3.amazonaws.com"
+            authentication {
+                awsIm(AwsImAuthentication)
+            }
+        }
+
+    }
+}
+
