@@ -1,5 +1,5 @@
 plugins {
-    id 'java-library'
+    id 'io.freefair.lombok' version '3.7.5'
 }
 
 repositories {
@@ -7,17 +7,5 @@ repositories {
 }
 
 dependencies {
-    // JUnit
-    testImplementation "org.junit.jupiter:junit-jupiter-api:${libVersions['junit']}"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${libVersions['junit']}"
-}
-
-test {
-    useJUnitPlatform()
-
-    dependsOn 'cleanTest'
-
-    testLogging {
-        events "passed", "skipped", "failed"
-    }
+    implementation project(':api')
 }
