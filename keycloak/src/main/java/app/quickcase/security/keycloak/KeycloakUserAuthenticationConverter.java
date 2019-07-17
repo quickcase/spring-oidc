@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static app.quickcase.security.keycloak.KeycloakClaims.*;
+import static app.quickcase.security.utils.AuthoritiesUtils.*;
 
 /**
  * Convert KeyCloak access token claims to/from Spring's {@link Authentication}.
@@ -37,14 +38,14 @@ public class KeycloakUserAuthenticationConverter implements UserAuthenticationCo
             claims.put(SUB, userInfo.getId());
             claims.put(EMAIL, userInfo.getEmail());
             claims.put(NAME, userInfo.getName());
-            claims.put(APP_ROLES, authoritiesToString(userInfo.getAuthorities()));
+            claims.put(APP_ROLES, toCommaSeparated(userInfo.getAuthorities()));
         }
         return claims;
     }
 
     @Override
     public Authentication extractAuthentication(Map<String, ?> map) {
-        Set<GrantedAuthority> authorities = stringToAuthorities(String.valueOf(map.get(APP_ROLES)));
+        Set<GrantedAuthority> authorities = fromCommaSeparated(String.valueOf(map.get(APP_ROLES)));
         UserInfo user = UserInfo.builder()
                                 .id(String.valueOf(map.get(SUB)))
                                 .name(String.valueOf(map.get(NAME)))
@@ -52,19 +53,5 @@ public class KeycloakUserAuthenticationConverter implements UserAuthenticationCo
                                 .authorities(authorities)
                                 .build();
         return new UserAuthenticationToken(user);
-    }
-
-    private String authoritiesToString(Set<GrantedAuthority> authorities) {
-        return authorities.stream()
-                          .map(GrantedAuthority::getAuthority)
-                          .collect(Collectors.joining(","));
-    }
-
-    private Set<GrantedAuthority> stringToAuthorities(String authoritiesStr) {
-        Set<GrantedAuthority> authorities = new HashSet<>();
-        Arrays.stream(authoritiesStr.split(","))
-              .map(SimpleGrantedAuthority::new)
-              .forEach(authorities::add);
-        return authorities;
     }
 }

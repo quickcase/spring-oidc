@@ -2,7 +2,6 @@ package app.quickcase.security.keycloak;
 
 import app.quickcase.security.UserAuthenticationToken;
 import app.quickcase.security.UserInfo;
-import app.quickcase.security.keycloak.KeycloakUserAuthenticationConverter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,17 +11,25 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import java.util.HashMap;
 import java.util.Map;
 
-import static app.quickcase.security.keycloak.KeycloakClaims.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static app.quickcase.security.keycloak.KeycloakClaims.APP_ROLES;
+import static app.quickcase.security.keycloak.KeycloakClaims.EMAIL;
+import static app.quickcase.security.keycloak.KeycloakClaims.NAME;
+import static app.quickcase.security.keycloak.KeycloakClaims.SUB;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.aMapWithSize;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class KeycloakUserAuthenticationConverterTest {
     private static final String USER_ID = "fb09ed5f-bdee-4657-8dcb-891721b63eb2";
     private static final String USER_NAME = "Test User";
     private static final String USER_EMAIL = "test@quickcase.app";
 
-    KeycloakUserAuthenticationConverter userConverter;
+    private KeycloakUserAuthenticationConverter userConverter;
 
     @BeforeEach
     void setUp() {
