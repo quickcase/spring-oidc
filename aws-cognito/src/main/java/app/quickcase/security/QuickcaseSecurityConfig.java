@@ -1,6 +1,8 @@
 package app.quickcase.security;
 
+import app.quickcase.security.cognito.CognitoAuthoritiesExtractor;
 import app.quickcase.security.cognito.CognitoPrincipalExtractor;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.AuthoritiesExtractor;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.PrincipalExtractor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,5 +19,10 @@ public class QuickcaseSecurityConfig {
     @Bean
     public PrincipalExtractor principalExtractor() {
         return new CognitoPrincipalExtractor();
+    }
+
+    @Bean
+    public AuthoritiesExtractor authoritiesExtractor() {
+        return new CognitoAuthoritiesExtractor();
     }
 }
