@@ -36,6 +36,7 @@ public class UserInfo implements Principal, UserDetails {
     private final Set<GrantedAuthority> authorities;
     @ToString.Include
     private final Set<String> jurisdictions;
+    private final UserPreferences preferences;
 
     @Override
     public String getPassword() {
