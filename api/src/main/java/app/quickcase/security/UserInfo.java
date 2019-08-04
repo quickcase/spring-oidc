@@ -34,6 +34,8 @@ public class UserInfo implements Principal, UserDetails {
     private final String email;
     @ToString.Include
     private final Set<GrantedAuthority> authorities;
+    @ToString.Include
+    private final Set<String> jurisdictions;
 
     @Override
     public String getPassword() {
@@ -67,6 +69,7 @@ public class UserInfo implements Principal, UserDetails {
 
     public static class UserInfoBuilder {
         private Set<GrantedAuthority> authorities = new HashSet<>();
+        private Set<String> jurisdictions = new HashSet<>();
 
         public UserInfoBuilder authorities(Set<GrantedAuthority> authorities) {
             this.authorities = authorities;
@@ -77,6 +80,16 @@ public class UserInfo implements Principal, UserDetails {
             Arrays.stream(authorities)
                   .map(SimpleGrantedAuthority::new)
                   .forEach(this.authorities::add);
+            return this;
+        }
+
+        public UserInfoBuilder jurisdictions(Set<String> jurisdictions) {
+            this.jurisdictions = jurisdictions;
+            return this;
+        }
+
+        public UserInfoBuilder jurisdictions(String... jurisdictions) {
+            this.jurisdictions.addAll(Arrays.asList(jurisdictions));
             return this;
         }
     }
