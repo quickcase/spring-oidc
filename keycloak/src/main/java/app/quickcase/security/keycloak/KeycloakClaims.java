@@ -11,4 +11,5 @@ public interface KeycloakClaims {
     String NAME = "name";
     String EMAIL = "email";
     String APP_ROLES = "app_roles";
+    String APP_JURISDICTIONS = "app_jurisdictions";
 }

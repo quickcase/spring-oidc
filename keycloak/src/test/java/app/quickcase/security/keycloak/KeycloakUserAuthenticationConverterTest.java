@@ -11,15 +11,15 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import java.util.HashMap;
 import java.util.Map;
 
+import static app.quickcase.security.keycloak.KeycloakClaims.APP_JURISDICTIONS;
 import static app.quickcase.security.keycloak.KeycloakClaims.APP_ROLES;
 import static app.quickcase.security.keycloak.KeycloakClaims.EMAIL;
 import static app.quickcase.security.keycloak.KeycloakClaims.NAME;
 import static app.quickcase.security.keycloak.KeycloakClaims.SUB;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.aMapWithSize;
-import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -44,6 +44,7 @@ class KeycloakUserAuthenticationConverterTest {
         claims.put(NAME, USER_NAME);
         claims.put(EMAIL, USER_EMAIL);
         claims.put(APP_ROLES, "role1,role2");
+        claims.put(APP_JURISDICTIONS, "jid1,jid2");
 
         Authentication authentication = userConverter.extractAuthentication(claims);
 
@@ -54,11 +55,12 @@ class KeycloakUserAuthenticationConverterTest {
                 () -> assertThat(principal.getId(), equalTo(USER_ID)),
                 () -> assertThat(principal.getName(), equalTo(USER_NAME)),
                 () -> assertThat(principal.getEmail(), equalTo(USER_EMAIL)),
-                () -> assertThat(authentication.getAuthorities(), hasSize(2)),
-                () -> assertThat(authentication.getAuthorities(), contains(
+                () -> assertThat(authentication.getAuthorities(), containsInAnyOrder(
                         new SimpleGrantedAuthority("role1"),
                         new SimpleGrantedAuthority("role2")
-                ))
+                )),
+                () -> assertThat(principal.getJurisdictions(),
+                                 containsInAnyOrder("jid1", "jid2"))
         );
     }
 
@@ -70,17 +72,19 @@ class KeycloakUserAuthenticationConverterTest {
                                 .email(USER_EMAIL)
                                 .name(USER_NAME)
                                 .authorities("role1", "role2")
+                                .jurisdictions("jid1", "jid2")
                                 .build();
         UserAuthenticationToken authenticationToken = new UserAuthenticationToken(user);
 
         Map<String, ?> claims = userConverter.convertUserAuthentication(authenticationToken);
 
         assertAll(
-                () -> assertThat(claims, is(aMapWithSize(4))),
+                () -> assertThat(claims, is(aMapWithSize(5))),
                 () -> assertThat(claims.get(SUB), equalTo(USER_ID)),
                 () -> assertThat(claims.get(EMAIL), equalTo(USER_EMAIL)),
                 () -> assertThat(claims.get(NAME), equalTo(USER_NAME)),
-                () -> assertThat(claims.get(APP_ROLES), equalTo("role1,role2"))
+                () -> assertThat(claims.get(APP_ROLES), equalTo("role1,role2")),
+                () -> assertThat(claims.get(APP_JURISDICTIONS), equalTo("jid2,jid1"))
         );
     }
 

@@ -4,18 +4,19 @@ import app.quickcase.security.UserAuthenticationToken;
 import app.quickcase.security.UserInfo;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.provider.token.UserAuthenticationConverter;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-import static app.quickcase.security.keycloak.KeycloakClaims.*;
-import static app.quickcase.security.utils.AuthoritiesUtils.*;
+import static app.quickcase.security.keycloak.KeycloakClaims.APP_JURISDICTIONS;
+import static app.quickcase.security.keycloak.KeycloakClaims.APP_ROLES;
+import static app.quickcase.security.keycloak.KeycloakClaims.EMAIL;
+import static app.quickcase.security.keycloak.KeycloakClaims.NAME;
+import static app.quickcase.security.keycloak.KeycloakClaims.SUB;
+import static app.quickcase.security.utils.AuthoritiesUtils.fromCommaSeparated;
+import static app.quickcase.security.utils.AuthoritiesUtils.toCommaSeparated;
 
 /**
  * Convert KeyCloak access token claims to/from Spring's {@link Authentication}.
@@ -39,6 +40,7 @@ public class KeycloakUserAuthenticationConverter implements UserAuthenticationCo
             claims.put(EMAIL, userInfo.getEmail());
             claims.put(NAME, userInfo.getName());
             claims.put(APP_ROLES, toCommaSeparated(userInfo.getAuthorities()));
+            claims.put(APP_JURISDICTIONS, String.join(",", userInfo.getJurisdictions()));
         }
         return claims;
     }
@@ -51,6 +53,7 @@ public class KeycloakUserAuthenticationConverter implements UserAuthenticationCo
                                 .name(String.valueOf(map.get(NAME)))
                                 .email(String.valueOf(map.get(EMAIL)))
                                 .authorities(authorities)
+                                .jurisdictions(String.valueOf(map.get(APP_JURISDICTIONS)).split(","))
                                 .build();
         return new UserAuthenticationToken(user);
     }
