@@ -2,6 +2,7 @@ package app.quickcase.security.keycloak;
 
 import app.quickcase.security.UserAuthenticationToken;
 import app.quickcase.security.UserInfo;
+import app.quickcase.security.UserPreferences;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.provider.token.UserAuthenticationConverter;
@@ -15,6 +16,9 @@ import static app.quickcase.security.keycloak.KeycloakClaims.APP_ROLES;
 import static app.quickcase.security.keycloak.KeycloakClaims.EMAIL;
 import static app.quickcase.security.keycloak.KeycloakClaims.NAME;
 import static app.quickcase.security.keycloak.KeycloakClaims.SUB;
+import static app.quickcase.security.keycloak.KeycloakClaims.USER_DEFAULT_CASE_TYPE;
+import static app.quickcase.security.keycloak.KeycloakClaims.USER_DEFAULT_JURISDICTION;
+import static app.quickcase.security.keycloak.KeycloakClaims.USER_DEFAULT_STATE;
 import static app.quickcase.security.utils.AuthoritiesUtils.fromCommaSeparated;
 import static app.quickcase.security.utils.AuthoritiesUtils.toCommaSeparated;
 
@@ -41,6 +45,12 @@ public class KeycloakUserAuthenticationConverter implements UserAuthenticationCo
             claims.put(NAME, userInfo.getName());
             claims.put(APP_ROLES, toCommaSeparated(userInfo.getAuthorities()));
             claims.put(APP_JURISDICTIONS, String.join(",", userInfo.getJurisdictions()));
+            UserPreferences preferences = userInfo.getPreferences();
+            if (null != preferences) {
+                claims.put(USER_DEFAULT_JURISDICTION, preferences.getDefaultJurisdiction());
+                claims.put(USER_DEFAULT_CASE_TYPE, preferences.getDefaultCaseType());
+                claims.put(USER_DEFAULT_STATE, preferences.getDefaultState());
+            }
         }
         return claims;
     }
@@ -54,7 +64,19 @@ public class KeycloakUserAuthenticationConverter implements UserAuthenticationCo
                                 .email(String.valueOf(map.get(EMAIL)))
                                 .authorities(authorities)
                                 .jurisdictions(String.valueOf(map.get(APP_JURISDICTIONS)).split(","))
+                                .preferences(extractPreferences(map))
                                 .build();
         return new UserAuthenticationToken(user);
+    }
+
+    private UserPreferences extractPreferences(Map<String, ?> claims) {
+        return UserPreferences.builder()
+                              .defaultJurisdiction(
+                                      String.valueOf(claims.get(USER_DEFAULT_JURISDICTION)))
+                              .defaultCaseType(
+                                      String.valueOf(claims.get(USER_DEFAULT_CASE_TYPE)))
+                              .defaultState(
+                                      String.valueOf(claims.get(USER_DEFAULT_STATE)))
+                              .build();
     }
 }
