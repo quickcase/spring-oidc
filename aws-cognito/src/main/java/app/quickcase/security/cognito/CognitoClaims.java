@@ -5,4 +5,5 @@ public interface CognitoClaims {
     String NAME = "name";
     String EMAIL = "email";
     String APP_ROLES = "custom:app_roles";
+    String APP_JURISDICTIONS = "custom:jurisdictions";
 }

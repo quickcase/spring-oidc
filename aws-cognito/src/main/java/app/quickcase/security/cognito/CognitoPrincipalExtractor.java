@@ -7,6 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import java.util.Map;
 import java.util.Set;
 
+import static app.quickcase.security.cognito.CognitoClaims.APP_JURISDICTIONS;
 import static app.quickcase.security.cognito.CognitoClaims.APP_ROLES;
 import static app.quickcase.security.cognito.CognitoClaims.EMAIL;
 import static app.quickcase.security.cognito.CognitoClaims.NAME;
@@ -22,6 +23,7 @@ public class CognitoPrincipalExtractor implements PrincipalExtractor {
                        .name(String.valueOf(map.get(NAME)))
                        .email(String.valueOf(map.get(EMAIL)))
                        .authorities(authorities)
+                       .jurisdictions(String.valueOf(map.get(APP_JURISDICTIONS)).split(","))
                        .build();
     }
 }
