@@ -46,16 +46,21 @@ subprojects {
         publications {
             mavenJava(MavenPublication) {
                 from components.java
-            }
-        }
-        repositories {
-            maven {
-                url "s3://maven.app.quickcase.s3.amazonaws.com"
-                authentication {
-                    awsIm(AwsImAuthentication)
+                pom {
+                    url.set("https://github.com/quickcase/quickcase-spring-security.git")
                 }
             }
+        }
 
+        repositories {
+            maven {
+                name = "Github"
+                url = uri("https://maven.pkg.github.com/quickcase/quickcase-spring-security")
+                credentials {
+                    username = System.getenv("GITHUB_USERNAME")
+                    password = System.getenv("GITHUB_PACKAGE_TOKEN")
+                }
+            }
         }
     }
 }
