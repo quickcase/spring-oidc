@@ -3,13 +3,13 @@ wrapper {
 }
 
 ext.libVersions = [
-        junit: '5.4.2',
-        spring: '2.1.5.RELEASE'
+        junit: '5.5.2',
+        spring: '2.1.9.RELEASE'
 ]
 
 allprojects {
     group = 'app.quickcase.security'
-    version = '0.0.6'
+    version = '0.1.0'
 }
 
 subprojects {
