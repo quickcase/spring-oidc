@@ -1,0 +1,48 @@
+---
+kind: pipeline
+type: docker
+name: build
+
+steps:
+  - name: build
+    image: gradle:jdk11
+    user: gradle
+    environment:
+      GRADLE_USER_HOME: '/drone/src/.gradle_global'
+    commands:
+      - chown -R gradle:gradle .
+      - su gradle -c './gradlew --info -s --no-daemon build'
+      - chown -R root:root .
+
+  - name: dependencies
+    image: gradle:jdk11
+    user: gradle
+    environment:
+      GITHUB_USERNAME:
+        from_secret: GITHUB_USERNAME
+      GITHUB_PACKAGE_TOKEN:
+        from_secret: GITHUB_PACKAGE_TOKEN
+      GRADLE_USER_HOME: '/drone/src/.gradle_global'
+    commands:
+      - chown -R gradle:gradle .
+      - su gradle -c './gradlew --info -s --no-daemon publish'
+      - chown -R root:root .
+    when:
+      branch:
+        - master
+      ref:
+        exclude:
+          - refs/pull/**
+
+  - name: notification
+    image: plugins/slack
+    settings:
+      webhook:
+        from_secret: slack_webhook_ops_dev
+    when:
+      status: failure
+
+trigger:
+  ref:
+    - refs/pull/**
+    - refs/heads/master
