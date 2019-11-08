@@ -4,7 +4,7 @@ wrapper {
 
 ext.libVersions = [
         junit: '5.5.2',
-        spring: '2.1.9.RELEASE'
+        spring: '2.2.1.RELEASE'
 ]
 
 allprojects {
@@ -24,9 +24,9 @@ subprojects {
         api "org.springframework.boot:spring-boot-starter-security:${libVersions['spring']}"
         api "org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:${libVersions['spring']}"
 
-        // Force use of v2.3.6 as spring-security-oauth2-autoconfigure v2.1.9.RELEASE points to v2.3.5 affected
-        // by CVE-2019-11269
-        api "org.springframework.security.oauth:spring-security-oauth2:2.3.6.RELEASE"
+        // Force use of v2.4.0 as spring-security-oauth2-autoconfigure v2.2.1.RELEASE points to v2.3.7 which
+        // still includes dependency on very vulnerable and deprecated v1 of jackson-databind
+        api "org.springframework.security.oauth:spring-security-oauth2:2.4.0.RELEASE"
 
         // JUnit
         testImplementation "org.junit.jupiter:junit-jupiter-api:${libVersions['junit']}"
