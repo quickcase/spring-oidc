@@ -14,7 +14,7 @@ steps:
       - su gradle -c './gradlew --info -s --no-daemon build'
       - chown -R root:root .
 
-  - name: dependencies
+  - name: publish 
     image: gradle:jdk11
     user: gradle
     environment:
@@ -28,11 +28,12 @@ steps:
       - su gradle -c './gradlew --info -s --no-daemon publish'
       - chown -R root:root .
     when:
-      branch:
-        - master
       ref:
+        include:
+          - refs/tags/**
         exclude:
           - refs/pull/**
+          - refs/heads/master
 
   - name: notification
     image: plugins/slack
@@ -46,3 +47,4 @@ trigger:
   ref:
     - refs/pull/**
     - refs/heads/master
+    - refs/tags/**
