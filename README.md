@@ -1,4 +1,5 @@
 # QuickCase Spring Security
+[![Build Status](https://drone.nonprod.quickcase.app/api/badges/quickcase/quickcase-spring-security/status.svg)](https://drone.nonprod.quickcase.app/quickcase/quickcase-spring-security)
 
 Specialise Spring Security for needs of QuickCase APIs with implementations for the different IDAM providers supported.
 
