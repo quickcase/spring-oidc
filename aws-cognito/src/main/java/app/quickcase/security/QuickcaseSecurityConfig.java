@@ -5,6 +5,8 @@ import app.quickcase.security.cognito.CognitoAuthoritiesExtractor;
 import app.quickcase.security.cognito.CognitoPrincipalExtractor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.AuthoritiesExtractor;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.PrincipalExtractor;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoRestTemplateFactory;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
@@ -39,6 +41,16 @@ public class QuickcaseSecurityConfig {
                                         userInfoTokenServices(sso, restTemplateFactory));
     }
 
+    @Bean
+    public PrincipalExtractor principalExtractor() {
+        return new CognitoPrincipalExtractor();
+    }
+
+    @Bean
+    public AuthoritiesExtractor authoritiesExtractor() {
+        return new CognitoAuthoritiesExtractor();
+    }
+
     private DefaultTokenServices defaultTokenServices(TokenStore jwkTokenStore) {
         final DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
         defaultTokenServices.setTokenStore(jwkTokenStore);
@@ -51,8 +63,8 @@ public class QuickcaseSecurityConfig {
                                                                    sso.getClientId());
         services.setRestTemplate(restTemplateFactory.getUserInfoRestTemplate());
         services.setTokenType(sso.getTokenType());
-        services.setAuthoritiesExtractor(new CognitoAuthoritiesExtractor());
-        services.setPrincipalExtractor(new CognitoPrincipalExtractor());
+        services.setAuthoritiesExtractor(authoritiesExtractor());
+        services.setPrincipalExtractor(principalExtractor());
         return services;
     }
 }
