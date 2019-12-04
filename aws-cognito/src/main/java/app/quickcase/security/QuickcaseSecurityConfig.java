@@ -1,21 +1,21 @@
 package app.quickcase.security;
 
-import app.quickcase.security.cognito.CognitoTokenServices;
-import app.quickcase.security.cognito.CognitoAuthoritiesExtractor;
-import app.quickcase.security.cognito.CognitoPrincipalExtractor;
-import org.springframework.beans.factory.annotation.Autowired;
+import app.quickcase.security.cognito.CognitoAuthenticationConverter;
+import app.quickcase.security.cognito.CognitoQuickcaseSecurityDsl;
+import app.quickcase.security.cognito.oidc.CognitoUserInfoExtractor;
+import app.quickcase.security.oidc.DefaultUserInfoGateway;
+import app.quickcase.security.oidc.DefaultUserInfoService;
+import app.quickcase.security.oidc.UserInfoExtractor;
+import app.quickcase.security.oidc.UserInfoGateway;
+import app.quickcase.security.oidc.UserInfoService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.AuthoritiesExtractor;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.PrincipalExtractor;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoRestTemplateFactory;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
-import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
-import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.web.client.RestTemplate;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * Configuration to import in Spring application to auto-configure Spring Security to work with AWS
@@ -28,43 +28,29 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
  */
 @Configuration
 public class QuickcaseSecurityConfig {
-
     @Bean
-    @Primary
-    @Autowired
-    @ConditionalOnProperty(prefix = "quickcase.security.aws-cognito", name = "enable-machine", havingValue = "true")
-    public ResourceServerTokenServices resourceServerTokenServices(
-            TokenStore jwkTokenStore,
-            ResourceServerProperties sso,
-            UserInfoRestTemplateFactory restTemplateFactory) {
-        return new CognitoTokenServices(defaultTokenServices(jwkTokenStore),
-                                        userInfoTokenServices(sso, restTemplateFactory));
+    @ConditionalOnProperty("quickcase.security.oidc.user-info-uri")
+    public UserInfoGateway createUserInfoGateway(@Value("${quickcase.security.oidc.user-info-uri}") String userInfoUri) throws URISyntaxException {
+        return new DefaultUserInfoGateway(new URI(userInfoUri), new RestTemplate());
     }
 
     @Bean
-    public PrincipalExtractor principalExtractor() {
-        return new CognitoPrincipalExtractor();
+    public UserInfoExtractor createUserInfoExtractor() {
+        return new CognitoUserInfoExtractor();
     }
 
     @Bean
-    public AuthoritiesExtractor authoritiesExtractor() {
-        return new CognitoAuthoritiesExtractor();
+    public UserInfoService createUserInfoService(UserInfoGateway gateway, UserInfoExtractor extractor) {
+        return new DefaultUserInfoService(gateway, extractor);
     }
 
-    private DefaultTokenServices defaultTokenServices(TokenStore jwkTokenStore) {
-        final DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
-        defaultTokenServices.setTokenStore(jwkTokenStore);
-        return defaultTokenServices;
+    @Bean
+    public CognitoAuthenticationConverter createAuthenticationConverter(UserInfoService userInfoService) {
+        return new CognitoAuthenticationConverter(userInfoService);
     }
 
-    private UserInfoTokenServices userInfoTokenServices(ResourceServerProperties sso,
-                                                        UserInfoRestTemplateFactory restTemplateFactory) {
-        UserInfoTokenServices services = new UserInfoTokenServices(sso.getUserInfoUri(),
-                                                                   sso.getClientId());
-        services.setRestTemplate(restTemplateFactory.getUserInfoRestTemplate());
-        services.setTokenType(sso.getTokenType());
-        services.setAuthoritiesExtractor(authoritiesExtractor());
-        services.setPrincipalExtractor(principalExtractor());
-        return services;
+    @Bean
+    public QuickcaseSecurityDsl createSecurityDsl(CognitoAuthenticationConverter authenticationConverter) {
+        return new CognitoQuickcaseSecurityDsl(authenticationConverter);
     }
 }
