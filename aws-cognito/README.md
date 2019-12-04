@@ -6,34 +6,58 @@ Integration of Quickcase with AWS Cognito for Identity and Access Management.
 
 ### On resource servers
 
-#### 1. Import security configuration
+#### 1. Add dependency
 
-Module `aws-cognito` for `quickcase-spring-security` provides a pre-configured `QuickcaseSecurityConfig` which can be
-directly imported on the `ResourceServerConfiguration` as in example below:
+```groovy
+implementation 'app.quickcase.security:aws-cognito:<version>'
+```
+
+#### 2. Import security configuration
+
+The module `aws-cognito` for `quickcase-spring-security` provides a pre-configured `QuickcaseSecurityConfig` which can be
+directly imported on the `WebSecurityConfigurerAdapter` as in example below:
 
 ```java
 @Configuration
-@EnableResourceServer
+@EnableWebSecurity
 @Import(QuickcaseSecurityConfig.class)
-public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter {
-
-    @Override
-    public void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-            .anyRequest()
-            .fullyAuthenticated();
-    }
-
+public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+    // ...
 }
 ```
 
-#### 2. Configure Spring Security
+The `QuickcaseSecurityConfig` creates all the Spring beans needed to support use of Quickcase Security.
+
+#### 3. Wire Quickcase DSL
+
+In the `WebSecurityConfigurerAdapter`, wire an instance of `QuickcaseSecurityDsl`:
+
+```java
+@Autowired
+private QuickcaseSecurityDsl quickcaseDsl;
+```
+
+#### 4. Configure
+
+In the `WebSecurityConfigurerAdapter`, override the `configure(HttpSecurity http)` method and start the configuration with `quickcaseDsl.withQuickcaseSecurity(http)`:
+
+```java
+    @Override
+    protected void configure(final HttpSecurity http) throws Exception {
+        quickcaseDsl
+            .withQuickcaseSecurity(http)
+            // ...
+            .authorizeRequests()
+            .anyRequest()
+            .authenticated();
+    }
+```
+
+#### 5. Add required application properties
 
 Must be configured:
-* `security.oauth2.resource.user-info-uri`: Cognito's `/oauth2/userInfo` endpoint for the pool
-
-Optionally required, in conjunction with `enable-machine` property:
-* `security.oauth2.resource.jwk.key-set-uri`: Cognito's `/.well-known/jwks.json` endpoint for the pool
+* `quickcase.security.oidc.user-info-uri`: Cognito's `/oauth2/userInfo` endpoint for the pool
+* `spring.security.oauth2.resourceserver.jwt.jwk-set-uri`: Cognito's `/.well-known/jwks.json` endpoint for the pool
 
 ## Properties
 
