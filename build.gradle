@@ -22,11 +22,10 @@ subprojects {
     dependencies {
         // Spring
         api "org.springframework.boot:spring-boot-starter-security:${libVersions['spring']}"
-        api "org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:${libVersions['spring']}"
+        api "org.springframework.boot:spring-boot-starter-oauth2-resource-server:${libVersions['spring']}"
 
-        // Force use of v2.4.0 as spring-security-oauth2-autoconfigure v2.2.1.RELEASE points to v2.3.7 which
-        // still includes dependency on very vulnerable and deprecated v1 of jackson-databind
-        api "org.springframework.security.oauth:spring-security-oauth2:2.4.0.RELEASE"
+        // Jackson
+        implementation 'com.fasterxml.jackson.core:jackson-databind:2.10.1'
 
         // JUnit
         testImplementation "org.junit.jupiter:junit-jupiter-api:${libVersions['junit']}"
