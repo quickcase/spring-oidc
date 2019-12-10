@@ -1,5 +1,6 @@
 package app.quickcase.security.authentication;
 
+import app.quickcase.security.OrganisationProfile;
 import app.quickcase.security.UserInfo;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -35,6 +36,8 @@ public abstract class QuickcaseAuthentication extends AbstractAuthenticationToke
     public abstract Optional<String> getEmail();
 
     public abstract String getId();
+
+    public abstract OrganisationProfile getOrganisationProfile(String organisationId);
 
     public abstract Optional<UserInfo> getUserInfo();
 

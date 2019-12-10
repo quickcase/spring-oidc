@@ -1,5 +1,8 @@
 package app.quickcase.security.authentication;
 
+import app.quickcase.security.AccessLevel;
+import app.quickcase.security.OrganisationProfile;
+import app.quickcase.security.SecurityClassification;
 import app.quickcase.security.utils.StringUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,6 +13,7 @@ import java.util.Set;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class QuickcaseClientAuthenticationTest {
     private static final String ACCESS_TOKEN = "access-token-123";
@@ -76,6 +80,20 @@ class QuickcaseClientAuthenticationTest {
     void getPrincipal() {
         final QuickcaseAuthentication auth = clientAuthentication();
         assertThat(auth.getPrincipal(), equalTo(CLIENT_ID));
+    }
+
+    @Test
+    @DisplayName("should always give client's default organisation profile")
+    void getOrganisationProfile() {
+        final QuickcaseAuthentication auth = clientAuthentication();
+        final OrganisationProfile orgProfile = auth.getOrganisationProfile("anyOrg");
+
+        assertAll(
+                () -> assertThat(orgProfile.getAccessLevel(), is(AccessLevel.ORGANISATION)),
+                () -> assertThat(orgProfile.getSecurityClassification(),
+                                 is(SecurityClassification.PUBLIC)),
+                () -> assertThat(orgProfile.getGroup().isPresent(), is(false))
+        );
     }
 
     private QuickcaseAuthentication clientAuthentication() {

@@ -1,5 +1,8 @@
 package app.quickcase.security.authentication;
 
+import app.quickcase.security.AccessLevel;
+import app.quickcase.security.OrganisationProfile;
+import app.quickcase.security.SecurityClassification;
 import app.quickcase.security.UserInfo;
 import app.quickcase.security.utils.StringUtils;
 import org.junit.jupiter.api.Assertions;
@@ -7,11 +10,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.GrantedAuthority;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
+import static app.quickcase.security.AccessLevel.*;
+import static app.quickcase.security.SecurityClassification.PRIVATE;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class QuickcaseUserAuthenticationTest {
     private static final String ACCESS_TOKEN = "access-token-123";
@@ -90,13 +98,60 @@ class QuickcaseUserAuthenticationTest {
         assertThat(auth.getPrincipal(), equalTo(USER_ID));
     }
 
+    @Test
+    @DisplayName("should give default organisation profile when org not found")
+    void getOrganisationProfileWhenNotFound() {
+        final QuickcaseAuthentication auth = userAuthentication();
+        final OrganisationProfile orgProfile = auth.getOrganisationProfile("anyOrg");
+
+        assertAll(
+                () -> assertThat(orgProfile.getAccessLevel(), is(INDIVIDUAL)),
+                () -> assertThat(orgProfile.getSecurityClassification(),
+                                 is(SecurityClassification.PUBLIC)),
+                () -> assertThat(orgProfile.getGroup().isPresent(), is(false))
+        );
+    }
+
+    @Test
+    @DisplayName("should give organisation profile when found")
+    void getOrganisationProfileWhenFound() {
+        final QuickcaseAuthentication auth = userAuthentication();
+        final OrganisationProfile orgProfile = auth.getOrganisationProfile("org-1");
+
+        assertAll(
+                () -> assertThat(orgProfile.getAccessLevel(), is(GROUP)),
+                () -> assertThat(orgProfile.getSecurityClassification(),
+                                 is(PRIVATE)),
+                () -> assertThat(orgProfile.getGroup().get(), equalTo("org-1-group"))
+        );
+    }
+
+    @Test
+    @DisplayName("should find organisation profile regardless of case")
+    void getOrganisationProfileIgnoreCase() {
+        final QuickcaseAuthentication auth = userAuthentication();
+        final OrganisationProfile orgProfile = auth.getOrganisationProfile("OrG-1");
+
+        assertThat("Not handling organisation IDs as case-insensitive",
+                   orgProfile.getGroup().orElse("no-group"),
+                   equalTo("org-1-group"));
+    }
+
     private QuickcaseAuthentication userAuthentication() {
         final Set<GrantedAuthority> authorities = StringUtils.authorities("ROLE-1", "ROLE-2");
         final UserInfo userInfo = UserInfo.builder().email(USER_EMAIL).build();
+        final Map<String, OrganisationProfile> orgProfiles = new HashMap<>();
+        orgProfiles.put("org-1", OrganisationProfile.builder()
+                                                    .accessLevel(GROUP)
+                                                    .group("org-1-group")
+                                                    .securityClassification(PRIVATE)
+                                                    .build());
+
         return new QuickcaseUserAuthentication(ACCESS_TOKEN,
                                                USER_ID,
                                                USER_NAME,
                                                authorities,
-                                               userInfo);
+                                               userInfo,
+                                               orgProfiles);
     }
 }
