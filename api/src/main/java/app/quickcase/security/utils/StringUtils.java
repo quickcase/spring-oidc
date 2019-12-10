@@ -30,6 +30,12 @@ public interface StringUtils {
                           .collect(Collectors.toSet());
     }
 
+    static Set<GrantedAuthority> authorities(String... authorities) {
+        return Arrays.stream(authorities)
+                     .map(SimpleGrantedAuthority::new)
+                     .collect(Collectors.toSet());
+    }
+
     static Set<String> fromString(String authoritiesStr, String delimiterRegex) {
         return new HashSet<>(Arrays.asList(authoritiesStr.split(delimiterRegex)));
     }

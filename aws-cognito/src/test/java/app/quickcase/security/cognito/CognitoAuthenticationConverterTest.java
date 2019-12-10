@@ -2,6 +2,8 @@ package app.quickcase.security.cognito;
 
 import app.quickcase.security.UserInfo;
 import app.quickcase.security.authentication.QuickcaseAuthentication;
+import app.quickcase.security.authentication.QuickcaseClientAuthentication;
+import app.quickcase.security.authentication.QuickcaseUserAuthentication;
 import app.quickcase.security.oidc.UserInfoService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -68,44 +70,12 @@ class CognitoAuthenticationConverterTest {
         }
 
         @Test
-        @DisplayName("should use default name")
-        void shouldUseDefaultName() {
-            final QuickcaseAuthentication authentication = clientAuthentication();
-
-            assertThat(authentication.getName(), equalTo("System"));
-        }
-
-        @Test
-        @DisplayName("should not have email")
-        void shouldNotHaveEmail() {
-            final QuickcaseAuthentication authentication = clientAuthentication();
-
-            assertThat(authentication.getEmail().isPresent(), is(false));
-        }
-
-        @Test
-        @DisplayName("should not have user info")
-        void shouldNotHaveUserInfo() {
-            final QuickcaseAuthentication authentication = clientAuthentication();
-
-            assertThat(authentication.getUserInfo().isPresent(), is(false));
-        }
-
-        @Test
         @DisplayName("should use scopes as authorities")
         void shouldUseScopesAsAuthorities() {
             final QuickcaseAuthentication authentication = clientAuthentication();
 
             final GrantedAuthority[] scopes = authorities(SCOPE_1, SCOPE_2);
             assertThat(authentication.getAuthorities(), containsInAnyOrder(scopes));
-        }
-
-        @Test
-        @DisplayName("should be client only")
-        void shouldBeClientOnly() {
-            final QuickcaseAuthentication authentication = clientAuthentication();
-
-            assertThat(authentication.isClientOnly(), is(true));
         }
 
         @Test
@@ -117,27 +87,11 @@ class CognitoAuthenticationConverterTest {
         }
 
         @Test
-        @DisplayName("should use client ID as principal")
-        void shouldUseClientIdAsPrincipal() {
+        @DisplayName("should be client authentication")
+        void shouldBeClientAuthentication() {
             final QuickcaseAuthentication authentication = clientAuthentication();
 
-            assertThat(authentication.getPrincipal(), equalTo(CLIENT_ID));
-        }
-
-        @Test
-        @DisplayName("should use access token as credentials")
-        void shouldAccessTokenAsCredentials() {
-            final QuickcaseAuthentication authentication = clientAuthentication();
-
-            assertThat(authentication.getCredentials(), equalTo(ACCESS_TOKEN));
-        }
-
-        @Test
-        @DisplayName("should be authenticated")
-        void shouldBeAuthenticated() {
-            final QuickcaseAuthentication authentication = clientAuthentication();
-
-            assertThat(authentication.isAuthenticated(), is(true));
+            assertThat(authentication, instanceOf(QuickcaseClientAuthentication.class));
         }
     }
 
@@ -158,7 +112,7 @@ class CognitoAuthenticationConverterTest {
 
         @Test
         @DisplayName("should get ID from user")
-        void shouldGetIdFromClient() {
+        void shouldGetIdFromUser() {
             final QuickcaseAuthentication authentication = userAuthentication();
 
             assertThat(authentication.getId(), equalTo(USER_ID));
@@ -166,7 +120,7 @@ class CognitoAuthenticationConverterTest {
 
         @Test
         @DisplayName("should use user name")
-        void shouldUseDefaultName() {
+        void shouldUseUserName() {
             final QuickcaseAuthentication authentication = userAuthentication();
 
             assertThat(authentication.getName(), equalTo(USER_NAME));
@@ -174,7 +128,7 @@ class CognitoAuthenticationConverterTest {
 
         @Test
         @DisplayName("should use user email")
-        void shouldNotHaveEmail() {
+        void shouldHaveEmail() {
             final QuickcaseAuthentication authentication = userAuthentication();
 
             assertThat(authentication.getEmail().get(), equalTo(USER_EMAIL));
@@ -182,7 +136,7 @@ class CognitoAuthenticationConverterTest {
 
         @Test
         @DisplayName("should have user info")
-        void shouldNotHaveUserInfo() {
+        void shouldHaveUserInfo() {
             final QuickcaseAuthentication authentication = userAuthentication();
 
             assertThat(authentication.getUserInfo()
@@ -192,19 +146,11 @@ class CognitoAuthenticationConverterTest {
 
         @Test
         @DisplayName("should use user roles as authorities")
-        void shouldUseScopesAsAuthorities() {
+        void shouldUseRolesAsAuthorities() {
             final QuickcaseAuthentication authentication = userAuthentication();
 
             final GrantedAuthority[] roles = authorities(ROLE_1, ROLE_2);
             assertThat(authentication.getAuthorities(), containsInAnyOrder(roles));
-        }
-
-        @Test
-        @DisplayName("should not be client only")
-        void shouldBeClientOnly() {
-            final QuickcaseAuthentication authentication = userAuthentication();
-
-            assertThat(authentication.isClientOnly(), is(false));
         }
 
         @Test
@@ -216,27 +162,11 @@ class CognitoAuthenticationConverterTest {
         }
 
         @Test
-        @DisplayName("should use user ID as principal")
-        void shouldUseUserIdAsPrincipal() {
+        @DisplayName("should be user authentication")
+        void shouldBeUserAuthentication() {
             final QuickcaseAuthentication authentication = userAuthentication();
 
-            assertThat(authentication.getPrincipal(), equalTo(USER_ID));
-        }
-
-        @Test
-        @DisplayName("should use access token as credentials")
-        void shouldAccessTokenAsCredentials() {
-            final QuickcaseAuthentication authentication = userAuthentication();
-
-            assertThat(authentication.getCredentials(), equalTo(ACCESS_TOKEN));
-        }
-
-        @Test
-        @DisplayName("should be authenticated")
-        void shouldBeAuthenticated() {
-            final QuickcaseAuthentication authentication = userAuthentication();
-
-            assertThat(authentication.isAuthenticated(), is(true));
+            assertThat(authentication, instanceOf(QuickcaseUserAuthentication.class));
         }
     }
 
