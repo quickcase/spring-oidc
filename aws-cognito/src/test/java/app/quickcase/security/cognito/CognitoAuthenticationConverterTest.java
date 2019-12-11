@@ -1,10 +1,12 @@
 package app.quickcase.security.cognito;
 
+import app.quickcase.security.OrganisationProfile;
 import app.quickcase.security.UserInfo;
 import app.quickcase.security.authentication.QuickcaseAuthentication;
 import app.quickcase.security.authentication.QuickcaseClientAuthentication;
 import app.quickcase.security.authentication.QuickcaseUserAuthentication;
 import app.quickcase.security.oidc.UserInfoService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -15,8 +17,14 @@ import org.springframework.security.oauth2.jwt.Jwt;
 
 import java.util.Arrays;
 
+import static app.quickcase.security.AccessLevel.GROUP;
+import static app.quickcase.security.SecurityClassification.PRIVATE;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
 
 @DisplayName("CognitoAuthenticationConverter")
 class CognitoAuthenticationConverterTest {
@@ -35,12 +43,18 @@ class CognitoAuthenticationConverterTest {
 
     @BeforeEach
     void setUp() {
+        final OrganisationProfile orgA = OrganisationProfile.builder()
+                                                            .accessLevel(GROUP)
+                                                            .securityClassification(PRIVATE)
+                                                            .group("org-a-group")
+                                                            .build();
         final UserInfoService userInfoService = (sub, token) -> UserInfo.builder()
                                                                         .id(sub)
                                                                         .name(USER_NAME)
                                                                         .email(USER_EMAIL)
                                                                         .authorities(ROLE_1, ROLE_2)
                                                                         .jurisdictions(JURISDICTION)
+                                                                        .organisationProfile("org-a", orgA)
                                                                         .build();
 
         converter = new CognitoAuthenticationConverter(userInfoService);
@@ -167,6 +181,20 @@ class CognitoAuthenticationConverterTest {
             final QuickcaseAuthentication authentication = userAuthentication();
 
             assertThat(authentication, instanceOf(QuickcaseUserAuthentication.class));
+        }
+
+        @Test
+        @DisplayName("should extract organisation profiles")
+        void shouldExtractOrganisationProfiles() {
+            final QuickcaseAuthentication authentication = userAuthentication();
+
+            final OrganisationProfile profile = authentication.getOrganisationProfile("org-a");
+
+            Assertions.assertAll(
+                    () -> assertThat(profile.getAccessLevel(), is(GROUP)),
+                    () -> assertThat(profile.getSecurityClassification(), is(PRIVATE)),
+                    () -> assertThat(profile.getGroup().orElse("N/A"), equalTo("org-a-group"))
+            );
         }
     }
 

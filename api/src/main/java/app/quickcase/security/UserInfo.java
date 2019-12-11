@@ -9,7 +9,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.security.Principal;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -37,6 +39,7 @@ public class UserInfo implements Principal, UserDetails {
     @ToString.Include
     private final Set<String> jurisdictions;
     private final UserPreferences preferences;
+    private final Map<String, OrganisationProfile> organisationProfiles;
 
     @Override
     public String getPassword() {
@@ -71,6 +74,7 @@ public class UserInfo implements Principal, UserDetails {
     public static class UserInfoBuilder {
         private Set<GrantedAuthority> authorities = new HashSet<>();
         private Set<String> jurisdictions = new HashSet<>();
+        private Map<String, OrganisationProfile> organisationProfiles = new HashMap<>();
 
         public UserInfoBuilder authorities(Set<GrantedAuthority> authorities) {
             this.authorities = authorities;
@@ -91,6 +95,16 @@ public class UserInfo implements Principal, UserDetails {
 
         public UserInfoBuilder jurisdictions(String... jurisdictions) {
             this.jurisdictions.addAll(Arrays.asList(jurisdictions));
+            return this;
+        }
+
+        public UserInfoBuilder organisationProfile(String identifier, OrganisationProfile profile) {
+            this.organisationProfiles.put(identifier, profile);
+            return this;
+        }
+
+        public UserInfoBuilder organisationProfiles(Map<String, OrganisationProfile> profiles) {
+            this.organisationProfiles.putAll(profiles);
             return this;
         }
     }
