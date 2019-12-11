@@ -2,11 +2,13 @@ package app.quickcase.security;
 
 import lombok.Builder;
 import lombok.Value;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Optional;
 
 @Value
 @Builder
+@Slf4j
 public class OrganisationProfile {
     /**
      * Classification of a user for an organisation. Defaults to PUBLIC, the lowest classification.
@@ -42,6 +44,16 @@ public class OrganisationProfile {
             if (null != accessLevel)
                 this.accessLevel = accessLevel;
             return this;
+        }
+
+        public OrganisationProfile build() {
+            // Can't use access level group if no group defined
+            if (AccessLevel.GROUP.equals(accessLevel) && group == null) {
+                accessLevel = AccessLevel.INDIVIDUAL;
+                log.warn("Usage of Access Level GROUP without group is forbidden, defaulting to INDIVIDUAL");
+            }
+
+            return new OrganisationProfile(securityClassification, accessLevel, group);
         }
     }
 }
