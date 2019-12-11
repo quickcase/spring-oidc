@@ -1,5 +1,6 @@
 package app.quickcase.security.cognito;
 
+import app.quickcase.security.OrganisationProfile;
 import app.quickcase.security.UserInfo;
 import app.quickcase.security.authentication.QuickcaseAuthentication;
 import app.quickcase.security.authentication.QuickcaseClientAuthentication;
@@ -9,6 +10,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
 
+import java.util.Map;
 import java.util.Set;
 
 import static app.quickcase.security.utils.StringUtils.authorities;
@@ -27,7 +29,7 @@ public class CognitoAuthenticationConverter implements Converter<Jwt, QuickcaseA
     public QuickcaseAuthentication convert(Jwt source) {
         final Set<String> scopes = fromSpaceSeparated(source.getClaimAsString("scope"));
 
-        if(scopes.contains(SCOPE_PROFILE)) {
+        if (scopes.contains(SCOPE_PROFILE)) {
             return userAuthentication(source);
         }
 
@@ -47,7 +49,13 @@ public class CognitoAuthenticationConverter implements Converter<Jwt, QuickcaseA
         final UserInfo userInfo = userInfoService.loadUserInfo(subject, accessToken);
         final String name = userInfo.getName();
         final Set<GrantedAuthority> authorities = userInfo.getAuthorities();
+        final Map<String, OrganisationProfile> orgProfiles = userInfo.getOrganisationProfiles();
 
-        return new QuickcaseUserAuthentication(accessToken, subject, name, authorities, userInfo);
+        return new QuickcaseUserAuthentication(accessToken,
+                                               subject,
+                                               name,
+                                               authorities,
+                                               userInfo,
+                                               orgProfiles);
     }
 }
