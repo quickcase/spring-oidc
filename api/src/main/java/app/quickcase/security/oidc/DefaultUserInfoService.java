@@ -1,6 +1,7 @@
 package app.quickcase.security.oidc;
 
 import app.quickcase.security.UserInfo;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.security.core.AuthenticationException;
 
 import java.util.Map;
@@ -18,9 +19,9 @@ public class DefaultUserInfoService implements UserInfoService {
 
     @Override
     public UserInfo loadUserInfo(String expectedSubject, String accessToken) {
-        final Map<String, Object> claims = gateway.getClaims(accessToken);
+        final Map<String, JsonNode> claims = gateway.getClaims(accessToken);
 
-        validateSubject(expectedSubject, claims.get(CLAIM_SUB));
+        validateSubject(expectedSubject, claims.get(CLAIM_SUB).textValue());
 
         return extractor.extract(claims);
     }
