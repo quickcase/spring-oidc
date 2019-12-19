@@ -9,7 +9,7 @@ ext.libVersions = [
 
 allprojects {
     group = 'app.quickcase.security'
-    version = '0.3.0-rc2'
+    version = '0.3.0-rc3'
 }
 
 subprojects {

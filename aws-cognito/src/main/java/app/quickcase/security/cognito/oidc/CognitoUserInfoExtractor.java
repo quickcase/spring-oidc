@@ -4,8 +4,7 @@ import app.quickcase.security.OrganisationProfile;
 import app.quickcase.security.UserInfo;
 import app.quickcase.security.UserPreferences;
 import app.quickcase.security.oidc.UserInfoExtractor;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -27,52 +26,39 @@ import static app.quickcase.security.utils.StringUtils.fromCommaSeparated;
 
 @Slf4j
 public class CognitoUserInfoExtractor implements UserInfoExtractor {
-    private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
     private static final OrganisationProfileParser ORG_PARSER = new OrganisationProfileParser();
 
     @Override
-    public UserInfo extract(Map<String, Object> claims) {
+    public UserInfo extract(Map<String, JsonNode> claims) {
         return extractUserInfo(claims);
     }
 
-    public UserInfo extractUserInfo(Map<String, Object> claims) {
-        Set<GrantedAuthority> authorities = fromCommaSeparated(String.valueOf(claims.get(APP_ROLES)));
+    public UserInfo extractUserInfo(Map<String, JsonNode> claims) {
+        Set<GrantedAuthority> authorities = fromCommaSeparated(claims.get(APP_ROLES).textValue());
         return UserInfo.builder()
-                       .id(String.valueOf(claims.get(SUB)))
-                       .name(String.valueOf(claims.get(NAME)))
-                       .email(String.valueOf(claims.get(EMAIL)))
+                       .id(claims.get(SUB).textValue())
+                       .name(claims.get(NAME).textValue())
+                       .email(claims.get(EMAIL).textValue())
                        .authorities(authorities)
-                       .jurisdictions(String.valueOf(claims.get(APP_JURISDICTIONS)).split(","))
+                       .jurisdictions(claims.get(APP_JURISDICTIONS).textValue().split(","))
                        .preferences(extractPreferences(claims))
                        .organisationProfiles(extractProfiles(claims))
                        .build();
     }
 
-    private UserPreferences extractPreferences(Map<String, Object> claims) {
+    private UserPreferences extractPreferences(Map<String, JsonNode> claims) {
         return UserPreferences.builder()
                               .defaultJurisdiction(
-                                      String.valueOf(claims.get(USER_DEFAULT_JURISDICTION)))
+                                      claims.get(USER_DEFAULT_JURISDICTION).textValue())
                               .defaultCaseType(
-                                      String.valueOf(claims.get(USER_DEFAULT_CASE_TYPE)))
+                                      claims.get(USER_DEFAULT_CASE_TYPE).textValue())
                               .defaultState(
-                                      String.valueOf(claims.get(USER_DEFAULT_STATE)))
+                                      claims.get(USER_DEFAULT_STATE).textValue())
                               .build();
     }
 
-    private Map<String, OrganisationProfile> extractProfiles(Map<String, Object> claims) {
+    private Map<String, OrganisationProfile> extractProfiles(Map<String, JsonNode> claims) {
         return Optional.ofNullable(claims.get(APP_ORGANISATIONS))
-                       .map(String::valueOf)
-                       .flatMap(json -> {
-                           try {
-                               return Optional.of(JSON_MAPPER.readTree(json));
-                           } catch (JsonProcessingException e) {
-                               log.warn(
-                                       "Unable to parse organisation profiles JSON for user `{}`: {}",
-                                       claims.get(SUB),
-                                       json);
-                               return Optional.empty();
-                           }
-                       })
                        .map(ORG_PARSER::parse)
                        .orElse(Collections.emptyMap());
     }
