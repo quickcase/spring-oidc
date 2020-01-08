@@ -1,8 +1,7 @@
 name: Publish tag
 on:
   push:
-    branches:
-      - refs/tags/*
+    tags: ['**']
 env:
   GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
   GITHUB_PACKAGE_TOKEN: ${{ secrets.GITHUB_PACKAGE_TOKEN }}
