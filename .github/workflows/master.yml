@@ -1,4 +1,4 @@
-name: Publish master
+name: Check master
 on:
   push:
     branches:
@@ -49,28 +49,3 @@ jobs:
           SLACK_COLOR: '#c82829'
           SLACK_TITLE: '[QuickCase Spring Security] Failed pull request'
           SLACK_MESSAGE: Failed on dependencies checks, triggered by ${{github.actor}}
-  publish:
-    name: Publish
-    needs: [test, dependency_check]
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v1
-      - name: Set up JDK 11
-        uses: actions/setup-java@v1
-        with:
-          java-version: 11.x
-      - name: Compile and test
-        run: ./gradlew assemble
-      - name: Publish Docker
-        uses: elgohr/Publish-Docker-Github-Action@2.11
-        env:
-          CI_COMMIT: ${{ github.sha }}
-          CI_BRANCH: ${{ github.ref }}
-        with:
-          name: quickcase/quickcase-spring-security
-          username: ${{ secrets.GITHUB_USERNAME }}
-          password: ${{ secrets.GITHUB_PACKAGE_TOKEN }}
-          registry: docker.pkg.github.com
-          buildargs: CI_COMMIT,CI_BRANCH
