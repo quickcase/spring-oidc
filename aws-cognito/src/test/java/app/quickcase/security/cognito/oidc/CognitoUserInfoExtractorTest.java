@@ -3,9 +3,7 @@ package app.quickcase.security.cognito.oidc;
 import app.quickcase.security.OrganisationProfile;
 import app.quickcase.security.UserInfo;
 import app.quickcase.security.UserPreferences;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.TextNode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,7 +34,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("CognitoUserInfoExtractor")
 class CognitoUserInfoExtractorTest {
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final String USER_APP_ROLES = "role1,role2";
     private static final String USER_ID = "eec55037-bac7-46b4-9849-f063e627e4f3";
     private static final String USER_NAME = "Test User";
@@ -115,7 +112,7 @@ class CognitoUserInfoExtractorTest {
         claims.put(USER_DEFAULT_JURISDICTION, getTextNode(DEFAULT_JURISDICTION));
         claims.put(USER_DEFAULT_CASE_TYPE, getTextNode(DEFAULT_CASE_TYPE));
         claims.put(USER_DEFAULT_STATE, getTextNode(DEFAULT_STATE));
-        claims.put(APP_ORGANISATIONS, getJsonNode(USER_ORGANISATIONS));
+        claims.put(APP_ORGANISATIONS, getTextNode(USER_ORGANISATIONS));
         return claims;
     }
 
@@ -123,7 +120,4 @@ class CognitoUserInfoExtractorTest {
         return new TextNode(value);
     }
 
-    private JsonNode getJsonNode(String value) throws JsonProcessingException {
-        return OBJECT_MAPPER.readTree(value);
-    }
 }
