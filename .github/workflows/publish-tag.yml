@@ -1,0 +1,76 @@
+name: Publish tag
+on:
+  push:
+    branches:
+      - refs/tags/*
+env:
+  GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
+  GITHUB_PACKAGE_TOKEN: ${{ secrets.GITHUB_PACKAGE_TOKEN }}
+jobs:
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11.x
+      - name: Compile and test
+        run: ./gradlew build
+      - name: Slack Notification
+        if: failure()
+        uses: rtCamp/action-slack-notify@master
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_COLOR: '#c82829'
+          SLACK_TITLE: '[QuickCase Spring Security] Failed pull request'
+          SLACK_MESSAGE: Failed on tests, triggered by ${{github.actor}}
+  dependency_check:
+    name: Dependency checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11.x
+      - name: Analyse dependencies
+        run: ./gradlew dependencyCheckAggregate
+      - name: Slack Notification
+        if: failure()
+        uses: rtCamp/action-slack-notify@master
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_COLOR: '#c82829'
+          SLACK_TITLE: '[QuickCase Spring Security] Failed pull request'
+          SLACK_MESSAGE: Failed on dependencies checks, triggered by ${{github.actor}}
+  publish:
+    name: Publish
+    needs: [test, dependency_check]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11.x
+      - name: Publish
+        run: ./gradlew --info publish
+        env:
+          GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
+          GITHUB_PACKAGE_TOKEN: ${{ secrets.GITHUB_PACKAGE_TOKEN }}
+      - name: Slack Notification
+        if: failure()
+        uses: rtCamp/action-slack-notify@master
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_COLOR: '#c82829'
+          SLACK_TITLE: '[QuickCase Spring Security] Failed to publish tag'
+          SLACK_MESSAGE: A new tag was created by ${{github.actor}}, but the publishing of the new version failed
