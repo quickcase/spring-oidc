@@ -1,7 +1,6 @@
 package app.quickcase.security.oidc;
 
 import app.quickcase.security.UserInfo;
-import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.security.core.AuthenticationException;
 
 import java.util.Map;
@@ -19,9 +18,9 @@ public class DefaultUserInfoService implements UserInfoService {
 
     @Override
     public UserInfo loadUserInfo(String expectedSubject, String accessToken) {
-        final Map<String, JsonNode> claims = gateway.getClaims(accessToken);
+        final Map<String, Object> claims = gateway.getClaims(accessToken);
 
-        validateSubject(expectedSubject, claims.get(CLAIM_SUB).textValue());
+        validateSubject(expectedSubject, claims.get(CLAIM_SUB));
 
         return extractor.extract(claims);
     }
@@ -30,11 +29,11 @@ public class DefaultUserInfoService implements UserInfoService {
      * Prevent token substitution attacks by validating sub claim.
      *
      * @param expectedSubject Subject expected by caller
-     * @param actualSubject Subject received from userInfo endpoint
+     * @param actualSubject   Subject received from userInfo endpoint
      * @throws AuthenticationException When subjects cannot be compared or do not match.
      */
     private void validateSubject(String expectedSubject, Object actualSubject) {
-        if(!expectedSubject.equals(actualSubject)) {
+        if (!expectedSubject.equals(actualSubject)) {
             throw new OidcException("User info subject does match expected subject");
         }
     }

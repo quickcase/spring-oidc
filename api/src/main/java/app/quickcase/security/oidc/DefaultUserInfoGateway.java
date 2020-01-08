@@ -24,14 +24,14 @@ public class DefaultUserInfoGateway implements UserInfoGateway {
     }
 
     @Override
-    public Map<String, JsonNode> getClaims(String accessToken) {
+    public Map<String, Object> getClaims(String accessToken) {
         final HttpEntity<Void> requestEntity = new HttpEntity<>(createHeaders(accessToken));
         final ResponseEntity<JsonNode> response = restTemplate.exchange(userInfoUri,
                                                                         HttpMethod.GET,
                                                                         requestEntity,
                                                                         JsonNode.class);
 
-        return MAPPER.convertValue(response.getBody(), new TypeReference<Map<String, JsonNode>>(){});
+        return MAPPER.convertValue(response.getBody(), new TypeReference<>(){});
     }
 
     private HttpHeaders createHeaders(String accessToken) {

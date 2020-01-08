@@ -1,8 +1,6 @@
 package app.quickcase.security.oidc;
 
 import app.quickcase.security.UserInfo;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.TextNode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -18,15 +16,15 @@ class DefaultUserInfoServiceTest {
     private static final String SUBJECT = "user-51423";
 
     private final UserInfoGateway stubGateway = accessToken -> {
-        final HashMap<String, JsonNode> claims = new HashMap<>();
-        claims.put("sub", getTextNode(SUBJECT));
-        claims.put("name", getTextNode(accessToken));
+        final HashMap<String, Object> claims = new HashMap<>();
+        claims.put("sub", SUBJECT);
+        claims.put("name", accessToken);
         return claims;
     };
 
     private final UserInfoExtractor stubExtractor = claims -> UserInfo.builder()
-                                                                      .id(claims.get("sub").textValue())
-                                                                      .name(claims.get("name").textValue())
+                                                                      .id(String.valueOf(claims.get("sub")))
+                                                                      .name(String.valueOf(claims.get("name")))
                                                                       .build();
 
     @Test
@@ -49,9 +47,5 @@ class DefaultUserInfoServiceTest {
 
         assertThrows(OidcException.class,
                      () -> userInfoService.loadUserInfo("other", ACCESS_TOKEN));
-    }
-
-    private JsonNode getTextNode(String value) {
-        return new TextNode(value);
     }
 }

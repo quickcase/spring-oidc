@@ -50,11 +50,11 @@ class DefaultUserInfoGatewayTest {
         when(restTemplate.exchange(eq(USER_INFO_URI), eq(HttpMethod.GET), any(HttpEntity.class), eq(JsonNode.class)))
                 .thenReturn(response);
 
-        final Map<String, JsonNode> claims = userInfoGateway.getClaims(ACCESS_TOKEN);
+        final Map<String, Object> claims = userInfoGateway.getClaims(ACCESS_TOKEN);
 
         assertAll(
                 () -> assertThat(claims.entrySet(), hasSize(1)),
-                () -> assertThat(claims.get("sub").textValue(), equalTo("user-123"))
+                () -> assertThat(claims.get("sub"), equalTo("user-123"))
         );
     }
 }

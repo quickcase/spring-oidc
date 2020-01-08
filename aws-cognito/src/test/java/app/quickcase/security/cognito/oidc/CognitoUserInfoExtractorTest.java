@@ -3,10 +3,6 @@ package app.quickcase.security.cognito.oidc;
 import app.quickcase.security.OrganisationProfile;
 import app.quickcase.security.UserInfo;
 import app.quickcase.security.UserPreferences;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.TextNode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -36,7 +32,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("CognitoUserInfoExtractor")
 class CognitoUserInfoExtractorTest {
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final String USER_APP_ROLES = "role1,role2";
     private static final String USER_ID = "eec55037-bac7-46b4-9849-f063e627e4f3";
     private static final String USER_NAME = "Test User";
@@ -48,11 +43,11 @@ class CognitoUserInfoExtractorTest {
     private static final String USER_ORGANISATIONS = "{" +
             "\"org-1\": {\"access\": \"organisation\", \"classification\": \"private\"}," +
             "\"org-2\": {\"access\": \"group\", \"classification\": \"public\", \"group\": \"group-1\"}" +
-            "}";
+        "}";
 
     @Test
     @DisplayName("should extract userInfo from claims")
-    void shouldExtractUserInfo() throws Exception {
+    void shouldExtractUserInfo() {
         final UserInfo userInfo = new CognitoUserInfoExtractor().extract(claims());
 
         assertThat(userInfo, is(notNullValue()));
@@ -65,13 +60,13 @@ class CognitoUserInfoExtractorTest {
                         new SimpleGrantedAuthority("role2")
                 )),
                 () -> assertThat(userInfo.getJurisdictions(),
-                        containsInAnyOrder("jid1", "jid2"))
+                                 containsInAnyOrder("jid1", "jid2"))
         );
     }
 
     @Test
     @DisplayName("should extract user preferences")
-    void shouldExtractUserPreferences() throws Exception {
+    void shouldExtractUserPreferences() {
         final UserInfo userInfo = new CognitoUserInfoExtractor().extract(claims());
         final UserPreferences preferences = userInfo.getPreferences();
 
@@ -84,7 +79,7 @@ class CognitoUserInfoExtractorTest {
 
     @Test
     @DisplayName("should extract organisation profiles")
-    void shouldExtractOrganisationProfiles() throws Exception {
+    void shouldExtractOrganisationProfiles() {
         final UserInfo userInfo = new CognitoUserInfoExtractor().extract(claims());
 
         final Map<String, OrganisationProfile> profiles = userInfo.getOrganisationProfiles();
@@ -105,25 +100,17 @@ class CognitoUserInfoExtractorTest {
         );
     }
 
-    private Map<String, JsonNode> claims() throws Exception {
-        final Map<String, JsonNode> claims = new HashMap<>();
-        claims.put(SUB, getTextNode(USER_ID));
-        claims.put(NAME, getTextNode(USER_NAME));
-        claims.put(EMAIL, getTextNode(USER_EMAIL));
-        claims.put(APP_ROLES, getTextNode(USER_APP_ROLES));
-        claims.put(APP_JURISDICTIONS, getTextNode(USER_JURISDICTIONS));
-        claims.put(USER_DEFAULT_JURISDICTION, getTextNode(DEFAULT_JURISDICTION));
-        claims.put(USER_DEFAULT_CASE_TYPE, getTextNode(DEFAULT_CASE_TYPE));
-        claims.put(USER_DEFAULT_STATE, getTextNode(DEFAULT_STATE));
-        claims.put(APP_ORGANISATIONS, getJsonNode(USER_ORGANISATIONS));
+    private Map<String, Object> claims() {
+        final Map<String, Object> claims = new HashMap<>();
+        claims.put(SUB, USER_ID);
+        claims.put(NAME, USER_NAME);
+        claims.put(EMAIL, USER_EMAIL);
+        claims.put(APP_ROLES, USER_APP_ROLES);
+        claims.put(APP_JURISDICTIONS, USER_JURISDICTIONS);
+        claims.put(USER_DEFAULT_JURISDICTION, DEFAULT_JURISDICTION);
+        claims.put(USER_DEFAULT_CASE_TYPE, DEFAULT_CASE_TYPE);
+        claims.put(USER_DEFAULT_STATE, DEFAULT_STATE);
+        claims.put(APP_ORGANISATIONS, USER_ORGANISATIONS);
         return claims;
-    }
-
-    private JsonNode getTextNode(String value) {
-        return new TextNode(value);
-    }
-
-    private JsonNode getJsonNode(String value) throws JsonProcessingException {
-        return OBJECT_MAPPER.readTree(value);
     }
 }
