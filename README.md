@@ -1,5 +1,6 @@
 # QuickCase Spring Security
-[![Build Status](https://drone.nonprod.quickcase.app/api/badges/quickcase/quickcase-spring-security/status.svg)](https://drone.nonprod.quickcase.app/quickcase/quickcase-spring-security)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Build status](https://github.com/quickcase/quickcase-spring-security/workflows/Publish%20master/badge.svg)](https://github.com/quickcase/quickcase-spring-security/actions)
 
 Specialise Spring Security for needs of QuickCase APIs with implementations for the different IDAM providers supported.
 
