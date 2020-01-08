@@ -4,7 +4,9 @@ import app.quickcase.security.OrganisationProfile;
 import app.quickcase.security.UserInfo;
 import app.quickcase.security.UserPreferences;
 import app.quickcase.security.oidc.UserInfoExtractor;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -26,6 +28,7 @@ import static app.quickcase.security.utils.StringUtils.fromCommaSeparated;
 
 @Slf4j
 public class CognitoUserInfoExtractor implements UserInfoExtractor {
+    private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
     private static final OrganisationProfileParser ORG_PARSER = new OrganisationProfileParser();
 
     @Override
@@ -59,6 +62,18 @@ public class CognitoUserInfoExtractor implements UserInfoExtractor {
 
     private Map<String, OrganisationProfile> extractProfiles(Map<String, JsonNode> claims) {
         return Optional.ofNullable(claims.get(APP_ORGANISATIONS))
+                       .map(JsonNode::textValue)
+                       .flatMap(json -> {
+                           try {
+                               return Optional.of(JSON_MAPPER.readTree(json));
+                           } catch (JsonProcessingException e) {
+                               log.warn(
+                                       "Unable to parse organisation profiles JSON for user `{}`: {}",
+                                       claims.get(SUB),
+                                       json, e);
+                               return Optional.empty();
+                           }
+                       })
                        .map(ORG_PARSER::parse)
                        .orElse(Collections.emptyMap());
     }
