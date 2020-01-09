@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
+    <suppress>
+        <notes><![CDATA[
+            file name: spring-security-core-5.2.1.RELEASE.jar
+
+            This suppresses a false-positive identifying Spring 5.2.1 as 5.0.5 for a CVE related to the use
+            of method security. In addition, method security is not used in this project.
+            https://github.com/jeremylong/DependencyCheck/issues/1827
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.springframework\.security/spring-security-.*@5.2.1.RELEASE$</packageUrl>
+        <cve>CVE-2018-1258</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+            file name: nimbus-jose-jwt-7.8.jar
+
+            This requires upgrade of Spring Boot to version later than 2.2.2.RELEASE (when released), that uses spring
+            security 5.3.0 where nimbus-jose-jwt is upgraded to version 7.9 (this version fixes the CVE).
+        ]]></notes>
+        <cve>CVE-2019-17195</cve>
+    </suppress>
+</suppressions>
