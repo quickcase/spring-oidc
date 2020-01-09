@@ -8,12 +8,17 @@ wrapper {
 
 ext.libVersions = [
         junit: '5.5.2',
-        spring: '2.2.1.RELEASE'
+        spring: '2.2.2.RELEASE'
 ]
 
 allprojects {
     group = 'app.quickcase.security'
     version = '0.3.0-rc5'
+}
+
+dependencyCheck {
+    failBuildOnCVSS = 0
+    suppressionFile = 'dependency-check-suppressions.xml'
 }
 
 subprojects {
@@ -30,6 +35,9 @@ subprojects {
 
         // Jackson
         implementation 'com.fasterxml.jackson.core:jackson-databind:2.10.1'
+
+        // Fix CVE-2019-17195 (version 7.8 - transitive dependency used by spring security 5.2.1.RELEASE)
+        implementation 'com.nimbusds:nimbus-jose-jwt:7.9'
 
         // JUnit
         testImplementation "org.junit.jupiter:junit-jupiter-api:${libVersions['junit']}"
