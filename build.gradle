@@ -8,12 +8,17 @@ wrapper {
 
 ext.libVersions = [
         junit: '5.5.2',
-        spring: '2.2.1.RELEASE'
+        spring: '2.2.2.RELEASE'
 ]
 
 allprojects {
     group = 'app.quickcase.security'
     version = '0.3.0-rc5'
+}
+
+dependencyCheck {
+    failBuildOnCVSS = 0
+    suppressionFile = 'dependency-check-suppressions.xml'
 }
 
 subprojects {
