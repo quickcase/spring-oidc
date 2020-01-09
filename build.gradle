@@ -36,6 +36,9 @@ subprojects {
         // Jackson
         implementation 'com.fasterxml.jackson.core:jackson-databind:2.10.1'
 
+        // Fix CVE-2019-17195 (version 7.8 - transitive dependency used by spring security 5.2.1.RELEASE)
+        implementation 'com.nimbusds:nimbus-jose-jwt:7.9'
+
         // JUnit
         testImplementation "org.junit.jupiter:junit-jupiter-api:${libVersions['junit']}"
         testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${libVersions['junit']}"
