@@ -3,17 +3,18 @@ package app.quickcase.security.cognito.oidc;
 import app.quickcase.security.OrganisationProfile;
 import app.quickcase.security.UserInfo;
 import app.quickcase.security.UserPreferences;
+import app.quickcase.security.oidc.OidcException;
 import app.quickcase.security.oidc.UserInfoExtractor;
+import app.quickcase.security.utils.ClaimsParser;
+import app.quickcase.security.utils.StringUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 import static app.quickcase.security.cognito.CognitoClaims.APP_JURISDICTIONS;
 import static app.quickcase.security.cognito.CognitoClaims.APP_ORGANISATIONS;
@@ -24,7 +25,6 @@ import static app.quickcase.security.cognito.CognitoClaims.SUB;
 import static app.quickcase.security.cognito.CognitoClaims.USER_DEFAULT_CASE_TYPE;
 import static app.quickcase.security.cognito.CognitoClaims.USER_DEFAULT_JURISDICTION;
 import static app.quickcase.security.cognito.CognitoClaims.USER_DEFAULT_STATE;
-import static app.quickcase.security.utils.StringUtils.fromCommaSeparated;
 
 @Slf4j
 public class CognitoUserInfoExtractor implements UserInfoExtractor {
@@ -33,48 +33,57 @@ public class CognitoUserInfoExtractor implements UserInfoExtractor {
 
     @Override
     public UserInfo extract(Map<String, JsonNode> claims) {
-        return extractUserInfo(claims);
+        final ClaimsParser claimsParser = new ClaimsParser(claims);
+        final UserInfo.UserInfoBuilder builder = UserInfo.builder();
+
+        claimsParser.getString(SUB)
+                    .ifPresentOrElse(builder::id, () -> {
+                        throw new OidcException("Mandatory 'sub' claim missing");
+                    });
+
+        claimsParser.getString(EMAIL)
+                    .ifPresentOrElse(builder::email, () -> {
+                        throw new OidcException("Mandatory 'email' claim missing");
+                    });
+        claimsParser.getString(NAME).ifPresent(builder::name);
+
+        claimsParser.getString(APP_ROLES)
+                    .map(StringUtils::fromCommaSeparated)
+                    .ifPresent(builder::authorities);
+
+        claimsParser.getString(APP_JURISDICTIONS)
+                    .map(string -> string.split(","))
+                    .ifPresent(builder::jurisdictions);
+
+        return builder.preferences(extractPreferences(claimsParser))
+                      .organisationProfiles(extractProfiles(claimsParser))
+                      .build();
     }
 
-    public UserInfo extractUserInfo(Map<String, JsonNode> claims) {
-        Set<GrantedAuthority> authorities = fromCommaSeparated(claims.get(APP_ROLES).textValue());
-        return UserInfo.builder()
-                       .id(claims.get(SUB).textValue())
-                       .name(claims.get(NAME).textValue())
-                       .email(claims.get(EMAIL).textValue())
-                       .authorities(authorities)
-                       .jurisdictions(claims.get(APP_JURISDICTIONS).textValue().split(","))
-                       .preferences(extractPreferences(claims))
-                       .organisationProfiles(extractProfiles(claims))
-                       .build();
+    private UserPreferences extractPreferences(ClaimsParser claimsParser) {
+        final UserPreferences.UserPreferencesBuilder builder = UserPreferences.builder();
+
+        claimsParser.getString(USER_DEFAULT_JURISDICTION).ifPresent(builder::defaultJurisdiction);
+        claimsParser.getString(USER_DEFAULT_CASE_TYPE).ifPresent(builder::defaultCaseType);
+        claimsParser.getString(USER_DEFAULT_STATE).ifPresent(builder::defaultState);
+
+        return builder.build();
     }
 
-    private UserPreferences extractPreferences(Map<String, JsonNode> claims) {
-        return UserPreferences.builder()
-                              .defaultJurisdiction(
-                                      claims.get(USER_DEFAULT_JURISDICTION).textValue())
-                              .defaultCaseType(
-                                      claims.get(USER_DEFAULT_CASE_TYPE).textValue())
-                              .defaultState(
-                                      claims.get(USER_DEFAULT_STATE).textValue())
-                              .build();
-    }
-
-    private Map<String, OrganisationProfile> extractProfiles(Map<String, JsonNode> claims) {
-        return Optional.ofNullable(claims.get(APP_ORGANISATIONS))
-                       .map(JsonNode::textValue)
-                       .flatMap(json -> {
-                           try {
-                               return Optional.of(JSON_MAPPER.readTree(json));
-                           } catch (JsonProcessingException e) {
-                               log.warn(
-                                       "Unable to parse organisation profiles JSON for user `{}`: {}",
-                                       claims.get(SUB),
-                                       json, e);
-                               return Optional.empty();
-                           }
-                       })
-                       .map(ORG_PARSER::parse)
-                       .orElse(Collections.emptyMap());
+    private Map<String, OrganisationProfile> extractProfiles(ClaimsParser claimsParser) {
+        return claimsParser.getString(APP_ORGANISATIONS)
+                           .flatMap(json -> {
+                               try {
+                                   return Optional.of(JSON_MAPPER.readTree(json));
+                               } catch (JsonProcessingException e) {
+                                   log.warn(
+                                           "Unable to parse organisation profiles JSON for user `{}`: {}",
+                                           claimsParser.getString(SUB),
+                                           json, e);
+                                   return Optional.empty();
+                               }
+                           })
+                           .map(ORG_PARSER::parse)
+                           .orElse(Collections.emptyMap());
     }
 }
