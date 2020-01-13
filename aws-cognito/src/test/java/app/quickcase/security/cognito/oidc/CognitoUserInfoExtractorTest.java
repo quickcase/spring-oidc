@@ -3,6 +3,7 @@ package app.quickcase.security.cognito.oidc;
 import app.quickcase.security.OrganisationProfile;
 import app.quickcase.security.UserInfo;
 import app.quickcase.security.UserPreferences;
+import app.quickcase.security.oidc.OidcException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import org.junit.jupiter.api.DisplayName;
@@ -31,6 +32,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("CognitoUserInfoExtractor")
 class CognitoUserInfoExtractorTest {
@@ -102,6 +104,40 @@ class CognitoUserInfoExtractorTest {
         );
     }
 
+    @Test
+    @DisplayName("should expect most claims to be optional")
+    void shouldExpectClaimsToBeOptional() throws Exception {
+        final UserInfo userInfo = new CognitoUserInfoExtractor().extract(minimumClaims());
+
+        assertThat(userInfo, is(notNullValue()));
+        assertAll(
+                () -> assertThat(userInfo.getId(), equalTo(USER_ID)),
+                () -> assertThat(userInfo.getEmail(), equalTo(USER_EMAIL))
+        );
+    }
+
+    @Test
+    @DisplayName("should throw exception when `sub` claim missing")
+    void shouldThrowExceptionWhenNoSubClaim() throws Exception {
+        final Map<String, JsonNode> claims = minimumClaims();
+        claims.remove(SUB);
+
+        assertThrows(OidcException.class,
+                     () -> new CognitoUserInfoExtractor().extract(claims),
+                     "Mandatory 'sub' claim missing");
+    }
+
+    @Test
+    @DisplayName("should throw exception when `email` claim missing")
+    void shouldThrowExceptionWhenNoEmailClaim() throws Exception {
+        final Map<String, JsonNode> claims = minimumClaims();
+        claims.remove(EMAIL);
+
+        assertThrows(OidcException.class,
+                     () -> new CognitoUserInfoExtractor().extract(claims),
+                     "Mandatory 'email' claim missing");
+    }
+
     private Map<String, JsonNode> claims() throws Exception {
         final Map<String, JsonNode> claims = new HashMap<>();
         claims.put(SUB, getTextNode(USER_ID));
@@ -113,6 +149,13 @@ class CognitoUserInfoExtractorTest {
         claims.put(USER_DEFAULT_CASE_TYPE, getTextNode(DEFAULT_CASE_TYPE));
         claims.put(USER_DEFAULT_STATE, getTextNode(DEFAULT_STATE));
         claims.put(APP_ORGANISATIONS, getTextNode(USER_ORGANISATIONS));
+        return claims;
+    }
+
+    private Map<String, JsonNode> minimumClaims() throws Exception {
+        final Map<String, JsonNode> claims = new HashMap<>();
+        claims.put(SUB, getTextNode(USER_ID));
+        claims.put(EMAIL, getTextNode(USER_EMAIL));
         return claims;
     }
 
