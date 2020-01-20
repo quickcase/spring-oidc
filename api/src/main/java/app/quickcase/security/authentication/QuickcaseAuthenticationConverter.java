@@ -1,4 +1,4 @@
-package app.quickcase.security.cognito;
+package app.quickcase.security.authentication;
 
 import app.quickcase.security.OrganisationProfile;
 import app.quickcase.security.UserInfo;
@@ -16,12 +16,12 @@ import java.util.Set;
 import static app.quickcase.security.utils.StringUtils.authorities;
 import static app.quickcase.security.utils.StringUtils.fromSpaceSeparated;
 
-public class CognitoAuthenticationConverter implements Converter<Jwt, QuickcaseAuthentication> {
+public class QuickcaseAuthenticationConverter implements Converter<Jwt, QuickcaseAuthentication> {
     private static final String SCOPE_PROFILE = "profile";
 
     private final UserInfoService userInfoService;
 
-    public CognitoAuthenticationConverter(UserInfoService userInfoService) {
+    public QuickcaseAuthenticationConverter(UserInfoService userInfoService) {
         this.userInfoService = userInfoService;
     }
 
