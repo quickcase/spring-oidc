@@ -1,6 +1,6 @@
 package app.quickcase.security;
 
-import app.quickcase.security.cognito.CognitoAuthenticationConverter;
+import app.quickcase.security.authentication.QuickcaseAuthenticationConverter;
 import app.quickcase.security.cognito.CognitoQuickcaseSecurityDsl;
 import app.quickcase.security.cognito.oidc.CognitoUserInfoExtractor;
 import app.quickcase.security.oidc.DefaultUserInfoGateway;
@@ -45,12 +45,12 @@ public class QuickcaseSecurityConfig {
     }
 
     @Bean
-    public CognitoAuthenticationConverter createAuthenticationConverter(UserInfoService userInfoService) {
-        return new CognitoAuthenticationConverter(userInfoService);
+    public QuickcaseAuthenticationConverter createAuthenticationConverter(UserInfoService userInfoService) {
+        return new QuickcaseAuthenticationConverter(userInfoService);
     }
 
     @Bean
-    public QuickcaseSecurityDsl createSecurityDsl(CognitoAuthenticationConverter authenticationConverter) {
+    public QuickcaseSecurityDsl createSecurityDsl(QuickcaseAuthenticationConverter authenticationConverter) {
         return new CognitoQuickcaseSecurityDsl(authenticationConverter);
     }
 }

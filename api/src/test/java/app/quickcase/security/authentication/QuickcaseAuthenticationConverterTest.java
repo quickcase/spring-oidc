@@ -1,10 +1,7 @@
-package app.quickcase.security.cognito;
+package app.quickcase.security.authentication;
 
 import app.quickcase.security.OrganisationProfile;
 import app.quickcase.security.UserInfo;
-import app.quickcase.security.authentication.QuickcaseAuthentication;
-import app.quickcase.security.authentication.QuickcaseClientAuthentication;
-import app.quickcase.security.authentication.QuickcaseUserAuthentication;
 import app.quickcase.security.oidc.UserInfoService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,8 +23,8 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 
-@DisplayName("CognitoAuthenticationConverter")
-class CognitoAuthenticationConverterTest {
+@DisplayName("QuickcaseAuthenticationConverter")
+class QuickcaseAuthenticationConverterTest {
     private static final String ACCESS_TOKEN = "token123";
     private static final String CLIENT_ID = "clientId";
     private static final String SCOPE_1 = "scope-1";
@@ -39,7 +36,7 @@ class CognitoAuthenticationConverterTest {
     private static final String ROLE_1 = "role-1";
     private static final String ROLE_2 = "role-2";
 
-    private CognitoAuthenticationConverter converter;
+    private QuickcaseAuthenticationConverter converter;
 
     @BeforeEach
     void setUp() {
@@ -57,7 +54,7 @@ class CognitoAuthenticationConverterTest {
                                                                         .organisationProfile("org-a", orgA)
                                                                         .build();
 
-        converter = new CognitoAuthenticationConverter(userInfoService);
+        converter = new QuickcaseAuthenticationConverter(userInfoService);
     }
 
     @Nested
