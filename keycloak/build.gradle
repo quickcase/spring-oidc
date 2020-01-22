@@ -1,0 +1,11 @@
+plugins {
+    id 'io.freefair.lombok' version '4.1.4'
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    api project(':api')
+}

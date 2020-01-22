@@ -13,7 +13,10 @@ public class ClaimsParser {
     }
 
     public Optional<String> getString(String claim) {
-        return Optional.ofNullable(claims.get(claim))
-                       .map(JsonNode::textValue);
+        return getNode(claim).map(JsonNode::textValue);
+    }
+
+    public Optional<JsonNode> getNode(String claim) {
+        return Optional.ofNullable(claims.get(claim));
     }
 }
