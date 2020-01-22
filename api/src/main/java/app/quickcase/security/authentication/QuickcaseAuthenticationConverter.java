@@ -1,10 +1,7 @@
 package app.quickcase.security.authentication;
 
-import app.quickcase.security.OrganisationProfile;
+import app.quickcase.security.organisation.OrganisationProfile;
 import app.quickcase.security.UserInfo;
-import app.quickcase.security.authentication.QuickcaseAuthentication;
-import app.quickcase.security.authentication.QuickcaseClientAuthentication;
-import app.quickcase.security.authentication.QuickcaseUserAuthentication;
 import app.quickcase.security.oidc.UserInfoService;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.core.GrantedAuthority;

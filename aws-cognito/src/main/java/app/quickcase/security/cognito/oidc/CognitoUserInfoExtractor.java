@@ -1,10 +1,11 @@
 package app.quickcase.security.cognito.oidc;
 
-import app.quickcase.security.OrganisationProfile;
+import app.quickcase.security.organisation.OrganisationProfile;
 import app.quickcase.security.UserInfo;
 import app.quickcase.security.UserPreferences;
 import app.quickcase.security.oidc.OidcException;
 import app.quickcase.security.oidc.UserInfoExtractor;
+import app.quickcase.security.organisation.JsonOrganisationProfilesParser;
 import app.quickcase.security.utils.ClaimsParser;
 import app.quickcase.security.utils.StringUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -29,7 +30,7 @@ import static app.quickcase.security.cognito.CognitoClaims.USER_DEFAULT_STATE;
 @Slf4j
 public class CognitoUserInfoExtractor implements UserInfoExtractor {
     private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
-    private static final OrganisationProfileParser ORG_PARSER = new OrganisationProfileParser();
+    private static final JsonOrganisationProfilesParser ORG_PARSER = new JsonOrganisationProfilesParser();
 
     @Override
     public UserInfo extract(Map<String, JsonNode> claims) {

@@ -1,5 +1,7 @@
-package app.quickcase.security;
+package app.quickcase.security.organisation;
 
+import app.quickcase.security.AccessLevel;
+import app.quickcase.security.SecurityClassification;
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;

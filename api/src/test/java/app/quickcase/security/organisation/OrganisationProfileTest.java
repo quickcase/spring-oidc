@@ -1,5 +1,6 @@
-package app.quickcase.security;
+package app.quickcase.security.organisation;
 
+import app.quickcase.security.organisation.OrganisationProfile;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
