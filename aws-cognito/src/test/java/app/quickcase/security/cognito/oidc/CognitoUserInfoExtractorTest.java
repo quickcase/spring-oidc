@@ -1,6 +1,6 @@
 package app.quickcase.security.cognito.oidc;
 
-import app.quickcase.security.OrganisationProfile;
+import app.quickcase.security.organisation.OrganisationProfile;
 import app.quickcase.security.UserInfo;
 import app.quickcase.security.UserPreferences;
 import app.quickcase.security.oidc.OidcException;

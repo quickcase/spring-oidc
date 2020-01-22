@@ -1,7 +1,6 @@
-package app.quickcase.security.cognito.oidc;
+package app.quickcase.security.organisation;
 
 import app.quickcase.security.AccessLevel;
-import app.quickcase.security.OrganisationProfile;
 import app.quickcase.security.SecurityClassification;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
@@ -24,11 +23,12 @@ import java.util.Optional;
  * </pre>
  */
 @Slf4j
-public class OrganisationProfileParser {
+public class JsonOrganisationProfilesParser implements OrganisationProfilesParser<JsonNode> {
     private static final String NODE_ACCESS = "access";
     private static final String NODE_CLASSIFICATION = "classification";
     private static final String NODE_GROUP = "group";
 
+    @Override
     public Map<String, OrganisationProfile> parse(JsonNode tree) {
         if (tree == null || !tree.isObject()) {
             log.warn("Failed to parse organisations: expected object but was {}", tree);

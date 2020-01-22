@@ -1,6 +1,6 @@
 package app.quickcase.security.authentication;
 
-import app.quickcase.security.OrganisationProfile;
+import app.quickcase.security.organisation.OrganisationProfile;
 import app.quickcase.security.UserInfo;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;

@@ -1,5 +1,6 @@
 package app.quickcase.security;
 
+import app.quickcase.security.organisation.OrganisationProfile;
 import lombok.Builder;
 import lombok.ToString;
 import lombok.Value;
