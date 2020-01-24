@@ -8,7 +8,7 @@ wrapper {
 
 ext.libVersions = [
         junit: '5.5.2',
-        spring: '2.2.2.RELEASE'
+        spring: '2.2.4.RELEASE'
 ]
 
 allprojects {
