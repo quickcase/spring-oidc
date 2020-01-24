@@ -13,7 +13,7 @@ ext.libVersions = [
 
 allprojects {
     group = 'app.quickcase.security'
-    version = '0.3.0-rc7'
+    version = '0.3.0-rc8'
 }
 
 dependencyCheck {
