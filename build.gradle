@@ -39,6 +39,9 @@ subprojects {
         // Fix CVE-2019-17195 (version 7.8 - transitive dependency used by spring security 5.2.1.RELEASE)
         implementation 'com.nimbusds:nimbus-jose-jwt:7.9'
 
+        //CVE-2020-9488 - upgrade log4j-to-slf4j (transitive dependency for spring 5.2.1)
+        implementation group: 'org.apache.logging.log4j', name: 'log4j-to-slf4j', version: '2.13.2'
+
         // JUnit
         testImplementation "org.junit.jupiter:junit-jupiter-api:${libVersions['junit']}"
         testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${libVersions['junit']}"
