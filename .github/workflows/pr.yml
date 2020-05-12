@@ -70,7 +70,7 @@ jobs:
       - uses: actions/cache@v1
         with:
           path: ~/.gradle/dependency-check-data
-          key: ${{ runner.os }}-dep_check-${{ hashFiles('**/*.gradle') }}
+          key: ${{ runner.os }}-dep_check-${{ github.run_id }}
           restore-keys: |
             ${{ runner.os }}-dep_check-
       - uses: actions/cache@v1
