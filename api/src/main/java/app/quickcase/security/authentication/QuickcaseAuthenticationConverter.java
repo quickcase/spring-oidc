@@ -14,19 +14,25 @@ import static app.quickcase.security.utils.StringUtils.authorities;
 import static app.quickcase.security.utils.StringUtils.fromSpaceSeparated;
 
 public class QuickcaseAuthenticationConverter implements Converter<Jwt, QuickcaseAuthentication> {
-    private static final String SCOPE_PROFILE = "profile";
+    private static final String DEFAULT_PROFILE_SCOPE = "profile";
 
     private final UserInfoService userInfoService;
+    private String profileScope;
 
     public QuickcaseAuthenticationConverter(UserInfoService userInfoService) {
+        this(userInfoService, DEFAULT_PROFILE_SCOPE);
+    }
+
+    public QuickcaseAuthenticationConverter(UserInfoService userInfoService, String profileScope) {
         this.userInfoService = userInfoService;
+        this.profileScope = profileScope;
     }
 
     @Override
     public QuickcaseAuthentication convert(Jwt source) {
         final Set<String> scopes = fromSpaceSeparated(source.getClaimAsString("scope"));
 
-        if (scopes.contains(SCOPE_PROFILE)) {
+        if (scopes.contains(profileScope)) {
             return userAuthentication(source);
         }
 

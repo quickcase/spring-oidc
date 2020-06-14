@@ -45,8 +45,11 @@ public class QuickcaseSecurityConfig {
     }
 
     @Bean
-    public QuickcaseAuthenticationConverter createAuthenticationConverter(UserInfoService userInfoService) {
-        return new QuickcaseAuthenticationConverter(userInfoService);
+    public QuickcaseAuthenticationConverter createAuthenticationConverter(
+            UserInfoService userInfoService,
+            @Value("${quickcase.security.oidc.profile-scope:profile}") String profileScope
+    ) {
+        return new QuickcaseAuthenticationConverter(userInfoService, profileScope);
     }
 
     @Bean
