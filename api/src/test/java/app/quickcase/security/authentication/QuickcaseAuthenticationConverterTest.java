@@ -36,6 +36,7 @@ class QuickcaseAuthenticationConverterTest {
     private static final String ROLE_1 = "role-1";
     private static final String ROLE_2 = "role-2";
 
+    private UserInfoService userInfoServiceStub;
     private QuickcaseAuthenticationConverter converter;
 
     @BeforeEach
@@ -45,16 +46,16 @@ class QuickcaseAuthenticationConverterTest {
                                                             .securityClassification(PRIVATE)
                                                             .group("org-a-group")
                                                             .build();
-        final UserInfoService userInfoService = (sub, token) -> UserInfo.builder()
-                                                                        .id(sub)
-                                                                        .name(USER_NAME)
-                                                                        .email(USER_EMAIL)
-                                                                        .authorities(ROLE_1, ROLE_2)
-                                                                        .jurisdictions(JURISDICTION)
-                                                                        .organisationProfile("org-a", orgA)
-                                                                        .build();
+        userInfoServiceStub = (sub, token) -> UserInfo.builder()
+                                                      .id(sub)
+                                                      .name(USER_NAME)
+                                                      .email(USER_EMAIL)
+                                                      .authorities(ROLE_1, ROLE_2)
+                                                      .jurisdictions(JURISDICTION)
+                                                      .organisationProfile("org-a", orgA)
+                                                      .build();
 
-        converter = new QuickcaseAuthenticationConverter(userInfoService);
+        converter = new QuickcaseAuthenticationConverter(userInfoServiceStub);
     }
 
     @Nested
@@ -111,10 +112,14 @@ class QuickcaseAuthenticationConverterTest {
     class WhenUserCredentials {
 
         private QuickcaseAuthentication userAuthentication() {
+            return userAuthentication("profile");
+        }
+
+        private QuickcaseAuthentication userAuthentication(String profileScope) {
             final Jwt jwt = Jwt.withTokenValue(ACCESS_TOKEN)
                                .header("alg", "HS256")
                                .claim("sub", USER_ID)
-                               .claim("scope", scopes("profile", SCOPE_2))
+                               .claim("scope", scopes(profileScope, SCOPE_2))
                                .claim("client_id", CLIENT_ID)
                                .build();
 
@@ -192,6 +197,16 @@ class QuickcaseAuthenticationConverterTest {
                     () -> assertThat(profile.getSecurityClassification(), is(PRIVATE)),
                     () -> assertThat(profile.getGroup().orElse("N/A"), equalTo("org-a-group"))
             );
+        }
+
+        @Test
+        @DisplayName("should accept custom scope for user profile")
+        void shouldAcceptCustomProfileScope() {
+            converter = new QuickcaseAuthenticationConverter(userInfoServiceStub, "custom-profile");
+
+            final QuickcaseAuthentication authentication = userAuthentication("custom-profile");
+
+            assertThat(authentication, instanceOf(QuickcaseUserAuthentication.class));
         }
     }
 
