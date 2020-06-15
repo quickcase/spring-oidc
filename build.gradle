@@ -41,7 +41,7 @@ subprojects {
         testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${libVersions['junit']}"
 
         // Hamcrest
-        testImplementation "org.hamcrest:hamcrest:2.1"
+        testImplementation "org.hamcrest:hamcrest:2.2"
 
         // Mockito
         testImplementation 'org.mockito:mockito-core:3.1.0'
