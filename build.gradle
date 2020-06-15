@@ -7,7 +7,7 @@ wrapper {
 }
 
 ext.libVersions = [
-        junit: '5.5.2',
+        junit: '5.6.2',
         spring: '2.3.1.RELEASE'
 ]
 
