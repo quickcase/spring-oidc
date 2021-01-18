@@ -2,7 +2,7 @@ package app.quickcase.spring.oidc.authentication;
 
 import app.quickcase.spring.oidc.organisation.OrganisationProfile;
 import app.quickcase.spring.oidc.SecurityClassification;
-import app.quickcase.spring.oidc.UserInfo;
+import app.quickcase.spring.oidc.userinfo.UserInfo;
 import app.quickcase.spring.oidc.utils.StringUtils;
 import app.quickcase.spring.oidc.AccessLevel;
 import org.hamcrest.Matchers;

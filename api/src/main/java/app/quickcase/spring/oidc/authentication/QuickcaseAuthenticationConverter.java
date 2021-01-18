@@ -1,8 +1,8 @@
 package app.quickcase.spring.oidc.authentication;
 
 import app.quickcase.spring.oidc.organisation.OrganisationProfile;
-import app.quickcase.spring.oidc.UserInfo;
-import app.quickcase.spring.oidc.oidc.UserInfoService;
+import app.quickcase.spring.oidc.userinfo.UserInfo;
+import app.quickcase.spring.oidc.userinfo.UserInfoService;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;

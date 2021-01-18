@@ -1,9 +1,9 @@
 package app.quickcase.spring.oidc.keycloak.oidc;
 
 import app.quickcase.spring.oidc.organisation.OrganisationProfile;
-import app.quickcase.spring.oidc.UserInfo;
-import app.quickcase.spring.oidc.UserPreferences;
-import app.quickcase.spring.oidc.oidc.OidcException;
+import app.quickcase.spring.oidc.userinfo.UserInfo;
+import app.quickcase.spring.oidc.userinfo.UserPreferences;
+import app.quickcase.spring.oidc.OidcException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

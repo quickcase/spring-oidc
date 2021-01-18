@@ -1,4 +1,4 @@
-package app.quickcase.spring.oidc.oidc;
+package app.quickcase.spring.oidc.userinfo;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

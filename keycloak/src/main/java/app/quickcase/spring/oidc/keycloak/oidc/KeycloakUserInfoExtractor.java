@@ -1,9 +1,9 @@
 package app.quickcase.spring.oidc.keycloak.oidc;
 
-import app.quickcase.spring.oidc.UserInfo;
-import app.quickcase.spring.oidc.UserPreferences;
-import app.quickcase.spring.oidc.oidc.OidcException;
-import app.quickcase.spring.oidc.oidc.UserInfoExtractor;
+import app.quickcase.spring.oidc.userinfo.UserInfo;
+import app.quickcase.spring.oidc.userinfo.UserPreferences;
+import app.quickcase.spring.oidc.OidcException;
+import app.quickcase.spring.oidc.userinfo.UserInfoExtractor;
 import app.quickcase.spring.oidc.organisation.JsonOrganisationProfilesParser;
 import app.quickcase.spring.oidc.organisation.OrganisationProfile;
 import app.quickcase.spring.oidc.utils.ClaimsParser;

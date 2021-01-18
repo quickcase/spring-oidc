@@ -1,5 +1,6 @@
 package app.quickcase.spring.oidc;
 
+import app.quickcase.spring.oidc.userinfo.UserInfo;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 
 /**
