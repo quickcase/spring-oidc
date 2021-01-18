@@ -1,8 +1,6 @@
-package app.quickcase.spring.oidc.keycloak.oidc;
+package app.quickcase.spring.oidc.userinfo;
 
 import app.quickcase.spring.oidc.organisation.OrganisationProfile;
-import app.quickcase.spring.oidc.userinfo.UserInfo;
-import app.quickcase.spring.oidc.userinfo.UserPreferences;
 import app.quickcase.spring.oidc.OidcException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -19,15 +17,15 @@ import static app.quickcase.spring.oidc.AccessLevel.GROUP;
 import static app.quickcase.spring.oidc.AccessLevel.ORGANISATION;
 import static app.quickcase.spring.oidc.SecurityClassification.PRIVATE;
 import static app.quickcase.spring.oidc.SecurityClassification.PUBLIC;
-import static app.quickcase.spring.oidc.keycloak.KeycloakClaims.APP_JURISDICTIONS;
-import static app.quickcase.spring.oidc.keycloak.KeycloakClaims.APP_ORGANISATIONS;
-import static app.quickcase.spring.oidc.keycloak.KeycloakClaims.APP_ROLES;
-import static app.quickcase.spring.oidc.keycloak.KeycloakClaims.EMAIL;
-import static app.quickcase.spring.oidc.keycloak.KeycloakClaims.NAME;
-import static app.quickcase.spring.oidc.keycloak.KeycloakClaims.SUB;
-import static app.quickcase.spring.oidc.keycloak.KeycloakClaims.USER_DEFAULT_CASE_TYPE;
-import static app.quickcase.spring.oidc.keycloak.KeycloakClaims.USER_DEFAULT_JURISDICTION;
-import static app.quickcase.spring.oidc.keycloak.KeycloakClaims.USER_DEFAULT_STATE;
+import static app.quickcase.spring.oidc.DefaultClaims.APP_JURISDICTIONS;
+import static app.quickcase.spring.oidc.DefaultClaims.APP_ORGANISATIONS;
+import static app.quickcase.spring.oidc.DefaultClaims.APP_ROLES;
+import static app.quickcase.spring.oidc.DefaultClaims.EMAIL;
+import static app.quickcase.spring.oidc.DefaultClaims.NAME;
+import static app.quickcase.spring.oidc.DefaultClaims.SUB;
+import static app.quickcase.spring.oidc.DefaultClaims.USER_DEFAULT_CASE_TYPE;
+import static app.quickcase.spring.oidc.DefaultClaims.USER_DEFAULT_JURISDICTION;
+import static app.quickcase.spring.oidc.DefaultClaims.USER_DEFAULT_STATE;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
@@ -36,8 +34,8 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName("KeycloakUserInfoExtractor")
-class KeycloakUserInfoExtractorTest {
+@DisplayName("DefaultUserInfoExtractor")
+class DefaultUserInfoExtractorTest {
     private static final ObjectMapper MAPPER = new ObjectMapper();
     private static final String USER_APP_ROLES = "role1,role2";
     private static final String USER_ID = "eec55037-bac7-46b4-9849-f063e627e4f3";
@@ -63,7 +61,7 @@ class KeycloakUserInfoExtractorTest {
     @Test
     @DisplayName("should extract userInfo from claims")
     void shouldExtractUserInfo() throws Exception {
-        final UserInfo userInfo = new KeycloakUserInfoExtractor().extract(claims());
+        final UserInfo userInfo = new DefaultUserInfoExtractor().extract(claims());
 
         assertThat(userInfo, is(notNullValue()));
         assertAll(
@@ -82,7 +80,7 @@ class KeycloakUserInfoExtractorTest {
     @Test
     @DisplayName("should extract user preferences")
     void shouldExtractUserPreferences() throws Exception {
-        final UserInfo userInfo = new KeycloakUserInfoExtractor().extract(claims());
+        final UserInfo userInfo = new DefaultUserInfoExtractor().extract(claims());
         final UserPreferences preferences = userInfo.getPreferences();
 
         assertAll(
@@ -95,7 +93,7 @@ class KeycloakUserInfoExtractorTest {
     @Test
     @DisplayName("should extract organisation profiles")
     void shouldExtractOrganisationProfiles() throws Exception {
-        final UserInfo userInfo = new KeycloakUserInfoExtractor().extract(claims());
+        final UserInfo userInfo = new DefaultUserInfoExtractor().extract(claims());
 
         final Map<String, OrganisationProfile> profiles = userInfo.getOrganisationProfiles();
         assertThat(profiles.size(), is(2));
@@ -118,7 +116,7 @@ class KeycloakUserInfoExtractorTest {
     @Test
     @DisplayName("should expect most claims to be optional")
     void shouldExpectClaimsToBeOptional() throws Exception {
-        final UserInfo userInfo = new KeycloakUserInfoExtractor().extract(minimumClaims());
+        final UserInfo userInfo = new DefaultUserInfoExtractor().extract(minimumClaims());
 
         assertThat(userInfo, is(notNullValue()));
         assertAll(
@@ -134,7 +132,7 @@ class KeycloakUserInfoExtractorTest {
         claims.remove(SUB);
 
         assertThrows(OidcException.class,
-                     () -> new KeycloakUserInfoExtractor().extract(claims),
+                     () -> new DefaultUserInfoExtractor().extract(claims),
                      "Mandatory 'sub' claim missing");
     }
 
@@ -145,7 +143,7 @@ class KeycloakUserInfoExtractorTest {
         claims.remove(EMAIL);
 
         assertThrows(OidcException.class,
-                     () -> new KeycloakUserInfoExtractor().extract(claims),
+                     () -> new DefaultUserInfoExtractor().extract(claims),
                      "Mandatory 'email' claim missing");
     }
 

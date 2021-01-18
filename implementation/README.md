@@ -1,6 +1,6 @@
-# quickcase-spring-security / keycloak
+# spring-oidc standard implementation
 
-Integration of Quickcase with KeyCloak for Identity and Access Management.
+Configuration-driven, generic implementation of OIDC for QuickCase, compatible with most OIDC providers.
 
 ## How to use
 
@@ -9,12 +9,12 @@ Integration of Quickcase with KeyCloak for Identity and Access Management.
 #### 1. Add dependency
 
 ```groovy
-implementation 'app.quickcase.security:keycloak:<version>'
+implementation 'app.quickcase.spring:oidc:<version>'
 ```
 
 #### 2. Import security configuration
 
-The module `keycloak` for `quickcase-spring-security` provides a pre-configured `QuickcaseSecurityConfig` which can be
+This module provides a pre-configured `QuickcaseSecurityConfig` which can be
 directly imported on the `WebSecurityConfigurerAdapter` as in example below:
 
 ```java
@@ -26,7 +26,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 }
 ```
 
-The `QuickcaseSecurityConfig` creates all the Spring beans needed to support use of Quickcase Security.
+The `QuickcaseSecurityConfig` creates all the Spring beans needed to support the use of OIDC for QuickCase with Spring Security.
 
 #### 3. Wire Quickcase DSL
 
@@ -56,7 +56,7 @@ In the `WebSecurityConfigurerAdapter`, override the `configure(HttpSecurity http
 #### 5. Add required application properties
 
 Must be configured:
-* `quickcase.security.oidc.user-info-uri`: KeyCloak's `/auth/realms/<REALM_ID>/protocol/openid-connect/userinfo` endpoint for the pool
-* `spring.security.oauth2.resourceserver.jwt.jwk-set-uri`: KeyCloak's `/auth/realms/<REALM_ID>/protocol/openid-connect/certs` endpoint for the pool
+* `quickcase.security.oidc.user-info-uri`: Absolute URL to the user info endpoint exposed by the OIDC provider
+* `spring.security.oauth2.resourceserver.jwt.jwk-set-uri`: Absolute URL to the well-known JWK configuration endpoint exposed by the OIDC provider
 
 

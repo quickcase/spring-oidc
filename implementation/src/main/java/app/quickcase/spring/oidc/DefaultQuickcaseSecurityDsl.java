@@ -1,14 +1,13 @@
-package app.quickcase.spring.oidc.keycloak;
+package app.quickcase.spring.oidc;
 
-import app.quickcase.spring.oidc.QuickcaseSecurityDsl;
 import app.quickcase.spring.oidc.authentication.QuickcaseAuthenticationConverter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 
-public class KeycloakQuickcaseSecurityDsl implements QuickcaseSecurityDsl {
+public class DefaultQuickcaseSecurityDsl implements QuickcaseSecurityDsl {
 
     private final QuickcaseAuthenticationConverter authenticationConverter;
 
-    public KeycloakQuickcaseSecurityDsl(QuickcaseAuthenticationConverter authenticationConverter) {
+    public DefaultQuickcaseSecurityDsl(QuickcaseAuthenticationConverter authenticationConverter) {
         this.authenticationConverter = authenticationConverter;
     }
 

@@ -1,6 +1,6 @@
-package app.quickcase.spring.oidc.keycloak;
+package app.quickcase.spring.oidc;
 
-public interface KeycloakClaims {
+public interface DefaultClaims {
     String SUB = "sub";
     String NAME = "name";
     String EMAIL = "email";
