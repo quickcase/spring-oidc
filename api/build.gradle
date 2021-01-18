@@ -5,3 +5,11 @@ plugins {
 repositories {
     jcenter()
 }
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = 'oidc-api'
+        }
+    }
+}
