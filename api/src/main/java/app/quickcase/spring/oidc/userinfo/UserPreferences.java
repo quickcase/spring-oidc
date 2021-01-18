@@ -1,4 +1,4 @@
-package app.quickcase.spring.oidc;
+package app.quickcase.spring.oidc.userinfo;
 
 import lombok.Builder;
 import lombok.Value;

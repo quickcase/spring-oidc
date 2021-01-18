@@ -1,7 +1,7 @@
 package app.quickcase.spring.oidc.authentication;
 
 import app.quickcase.spring.oidc.organisation.OrganisationProfile;
-import app.quickcase.spring.oidc.UserInfo;
+import app.quickcase.spring.oidc.userinfo.UserInfo;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 

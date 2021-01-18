@@ -1,4 +1,4 @@
-package app.quickcase.spring.oidc.oidc;
+package app.quickcase.spring.oidc.userinfo;
 
 import java.util.Map;
 

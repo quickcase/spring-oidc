@@ -1,5 +1,6 @@
-package app.quickcase.spring.oidc;
+package app.quickcase.spring.oidc.userinfo;
 
+import app.quickcase.spring.oidc.UserAuthenticationToken;
 import app.quickcase.spring.oidc.organisation.OrganisationProfile;
 import lombok.Builder;
 import lombok.ToString;

@@ -1,6 +1,6 @@
-package app.quickcase.spring.oidc.oidc;
+package app.quickcase.spring.oidc.userinfo;
 
-import app.quickcase.spring.oidc.UserInfo;
+import app.quickcase.spring.oidc.OidcException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import org.junit.jupiter.api.DisplayName;
