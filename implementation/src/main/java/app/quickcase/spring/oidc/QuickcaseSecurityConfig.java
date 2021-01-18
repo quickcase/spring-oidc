@@ -1,13 +1,7 @@
 package app.quickcase.spring.oidc;
 
 import app.quickcase.spring.oidc.authentication.QuickcaseAuthenticationConverter;
-import app.quickcase.spring.oidc.keycloak.KeycloakQuickcaseSecurityDsl;
-import app.quickcase.spring.oidc.keycloak.oidc.KeycloakUserInfoExtractor;
-import app.quickcase.spring.oidc.userinfo.DefaultUserInfoGateway;
-import app.quickcase.spring.oidc.userinfo.DefaultUserInfoService;
-import app.quickcase.spring.oidc.userinfo.UserInfoExtractor;
-import app.quickcase.spring.oidc.userinfo.UserInfoGateway;
-import app.quickcase.spring.oidc.userinfo.UserInfoService;
+import app.quickcase.spring.oidc.userinfo.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -18,8 +12,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 /**
- * Configuration to import in Spring application to auto-configure Spring Security to work with AWS
- * KeyCloak.
+ * Configuration to import in Spring application to auto-configure Spring Security to work with a QuickCase-compliant
+ * OIDC provider.
  * This configuration relies on both properties `security.oauth2.resource.jwk.key-set-uri` and
  * `security.oauth2.resource.user-info-uri` being defined in Spring application.
  *
@@ -36,7 +30,7 @@ public class QuickcaseSecurityConfig {
 
     @Bean
     public UserInfoExtractor createUserInfoExtractor() {
-        return new KeycloakUserInfoExtractor();
+        return new DefaultUserInfoExtractor();
     }
 
     @Bean
@@ -54,6 +48,6 @@ public class QuickcaseSecurityConfig {
 
     @Bean
     public QuickcaseSecurityDsl createSecurityDsl(QuickcaseAuthenticationConverter authenticationConverter) {
-        return new KeycloakQuickcaseSecurityDsl(authenticationConverter);
+        return new DefaultQuickcaseSecurityDsl(authenticationConverter);
     }
 }

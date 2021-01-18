@@ -1,9 +1,6 @@
-package app.quickcase.spring.oidc.keycloak.oidc;
+package app.quickcase.spring.oidc.userinfo;
 
-import app.quickcase.spring.oidc.userinfo.UserInfo;
-import app.quickcase.spring.oidc.userinfo.UserPreferences;
 import app.quickcase.spring.oidc.OidcException;
-import app.quickcase.spring.oidc.userinfo.UserInfoExtractor;
 import app.quickcase.spring.oidc.organisation.JsonOrganisationProfilesParser;
 import app.quickcase.spring.oidc.organisation.OrganisationProfile;
 import app.quickcase.spring.oidc.utils.ClaimsParser;
@@ -14,18 +11,18 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.Collections;
 import java.util.Map;
 
-import static app.quickcase.spring.oidc.keycloak.KeycloakClaims.APP_JURISDICTIONS;
-import static app.quickcase.spring.oidc.keycloak.KeycloakClaims.APP_ORGANISATIONS;
-import static app.quickcase.spring.oidc.keycloak.KeycloakClaims.APP_ROLES;
-import static app.quickcase.spring.oidc.keycloak.KeycloakClaims.EMAIL;
-import static app.quickcase.spring.oidc.keycloak.KeycloakClaims.NAME;
-import static app.quickcase.spring.oidc.keycloak.KeycloakClaims.SUB;
-import static app.quickcase.spring.oidc.keycloak.KeycloakClaims.USER_DEFAULT_CASE_TYPE;
-import static app.quickcase.spring.oidc.keycloak.KeycloakClaims.USER_DEFAULT_JURISDICTION;
-import static app.quickcase.spring.oidc.keycloak.KeycloakClaims.USER_DEFAULT_STATE;
+import static app.quickcase.spring.oidc.DefaultClaims.APP_JURISDICTIONS;
+import static app.quickcase.spring.oidc.DefaultClaims.APP_ORGANISATIONS;
+import static app.quickcase.spring.oidc.DefaultClaims.APP_ROLES;
+import static app.quickcase.spring.oidc.DefaultClaims.EMAIL;
+import static app.quickcase.spring.oidc.DefaultClaims.NAME;
+import static app.quickcase.spring.oidc.DefaultClaims.SUB;
+import static app.quickcase.spring.oidc.DefaultClaims.USER_DEFAULT_CASE_TYPE;
+import static app.quickcase.spring.oidc.DefaultClaims.USER_DEFAULT_JURISDICTION;
+import static app.quickcase.spring.oidc.DefaultClaims.USER_DEFAULT_STATE;
 
 @Slf4j
-public class KeycloakUserInfoExtractor implements UserInfoExtractor {
+public class DefaultUserInfoExtractor implements UserInfoExtractor {
     private static final JsonOrganisationProfilesParser ORG_PARSER = new JsonOrganisationProfilesParser();
 
     @Override

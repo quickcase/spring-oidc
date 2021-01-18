@@ -9,3 +9,11 @@ repositories {
 dependencies {
     api project(':api')
 }
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = 'oidc'
+        }
+    }
+}
