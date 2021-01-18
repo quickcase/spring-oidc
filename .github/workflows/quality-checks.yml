@@ -1,5 +1,9 @@
-name: PR
-on: pull_request
+name: Quality checks
+on:
+  push:
+    branches:
+      - main
+  pull_request:
 env:
   GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
   GITHUB_PACKAGE_TOKEN: ${{ secrets.GITHUB_PACKAGE_TOKEN }}
@@ -10,7 +14,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Notify slack starting
-        if: success()
+        if: github.ref == 'refs/heads/main'
         id: slack
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}

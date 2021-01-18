@@ -1,6 +1,6 @@
 # spring-oidc
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Build status](https://github.com/quickcase/quickcase-spring-security/workflows/Check%20master/badge.svg)](https://github.com/quickcase/quickcase-spring-security/actions)
+[![Build status](https://github.com/quickcase/spring-oidc/workflows/Quality%20checks/badge.svg)](https://github.com/quickcase/spring-oidc/actions)
 
 Specialise Spring Security for needs of QuickCase APIs with implementations for the different OIDC providers supported.
 
