@@ -18,11 +18,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import java.util.Arrays;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 
 @DisplayName("QuickcaseAuthenticationConverter")
 class QuickcaseAuthenticationConverterTest {
@@ -33,7 +29,6 @@ class QuickcaseAuthenticationConverterTest {
     private static final String USER_ID = "user-456";
     private static final String USER_NAME = "Johnny Walker";
     private static final String USER_EMAIL = "jw@quickcase.app";
-    private static final String JURISDICTION = "juris-1";
     private static final String ROLE_1 = "role-1";
     private static final String ROLE_2 = "role-2";
 
@@ -52,7 +47,6 @@ class QuickcaseAuthenticationConverterTest {
                                                       .name(USER_NAME)
                                                       .email(USER_EMAIL)
                                                       .authorities(ROLE_1, ROLE_2)
-                                                      .jurisdictions(JURISDICTION)
                                                       .organisationProfile("org-a", orgA)
                                                       .build();
 
@@ -158,7 +152,7 @@ class QuickcaseAuthenticationConverterTest {
 
             assertThat(authentication.getUserInfo()
                                      .get()
-                                     .getJurisdictions(), contains(JURISDICTION));
+                                     .getOrganisationProfiles(), aMapWithSize(1));
         }
 
         @Test

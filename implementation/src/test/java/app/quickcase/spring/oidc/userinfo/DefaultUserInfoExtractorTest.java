@@ -17,7 +17,6 @@ import static app.quickcase.spring.oidc.AccessLevel.GROUP;
 import static app.quickcase.spring.oidc.AccessLevel.ORGANISATION;
 import static app.quickcase.spring.oidc.SecurityClassification.PRIVATE;
 import static app.quickcase.spring.oidc.SecurityClassification.PUBLIC;
-import static app.quickcase.spring.oidc.DefaultClaims.APP_JURISDICTIONS;
 import static app.quickcase.spring.oidc.DefaultClaims.APP_ORGANISATIONS;
 import static app.quickcase.spring.oidc.DefaultClaims.APP_ROLES;
 import static app.quickcase.spring.oidc.DefaultClaims.EMAIL;
@@ -41,7 +40,6 @@ class DefaultUserInfoExtractorTest {
     private static final String USER_ID = "eec55037-bac7-46b4-9849-f063e627e4f3";
     private static final String USER_NAME = "Test User";
     private static final String USER_EMAIL = "test@quickcase.app";
-    private static final String USER_JURISDICTIONS = "jid1,jid2";
     private static final String DEFAULT_JURISDICTION = "jid1";
     private static final String DEFAULT_CASE_TYPE = "ct1";
     private static final String DEFAULT_STATE = "stateA";
@@ -73,7 +71,7 @@ class DefaultUserInfoExtractorTest {
                         new SimpleGrantedAuthority("role2")
                 )),
                 () -> assertThat(userInfo.getJurisdictions(),
-                        containsInAnyOrder("jid1", "jid2"))
+                        containsInAnyOrder("org-1", "org-2"))
         );
     }
 
@@ -153,7 +151,6 @@ class DefaultUserInfoExtractorTest {
         claims.put(NAME, getTextNode(USER_NAME));
         claims.put(EMAIL, getTextNode(USER_EMAIL));
         claims.put(APP_ROLES, getTextNode(USER_APP_ROLES));
-        claims.put(APP_JURISDICTIONS, getTextNode(USER_JURISDICTIONS));
         claims.put(USER_DEFAULT_JURISDICTION, getTextNode(DEFAULT_JURISDICTION));
         claims.put(USER_DEFAULT_CASE_TYPE, getTextNode(DEFAULT_CASE_TYPE));
         claims.put(USER_DEFAULT_STATE, getTextNode(DEFAULT_STATE));
