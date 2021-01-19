@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.Collections;
 import java.util.Map;
 
-import static app.quickcase.spring.oidc.DefaultClaims.APP_JURISDICTIONS;
 import static app.quickcase.spring.oidc.DefaultClaims.APP_ORGANISATIONS;
 import static app.quickcase.spring.oidc.DefaultClaims.APP_ROLES;
 import static app.quickcase.spring.oidc.DefaultClaims.EMAIL;
@@ -44,10 +43,6 @@ public class DefaultUserInfoExtractor implements UserInfoExtractor {
         claimsParser.getString(APP_ROLES)
                     .map(StringUtils::fromCommaSeparated)
                     .ifPresent(builder::authorities);
-
-        claimsParser.getString(APP_JURISDICTIONS)
-                    .map(string -> string.split(","))
-                    .ifPresent(builder::jurisdictions);
 
         return builder.preferences(extractPreferences(claimsParser))
                       .organisationProfiles(extractProfiles(claimsParser))

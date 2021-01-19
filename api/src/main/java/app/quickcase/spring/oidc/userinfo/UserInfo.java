@@ -10,11 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.security.Principal;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Provides QuickCase user information.
@@ -38,8 +34,6 @@ public class UserInfo implements Principal, UserDetails {
     private final String email;
     @ToString.Include
     private final Set<GrantedAuthority> authorities;
-    @ToString.Include
-    private final Set<String> jurisdictions;
     private final UserPreferences preferences;
     private final Map<String, OrganisationProfile> organisationProfiles;
 
@@ -73,9 +67,19 @@ public class UserInfo implements Principal, UserDetails {
         return true;
     }
 
+    /**
+     * @deprecated To be removed in v2.0.0, {@link #getOrganisationProfiles()} should be used instead.
+     * @return Set of organisation IDs, extracted from organisation profiles.
+     */
+    @Deprecated
+    public Set<String> getJurisdictions() {
+        return Optional.ofNullable(organisationProfiles)
+                       .map(Map::keySet)
+                       .orElse(Collections.emptySet());
+    }
+
     public static class UserInfoBuilder {
         private Set<GrantedAuthority> authorities = new HashSet<>();
-        private Set<String> jurisdictions = new HashSet<>();
         private Map<String, OrganisationProfile> organisationProfiles = new HashMap<>();
 
         public UserInfoBuilder authorities(Set<GrantedAuthority> authorities) {
@@ -87,16 +91,6 @@ public class UserInfo implements Principal, UserDetails {
             Arrays.stream(authorities)
                   .map(SimpleGrantedAuthority::new)
                   .forEach(this.authorities::add);
-            return this;
-        }
-
-        public UserInfoBuilder jurisdictions(Set<String> jurisdictions) {
-            this.jurisdictions = jurisdictions;
-            return this;
-        }
-
-        public UserInfoBuilder jurisdictions(String... jurisdictions) {
-            this.jurisdictions.addAll(Arrays.asList(jurisdictions));
             return this;
         }
 
