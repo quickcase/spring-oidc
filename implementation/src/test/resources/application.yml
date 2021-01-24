@@ -1,0 +1,3 @@
+quickcase:
+  oidc:
+    user-info-uri: https://oidc.provider/userinfo
