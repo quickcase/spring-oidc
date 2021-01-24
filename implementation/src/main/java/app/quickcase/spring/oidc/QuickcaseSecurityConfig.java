@@ -23,9 +23,8 @@ import java.net.URISyntaxException;
 @Configuration
 public class QuickcaseSecurityConfig {
     @Bean
-    @ConditionalOnProperty("quickcase.security.oidc.user-info-uri")
-    public UserInfoGateway createUserInfoGateway(@Value("${quickcase.security.oidc.user-info-uri}") String userInfoUri) throws URISyntaxException {
-        return new DefaultUserInfoGateway(new URI(userInfoUri), new RestTemplate());
+    public UserInfoGateway createUserInfoGateway(OidcConfig oidcConfig) throws URISyntaxException {
+        return new DefaultUserInfoGateway(new URI(oidcConfig.getUserInfoUri()), new RestTemplate());
     }
 
     @Bean
