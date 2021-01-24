@@ -1,0 +1,13 @@
+quickcase:
+  oidc:
+    user-info-uri: https://oidc.provider/userinfo
+    claims:
+      names:
+        sub: custom-sub
+        name: custom-name
+        email: custom-email
+        roles: custom-roles
+        organisations: custom-organisations
+        default-jurisdiction: custom-default-jurisdiction
+        default-case-type: custom-default-case-type
+        default-state: custom-default-state

@@ -1,5 +1,6 @@
 package app.quickcase.spring.oidc.userinfo;
 
+import app.quickcase.spring.oidc.claims.ClaimNamesProvider;
 import app.quickcase.spring.oidc.organisation.OrganisationProfile;
 import app.quickcase.spring.oidc.OidcException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -17,14 +18,6 @@ import static app.quickcase.spring.oidc.AccessLevel.GROUP;
 import static app.quickcase.spring.oidc.AccessLevel.ORGANISATION;
 import static app.quickcase.spring.oidc.SecurityClassification.PRIVATE;
 import static app.quickcase.spring.oidc.SecurityClassification.PUBLIC;
-import static app.quickcase.spring.oidc.DefaultClaims.APP_ORGANISATIONS;
-import static app.quickcase.spring.oidc.DefaultClaims.APP_ROLES;
-import static app.quickcase.spring.oidc.DefaultClaims.EMAIL;
-import static app.quickcase.spring.oidc.DefaultClaims.NAME;
-import static app.quickcase.spring.oidc.DefaultClaims.SUB;
-import static app.quickcase.spring.oidc.DefaultClaims.USER_DEFAULT_CASE_TYPE;
-import static app.quickcase.spring.oidc.DefaultClaims.USER_DEFAULT_JURISDICTION;
-import static app.quickcase.spring.oidc.DefaultClaims.USER_DEFAULT_STATE;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
@@ -36,6 +29,16 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @DisplayName("DefaultUserInfoExtractor")
 class DefaultUserInfoExtractorTest {
     private static final ObjectMapper MAPPER = new ObjectMapper();
+
+    private static final String CLAIM_SUB = "conf-sub";
+    private static final String CLAIM_NAME = "conf-name";
+    private static final String CLAIM_EMAIL = "conf-email";
+    private static final String CLAIM_ROLES = "conf-roles";
+    private static final String CLAIM_ORGS = "conf-orgs";
+    private static final String CLAIM_DEF_JURISDICTION = "conf-jurisdiction";
+    private static final String CLAIM_DEF_CASE_TYPE = "conf-case-type";
+    private static final String CLAIM_DEF_STATE = "conf-state";
+
     private static final String USER_APP_ROLES = "role1,role2";
     private static final String USER_ID = "eec55037-bac7-46b4-9849-f063e627e4f3";
     private static final String USER_NAME = "Test User";
@@ -59,7 +62,7 @@ class DefaultUserInfoExtractorTest {
     @Test
     @DisplayName("should extract userInfo from claims")
     void shouldExtractUserInfo() throws Exception {
-        final UserInfo userInfo = new DefaultUserInfoExtractor().extract(claims());
+        final UserInfo userInfo = new DefaultUserInfoExtractor(claimNamesProvider()).extract(claims());
 
         assertThat(userInfo, is(notNullValue()));
         assertAll(
@@ -78,7 +81,7 @@ class DefaultUserInfoExtractorTest {
     @Test
     @DisplayName("should extract user preferences")
     void shouldExtractUserPreferences() throws Exception {
-        final UserInfo userInfo = new DefaultUserInfoExtractor().extract(claims());
+        final UserInfo userInfo = new DefaultUserInfoExtractor(claimNamesProvider()).extract(claims());
         final UserPreferences preferences = userInfo.getPreferences();
 
         assertAll(
@@ -91,7 +94,7 @@ class DefaultUserInfoExtractorTest {
     @Test
     @DisplayName("should extract organisation profiles")
     void shouldExtractOrganisationProfiles() throws Exception {
-        final UserInfo userInfo = new DefaultUserInfoExtractor().extract(claims());
+        final UserInfo userInfo = new DefaultUserInfoExtractor(claimNamesProvider()).extract(claims());
 
         final Map<String, OrganisationProfile> profiles = userInfo.getOrganisationProfiles();
         assertThat(profiles.size(), is(2));
@@ -114,7 +117,7 @@ class DefaultUserInfoExtractorTest {
     @Test
     @DisplayName("should expect most claims to be optional")
     void shouldExpectClaimsToBeOptional() throws Exception {
-        final UserInfo userInfo = new DefaultUserInfoExtractor().extract(minimumClaims());
+        final UserInfo userInfo = new DefaultUserInfoExtractor(claimNamesProvider()).extract(minimumClaims());
 
         assertThat(userInfo, is(notNullValue()));
         assertAll(
@@ -127,10 +130,10 @@ class DefaultUserInfoExtractorTest {
     @DisplayName("should throw exception when `sub` claim missing")
     void shouldThrowExceptionWhenNoSubClaim() throws Exception {
         final Map<String, JsonNode> claims = minimumClaims();
-        claims.remove(SUB);
+        claims.remove(CLAIM_SUB);
 
         assertThrows(OidcException.class,
-                     () -> new DefaultUserInfoExtractor().extract(claims),
+                     () -> new DefaultUserInfoExtractor(claimNamesProvider()).extract(claims),
                      "Mandatory 'sub' claim missing");
     }
 
@@ -138,35 +141,79 @@ class DefaultUserInfoExtractorTest {
     @DisplayName("should throw exception when `email` claim missing")
     void shouldThrowExceptionWhenNoEmailClaim() throws Exception {
         final Map<String, JsonNode> claims = minimumClaims();
-        claims.remove(EMAIL);
+        claims.remove(CLAIM_EMAIL);
 
         assertThrows(OidcException.class,
-                     () -> new DefaultUserInfoExtractor().extract(claims),
+                     () -> new DefaultUserInfoExtractor(claimNamesProvider()).extract(claims),
                      "Mandatory 'email' claim missing");
     }
 
     private Map<String, JsonNode> claims() {
         final Map<String, JsonNode> claims = new HashMap<>();
-        claims.put(SUB, getTextNode(USER_ID));
-        claims.put(NAME, getTextNode(USER_NAME));
-        claims.put(EMAIL, getTextNode(USER_EMAIL));
-        claims.put(APP_ROLES, getTextNode(USER_APP_ROLES));
-        claims.put(USER_DEFAULT_JURISDICTION, getTextNode(DEFAULT_JURISDICTION));
-        claims.put(USER_DEFAULT_CASE_TYPE, getTextNode(DEFAULT_CASE_TYPE));
-        claims.put(USER_DEFAULT_STATE, getTextNode(DEFAULT_STATE));
-        claims.put(APP_ORGANISATIONS, USER_ORGANISATIONS);
+        claims.put(CLAIM_SUB, textNode(USER_ID));
+        claims.put(CLAIM_NAME, textNode(USER_NAME));
+        claims.put(CLAIM_EMAIL, textNode(USER_EMAIL));
+        claims.put(CLAIM_ROLES, textNode(USER_APP_ROLES));
+        claims.put(CLAIM_ORGS, USER_ORGANISATIONS);
+        claims.put(CLAIM_DEF_JURISDICTION, textNode(DEFAULT_JURISDICTION));
+        claims.put(CLAIM_DEF_CASE_TYPE, textNode(DEFAULT_CASE_TYPE));
+        claims.put(CLAIM_DEF_STATE, textNode(DEFAULT_STATE));
         return claims;
     }
 
     private Map<String, JsonNode> minimumClaims() {
         final Map<String, JsonNode> claims = new HashMap<>();
-        claims.put(SUB, getTextNode(USER_ID));
-        claims.put(EMAIL, getTextNode(USER_EMAIL));
+        claims.put(CLAIM_SUB, textNode(USER_ID));
+        claims.put(CLAIM_EMAIL, textNode(USER_EMAIL));
         return claims;
     }
 
-    private JsonNode getTextNode(String value) {
+    private JsonNode textNode(String value) {
         return new TextNode(value);
+    }
+
+    private ClaimNamesProvider claimNamesProvider() {
+        return new ClaimNamesProvider() {
+            @Override
+            public String sub() {
+                return CLAIM_SUB;
+            }
+
+            @Override
+            public String name() {
+                return CLAIM_NAME;
+            }
+
+            @Override
+            public String email() {
+                return CLAIM_EMAIL;
+            }
+
+            @Override
+            public String roles() {
+                return CLAIM_ROLES;
+            }
+
+            @Override
+            public String organisations() {
+                return CLAIM_ORGS;
+            }
+
+            @Override
+            public String defaultJurisdiction() {
+                return CLAIM_DEF_JURISDICTION;
+            }
+
+            @Override
+            public String defaultCaseType() {
+                return CLAIM_DEF_CASE_TYPE;
+            }
+
+            @Override
+            public String defaultState() {
+                return CLAIM_DEF_STATE;
+            }
+        };
     }
 
 }
