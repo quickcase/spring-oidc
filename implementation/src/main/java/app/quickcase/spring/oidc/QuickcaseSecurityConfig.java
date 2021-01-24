@@ -1,9 +1,10 @@
 package app.quickcase.spring.oidc;
 
 import app.quickcase.spring.oidc.authentication.QuickcaseAuthenticationConverter;
+import app.quickcase.spring.oidc.claims.ClaimNamesProvider;
+import app.quickcase.spring.oidc.claims.ConfigDrivenClaimNamesProvider;
 import app.quickcase.spring.oidc.userinfo.*;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
@@ -28,8 +29,13 @@ public class QuickcaseSecurityConfig {
     }
 
     @Bean
-    public UserInfoExtractor createUserInfoExtractor() {
-        return new DefaultUserInfoExtractor();
+    public ClaimNamesProvider createClaimNamesProvider(OidcConfig oidcConfig) {
+        return new ConfigDrivenClaimNamesProvider(oidcConfig.getClaims());
+    }
+
+    @Bean
+    public UserInfoExtractor createUserInfoExtractor(ClaimNamesProvider claimNamesProvider) {
+        return new DefaultUserInfoExtractor(claimNamesProvider);
     }
 
     @Bean

@@ -1,4 +1,4 @@
-package app.quickcase.spring.oidc;
+package app.quickcase.spring.oidc.claims;
 
 public interface DefaultClaims {
     String SUB = "sub";
