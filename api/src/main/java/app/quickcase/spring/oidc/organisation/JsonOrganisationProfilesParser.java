@@ -21,6 +21,9 @@ import java.util.Optional;
  *         }
  *     }
  * </pre>
+ *
+ * @author Valentin Laurin
+ * @since 0.1
  */
 @Slf4j
 public class JsonOrganisationProfilesParser implements OrganisationProfilesParser<JsonNode> {
@@ -52,11 +55,13 @@ public class JsonOrganisationProfilesParser implements OrganisationProfilesParse
 
         final OrganisationProfile.OrganisationProfileBuilder builder = OrganisationProfile.builder();
 
-        extractAccessLevel(node)
-                .ifPresent(builder::accessLevel);
+        final Optional<AccessLevel> accessLevel = extractAccessLevel(node);
+        final Boolean groupEnabled = Optional.of(AccessLevel.GROUP).equals(accessLevel);
+        accessLevel.ifPresent(builder::accessLevel);
+
         extractSecurityClassification(node)
                 .ifPresent(builder::securityClassification);
-        extractGroup(node)
+        extractGroup(node, groupEnabled)
                 .ifPresent(builder::group);
 
         return Optional.of(builder.build());
@@ -64,43 +69,59 @@ public class JsonOrganisationProfilesParser implements OrganisationProfilesParse
 
     private Optional<AccessLevel> extractAccessLevel(JsonNode node) {
         final JsonNode accessNode = node.get(NODE_ACCESS);
-        if (accessNode != null && accessNode.isTextual()) {
-            try {
-                final AccessLevel access = AccessLevel.valueOf(accessNode.asText().toUpperCase());
-                return Optional.of(access);
-            } catch (IllegalArgumentException ex) {
-                log.warn("Failed to parse organisation: Could not extract access level", ex);
-            }
-        } else {
-            log.debug("Failed to extract access level from {}", node);
+
+        if (accessNode == null) {
+            log.debug("Access level is null, using default instead");
+            return Optional.empty();
         }
+
+        final String rawAccessLevel = accessNode.asText().toUpperCase();
+
+        try {
+            return Optional.of(AccessLevel.valueOf(rawAccessLevel));
+        } catch (IllegalArgumentException ex) {
+            log.warn("Failed to extract malformed access level `" + rawAccessLevel + "`, using default instead", ex);
+        }
+
         return Optional.empty();
     }
 
     private Optional<SecurityClassification> extractSecurityClassification(JsonNode node) {
-        final JsonNode classificationNode = node.get(NODE_CLASSIFICATION);
-        if (classificationNode != null && classificationNode.isTextual()) {
-            try {
-                final SecurityClassification classification = SecurityClassification.valueOf(
-                        classificationNode.asText().toUpperCase());
-                return Optional.of(classification);
-            } catch (IllegalArgumentException ex) {
-                log.warn("Failed to parse organisation: Could not extract security classification",
-                         ex);
-            }
-        } else {
-            log.debug("Failed to extract security classification from {}", node);
+        final JsonNode accessNode = node.get(NODE_CLASSIFICATION);
+
+        if (accessNode == null) {
+            log.debug("Security classification is null, using default instead");
+            return Optional.empty();
         }
+
+        final String rawClassification = accessNode.asText().toUpperCase();
+
+        try {
+            return Optional.of(SecurityClassification.valueOf(rawClassification));
+        } catch (IllegalArgumentException ex) {
+            log.warn("Failed to extract malformed security classification `" + rawClassification + "`, using default instead", ex);
+        }
+
         return Optional.empty();
     }
 
-    private Optional<String> extractGroup(JsonNode node) {
+    private Optional<String> extractGroup(JsonNode node, Boolean groupEnabled) {
         final JsonNode groupNode = node.get(NODE_GROUP);
-        if (groupNode != null && groupNode.isTextual()) {
-            return Optional.of(groupNode.asText().toLowerCase());
-        } else {
-            log.debug("Failed to extract group from {}", node);
+
+        if (groupNode == null) {
+            if (groupEnabled) {
+                log.warn("Group expected but was null");
+            }
+            return Optional.empty();
         }
-        return Optional.empty();
+
+        final String group = groupNode.asText().toLowerCase();
+
+        if (!groupEnabled) {
+            log.warn("Group not expected but was `{}`, ignoring", group);
+            return Optional.empty();
+        }
+
+        return Optional.of(group);
     }
 }
