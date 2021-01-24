@@ -24,6 +24,7 @@ dependencyCheck {
 
 subprojects {
     apply plugin: 'java-library'
+    apply plugin: 'jacoco'
     apply plugin: 'maven-publish'
 
     sourceCompatibility = 11
@@ -54,10 +55,29 @@ subprojects {
     test {
         useJUnitPlatform()
 
-        dependsOn 'cleanTest'
+        dependsOn cleanTest
+        finalizedBy jacocoTestReport
 
         testLogging {
             events "passed", "skipped", "failed"
+        }
+    }
+
+    jacocoTestReport {
+        dependsOn test
+
+        reports {
+            html.enabled true
+        }
+    }
+
+    jacocoTestCoverageVerification {
+        violationRules {
+            rule {
+                limit {
+                    minimum = 0.9
+                }
+            }
         }
     }
 
