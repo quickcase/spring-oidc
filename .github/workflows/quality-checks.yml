@@ -42,6 +42,17 @@ jobs:
       - name: Compile and test
         run: ./gradlew build --info
 
+      - name: Check coverage
+        run: ./gradlew jacocoTestCoverageVerification --info
+
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: build-reports
+          path: '*/build/reports'
+          retention-days: 1
+
       - name: Notify slack success
         if: success()
         env:
