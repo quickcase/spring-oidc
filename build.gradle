@@ -86,7 +86,7 @@ subprojects {
             mavenJava(MavenPublication) {
                 from components.java
                 pom {
-                    url.set("https://github.com/quickcase/quickcase-spring-security.git")
+                    url.set("https://github.com/quickcase/spring-oidc.git")
                 }
             }
         }
@@ -94,7 +94,7 @@ subprojects {
         repositories {
             maven {
                 name = "Github"
-                url = uri("https://maven.pkg.github.com/quickcase/quickcase-spring-security")
+                url = uri("https://maven.pkg.github.com/quickcase/spring-oidc")
                 credentials {
                     username = System.getenv("GITHUB_USERNAME")
                     password = System.getenv("GITHUB_PACKAGE_TOKEN")

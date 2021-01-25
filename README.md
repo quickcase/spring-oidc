@@ -6,6 +6,4 @@ Specialise Spring Security for needs of QuickCase APIs with implementations for 
 
 ## How to publish
 
-This library is published to the Github Packages of this repository: https://github.com/quickcase/quickcase-spring-security/packages
-
 Publishing is performed automatically on push of a new tag.
