@@ -6,6 +6,7 @@ import org.springframework.boot.context.properties.ConstructorBinding;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import static app.quickcase.spring.oidc.OidcConfigDefault.Claims.*;
+import static app.quickcase.spring.oidc.OidcConfigDefault.PREFIX;
 
 /**
  * Consolidated configuration of all properties under `quickcase.oidc` namespace.
@@ -28,9 +29,19 @@ public class OidcConfig {
 
     @Value
     public static class Claims {
+        /**
+         * Prefix applied to all private claims.
+         */
+        private final String prefix;
+
+        /**
+         * Names of all claims, standard and private, used by QuickCase.
+         */
         private final ClaimNames names;
 
-        public Claims(@DefaultValue ClaimNames names) {
+        public Claims(@DefaultValue(PREFIX) String prefix,
+                      @DefaultValue ClaimNames names) {
+            this.prefix = prefix;
             this.names = names;
         }
     }
