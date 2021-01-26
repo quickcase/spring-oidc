@@ -14,9 +14,9 @@ import java.net.URISyntaxException;
 
 /**
  * Configuration to import in Spring application to auto-configure Spring Security to work with a QuickCase-compliant
- * OIDC provider.
- * This configuration relies on both properties `security.oauth2.resource.jwk.key-set-uri` and
- * `security.oauth2.resource.user-info-uri` being defined in Spring application.
+ * OIDC providers.
+ * This configuration relies on both properties `quickcase.oidc.jwk-set-uri` and `quickcase.oidc.user-info-uri`
+ * being defined as properties in the Spring application.
  *
  * @author Valentin Laurin
  * @since 0.1
@@ -52,7 +52,8 @@ public class QuickcaseSecurityConfig {
     }
 
     @Bean
-    public QuickcaseSecurityDsl createSecurityDsl(QuickcaseAuthenticationConverter authenticationConverter) {
-        return new DefaultQuickcaseSecurityDsl(authenticationConverter);
+    public QuickcaseSecurityDsl createSecurityDsl(OidcConfig oidcConfig,
+                                                  QuickcaseAuthenticationConverter authenticationConverter) {
+        return new DefaultQuickcaseSecurityDsl(oidcConfig, authenticationConverter);
     }
 }

@@ -1,3 +1,4 @@
 quickcase:
   oidc:
+    jwk-set-uri: https://oidc.provider/jwkset
     user-info-uri: https://oidc.provider/userinfo

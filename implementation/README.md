@@ -56,7 +56,7 @@ In the `WebSecurityConfigurerAdapter`, override the `configure(HttpSecurity http
 #### 5. Add required application properties
 
 Must be configured:
-* `quickcase.security.oidc.user-info-uri`: Absolute URL to the user info endpoint exposed by the OIDC provider
-* `spring.security.oauth2.resourceserver.jwt.jwk-set-uri`: Absolute URL to the well-known JWK configuration endpoint exposed by the OIDC provider
+* `quickcase.oidc.user-info-uri`: Absolute URL to the user info endpoint exposed by the OIDC provider
+* `quickcase.oidc.jwk-set-uri`: Absolute URL to the well-known JWK configuration endpoint exposed by the OIDC provider
 
 

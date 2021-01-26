@@ -26,6 +26,7 @@ class OidcConfigTest {
         @Test
         @DisplayName("should provide user-info-uri")
         void shouldProvideRootConfiguration() {
+            assertThat(oidcConfig.getJwkSetUri(), equalTo("https://oidc.provider/jwkset"));
             assertThat(oidcConfig.getUserInfoUri(), equalTo("https://oidc.provider/userinfo"));
         }
 

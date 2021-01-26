@@ -19,10 +19,12 @@ import static app.quickcase.spring.oidc.OidcConfigDefault.PREFIX;
 @ConstructorBinding
 @ConfigurationProperties(prefix = "quickcase.oidc")
 public class OidcConfig {
+    private final String jwkSetUri;
     private final String userInfoUri;
     private final Claims claims;
 
-    public OidcConfig(String userInfoUri, @DefaultValue Claims claims) {
+    public OidcConfig(String jwkSetUri, String userInfoUri, @DefaultValue Claims claims) {
+        this.jwkSetUri = jwkSetUri;
         this.userInfoUri = userInfoUri;
         this.claims = claims;
     }
