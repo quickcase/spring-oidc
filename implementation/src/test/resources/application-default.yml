@@ -2,6 +2,7 @@ quickcase:
   oidc:
     user-info-uri: https://oidc.provider/userinfo
     claims:
+      prefix: 'custom-prefix:'
       names:
         sub: custom-sub
         name: custom-name

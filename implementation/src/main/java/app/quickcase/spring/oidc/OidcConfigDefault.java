@@ -2,6 +2,7 @@ package app.quickcase.spring.oidc;
 
 public interface OidcConfigDefault {
     String NAMESPACE = "app.quickcase.claims/";
+    String PREFIX = "";
 
     interface Claims {
         // Standard claims

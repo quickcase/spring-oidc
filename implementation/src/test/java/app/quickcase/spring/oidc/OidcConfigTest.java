@@ -44,6 +44,13 @@ class OidcConfigTest {
                     () -> assertThat(names.getDefaultState(), equalTo("custom-default-state"))
             );
         }
+
+        @Test
+        @DisplayName("should provide overridden private claims prefix")
+        void shouldProvidePrivateClaimsPrefixOverride() {
+            final String prefix = oidcConfig.getClaims().getPrefix();
+            assertThat(prefix, equalTo("custom-prefix:"));
+        }
     }
 
     @Nested
@@ -69,6 +76,13 @@ class OidcConfigTest {
                     () -> assertThat(names.getDefaultCaseType(), equalTo("app.quickcase.claims/default_case_type")),
                     () -> assertThat(names.getDefaultState(), equalTo("app.quickcase.claims/default_state"))
             );
+        }
+
+        @Test
+        @DisplayName("should provide default private claims prefix")
+        void shouldProvideDefaultPrivateClaimsPrefix() {
+            final String prefix = oidcConfig.getClaims().getPrefix();
+            assertThat(prefix, equalTo(""));
         }
     }
 }

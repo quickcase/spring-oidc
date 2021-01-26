@@ -9,6 +9,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 class ConfigDrivenClaimNamesProviderTest {
+    private static final String PREFIX = "prefix:";
     private static final String SUB = "conf-sub";
     private static final String NAME = "conf-name";
     private static final String EMAIL = "conf-email";
@@ -29,7 +30,7 @@ class ConfigDrivenClaimNamesProviderTest {
                                                                            DEF_JURISDICTION,
                                                                            DEF_CASE_TYPE,
                                                                            DEF_STATE);
-        final OidcConfig.Claims claimsConfig = new OidcConfig.Claims(claimNames);
+        final OidcConfig.Claims claimsConfig = new OidcConfig.Claims(PREFIX, claimNames);
 
         final ConfigDrivenClaimNamesProvider claimNamesProvider = new ConfigDrivenClaimNamesProvider(claimsConfig);
 
@@ -37,11 +38,11 @@ class ConfigDrivenClaimNamesProviderTest {
                 () -> assertThat(claimNamesProvider.sub(), equalTo(SUB)),
                 () -> assertThat(claimNamesProvider.name(), equalTo(NAME)),
                 () -> assertThat(claimNamesProvider.email(), equalTo(EMAIL)),
-                () -> assertThat(claimNamesProvider.roles(), equalTo(ROLES)),
-                () -> assertThat(claimNamesProvider.organisations(), equalTo(ORGS)),
-                () -> assertThat(claimNamesProvider.defaultJurisdiction(), equalTo(DEF_JURISDICTION)),
-                () -> assertThat(claimNamesProvider.defaultCaseType(), equalTo(DEF_CASE_TYPE)),
-                () -> assertThat(claimNamesProvider.defaultState(), equalTo(DEF_STATE))
+                () -> assertThat(claimNamesProvider.roles(), equalTo(PREFIX + ROLES)),
+                () -> assertThat(claimNamesProvider.organisations(), equalTo(PREFIX + ORGS)),
+                () -> assertThat(claimNamesProvider.defaultJurisdiction(), equalTo(PREFIX + DEF_JURISDICTION)),
+                () -> assertThat(claimNamesProvider.defaultCaseType(), equalTo(PREFIX + DEF_CASE_TYPE)),
+                () -> assertThat(claimNamesProvider.defaultState(), equalTo(PREFIX + DEF_STATE))
         );
     }
 

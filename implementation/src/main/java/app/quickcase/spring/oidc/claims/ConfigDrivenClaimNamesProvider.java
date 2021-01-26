@@ -10,6 +10,7 @@ import app.quickcase.spring.oidc.OidcConfig;
  * @since 1.0
  */
 public class ConfigDrivenClaimNamesProvider implements ClaimNamesProvider {
+    private final String prefix;
     private final String sub;
     private final String name;
     private final String email;
@@ -20,6 +21,8 @@ public class ConfigDrivenClaimNamesProvider implements ClaimNamesProvider {
     private final String defaultState;
 
     public ConfigDrivenClaimNamesProvider(OidcConfig.Claims claimsConfig) {
+        this.prefix = claimsConfig.getPrefix();
+
         final OidcConfig.ClaimNames names = claimsConfig.getNames();
         this.sub = names.getSub();
         this.name = names.getName();
@@ -48,26 +51,26 @@ public class ConfigDrivenClaimNamesProvider implements ClaimNamesProvider {
 
     @Override
     public String roles() {
-        return roles;
+        return prefix + roles;
     }
 
     @Override
     public String organisations() {
-        return organisations;
+        return prefix + organisations;
     }
 
     @Override
     public String defaultJurisdiction() {
-        return defaultJurisdiction;
+        return prefix + defaultJurisdiction;
     }
 
     @Override
     public String defaultCaseType() {
-        return defaultCaseType;
+        return prefix + defaultCaseType;
     }
 
     @Override
     public String defaultState() {
-        return defaultState;
+        return prefix + defaultState;
     }
 }
