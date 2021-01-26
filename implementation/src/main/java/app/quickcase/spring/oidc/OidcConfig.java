@@ -5,7 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 
-import static app.quickcase.spring.oidc.claims.DefaultClaims.*;
+import static app.quickcase.spring.oidc.OidcConfigDefault.Claims.*;
 
 /**
  * Consolidated configuration of all properties under `quickcase.oidc` namespace.
@@ -49,11 +49,11 @@ public class OidcConfig {
         public ClaimNames(@DefaultValue(SUB) String sub,
                           @DefaultValue(NAME) String name,
                           @DefaultValue(EMAIL) String email,
-                          @DefaultValue(APP_ROLES) String roles,
-                          @DefaultValue(APP_ORGANISATIONS) String organisations,
-                          @DefaultValue(USER_DEFAULT_JURISDICTION) String defaultJurisdiction,
-                          @DefaultValue(USER_DEFAULT_CASE_TYPE) String defaultCaseType,
-                          @DefaultValue(USER_DEFAULT_STATE) String defaultState) {
+                          @DefaultValue(QC_ROLES) String roles,
+                          @DefaultValue(QC_ORGANISATIONS) String organisations,
+                          @DefaultValue(QC_USER_DEFAULT_JURISDICTION) String defaultJurisdiction,
+                          @DefaultValue(QC_USER_DEFAULT_CASE_TYPE) String defaultCaseType,
+                          @DefaultValue(QC_USER_DEFAULT_STATE) String defaultState) {
             this.sub = sub;
             this.name = name;
             this.email = email;

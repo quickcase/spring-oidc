@@ -57,17 +57,17 @@ class OidcConfigTest {
 
         @Test
         @DisplayName("should provide default claim names")
-        void shouldProvideClaimsOverrides() {
+        void shouldProvideDefaultClaims() {
             final OidcConfig.ClaimNames names = oidcConfig.getClaims().getNames();
             assertAll(
                     () -> assertThat(names.getSub(), equalTo("sub")),
                     () -> assertThat(names.getName(), equalTo("name")),
                     () -> assertThat(names.getEmail(), equalTo("email")),
-                    () -> assertThat(names.getRoles(), equalTo("app_roles")),
-                    () -> assertThat(names.getOrganisations(), equalTo("app_organisations")),
-                    () -> assertThat(names.getDefaultJurisdiction(), equalTo("default_jurisdiction")),
-                    () -> assertThat(names.getDefaultCaseType(), equalTo("default_case_type")),
-                    () -> assertThat(names.getDefaultState(), equalTo("default_state"))
+                    () -> assertThat(names.getRoles(), equalTo("app.quickcase.claims/roles")),
+                    () -> assertThat(names.getOrganisations(), equalTo("app.quickcase.claims/organisations")),
+                    () -> assertThat(names.getDefaultJurisdiction(), equalTo("app.quickcase.claims/default_jurisdiction")),
+                    () -> assertThat(names.getDefaultCaseType(), equalTo("app.quickcase.claims/default_case_type")),
+                    () -> assertThat(names.getDefaultState(), equalTo("app.quickcase.claims/default_state"))
             );
         }
     }
