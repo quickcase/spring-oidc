@@ -24,10 +24,13 @@ class OidcConfigTest {
         private OidcConfig oidcConfig;
 
         @Test
-        @DisplayName("should provide user-info-uri")
+        @DisplayName("should provide root configuration")
         void shouldProvideRootConfiguration() {
-            assertThat(oidcConfig.getJwkSetUri(), equalTo("https://oidc.provider/jwkset"));
-            assertThat(oidcConfig.getUserInfoUri(), equalTo("https://oidc.provider/userinfo"));
+            assertAll(
+                    () -> assertThat(oidcConfig.getJwkSetUri(), equalTo("https://oidc.provider/jwkset")),
+                    () -> assertThat(oidcConfig.getUserInfoUri(), equalTo("https://oidc.provider/userinfo")),
+                    () -> assertThat(oidcConfig.getOpenidScope(), equalTo("custom-openid"))
+            );
         }
 
         @Test
@@ -62,6 +65,12 @@ class OidcConfigTest {
     class OidcConfigTest_Partial {
         @Autowired
         private OidcConfig oidcConfig;
+
+        @Test
+        @DisplayName("should provide root configuration")
+        void shouldProvideRootConfiguration() {
+            assertThat(oidcConfig.getOpenidScope(), equalTo("openid"));
+        }
 
         @Test
         @DisplayName("should provide default claim names")

@@ -14,25 +14,25 @@ import static app.quickcase.spring.oidc.utils.StringUtils.authorities;
 import static app.quickcase.spring.oidc.utils.StringUtils.fromSpaceSeparated;
 
 public class QuickcaseAuthenticationConverter implements Converter<Jwt, QuickcaseAuthentication> {
-    private static final String DEFAULT_PROFILE_SCOPE = "profile";
+    public static final String OPENID_SCOPE = "openid";
 
     private final UserInfoService userInfoService;
-    private String profileScope;
+    private final String openidScope;
 
     public QuickcaseAuthenticationConverter(UserInfoService userInfoService) {
-        this(userInfoService, DEFAULT_PROFILE_SCOPE);
+        this(userInfoService, OPENID_SCOPE);
     }
 
-    public QuickcaseAuthenticationConverter(UserInfoService userInfoService, String profileScope) {
+    public QuickcaseAuthenticationConverter(UserInfoService userInfoService, String openidScope) {
         this.userInfoService = userInfoService;
-        this.profileScope = profileScope;
+        this.openidScope = openidScope;
     }
 
     @Override
     public QuickcaseAuthentication convert(Jwt source) {
         final Set<String> scopes = fromSpaceSeparated(source.getClaimAsString("scope"));
 
-        if (scopes.contains(profileScope)) {
+        if (scopes.contains(openidScope)) {
             return userAuthentication(source);
         }
 

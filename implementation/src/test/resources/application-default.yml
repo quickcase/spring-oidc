@@ -2,6 +2,7 @@ quickcase:
   oidc:
     jwk-set-uri: https://oidc.provider/jwkset
     user-info-uri: https://oidc.provider/userinfo
+    openid-scope: custom-openid
     claims:
       prefix: 'custom-prefix:'
       names:
