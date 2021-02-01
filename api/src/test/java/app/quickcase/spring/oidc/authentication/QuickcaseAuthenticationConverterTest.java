@@ -107,14 +107,14 @@ class QuickcaseAuthenticationConverterTest {
     class WhenUserCredentials {
 
         private QuickcaseAuthentication userAuthentication() {
-            return userAuthentication("profile");
+            return userAuthentication(QuickcaseAuthenticationConverter.OPENID_SCOPE);
         }
 
-        private QuickcaseAuthentication userAuthentication(String profileScope) {
+        private QuickcaseAuthentication userAuthentication(String openidScope) {
             final Jwt jwt = Jwt.withTokenValue(ACCESS_TOKEN)
                                .header("alg", "HS256")
                                .claim("sub", USER_ID)
-                               .claim("scope", scopes(profileScope, SCOPE_2))
+                               .claim("scope", scopes(openidScope, SCOPE_2))
                                .claim("client_id", CLIENT_ID)
                                .build();
 
@@ -195,11 +195,11 @@ class QuickcaseAuthenticationConverterTest {
         }
 
         @Test
-        @DisplayName("should accept custom scope for user profile")
-        void shouldAcceptCustomProfileScope() {
-            converter = new QuickcaseAuthenticationConverter(userInfoServiceStub, "custom-profile");
+        @DisplayName("should accept custom scope for openid")
+        void shouldAcceptCustomOpenIdScope() {
+            converter = new QuickcaseAuthenticationConverter(userInfoServiceStub, "custom-openid");
 
-            final QuickcaseAuthentication authentication = userAuthentication("custom-profile");
+            final QuickcaseAuthentication authentication = userAuthentication("custom-openid");
 
             assertThat(authentication, instanceOf(QuickcaseUserAuthentication.class));
         }

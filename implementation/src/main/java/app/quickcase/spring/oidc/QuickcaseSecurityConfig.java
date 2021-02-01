@@ -4,7 +4,6 @@ import app.quickcase.spring.oidc.authentication.QuickcaseAuthenticationConverter
 import app.quickcase.spring.oidc.claims.ClaimNamesProvider;
 import app.quickcase.spring.oidc.claims.ConfigDrivenClaimNamesProvider;
 import app.quickcase.spring.oidc.userinfo.*;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
@@ -46,9 +45,9 @@ public class QuickcaseSecurityConfig {
     @Bean
     public QuickcaseAuthenticationConverter createAuthenticationConverter(
             UserInfoService userInfoService,
-            @Value("${quickcase.security.oidc.profile-scope:profile}") String profileScope
+            OidcConfig oidcConfig
     ) {
-        return new QuickcaseAuthenticationConverter(userInfoService, profileScope);
+        return new QuickcaseAuthenticationConverter(userInfoService, oidcConfig.getOpenidScope());
     }
 
     @Bean
