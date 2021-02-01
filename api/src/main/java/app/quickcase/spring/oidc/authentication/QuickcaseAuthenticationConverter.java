@@ -50,13 +50,10 @@ public class QuickcaseAuthenticationConverter implements Converter<Jwt, Quickcas
         final String subject = source.getSubject();
         final String accessToken = source.getTokenValue();
         final UserInfo userInfo = userInfoService.loadUserInfo(subject, accessToken);
-        final String name = userInfo.getName();
         final Set<GrantedAuthority> authorities = userInfo.getAuthorities();
         final Map<String, OrganisationProfile> orgProfiles = userInfo.getOrganisationProfiles();
 
         return new QuickcaseUserAuthentication(accessToken,
-                                               subject,
-                                               name,
                                                authorities,
                                                userInfo,
                                                orgProfiles);
