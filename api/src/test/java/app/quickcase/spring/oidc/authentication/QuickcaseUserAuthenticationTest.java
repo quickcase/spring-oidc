@@ -138,7 +138,11 @@ class QuickcaseUserAuthenticationTest {
 
     private QuickcaseAuthentication userAuthentication() {
         final Set<GrantedAuthority> authorities = StringUtils.authorities("ROLE-1", "ROLE-2");
-        final UserInfo userInfo = UserInfo.builder().email(USER_EMAIL).build();
+        final UserInfo userInfo = UserInfo.builder()
+                                          .id(USER_ID)
+                                          .name(USER_NAME)
+                                          .email(USER_EMAIL)
+                                          .build();
         final Map<String, OrganisationProfile> orgProfiles = new HashMap<>();
         orgProfiles.put("org-1", OrganisationProfile.builder()
                                                     .accessLevel(AccessLevel.GROUP)
@@ -146,11 +150,6 @@ class QuickcaseUserAuthenticationTest {
                                                     .securityClassification(SecurityClassification.PRIVATE)
                                                     .build());
 
-        return new QuickcaseUserAuthentication(ACCESS_TOKEN,
-                                               USER_ID,
-                                               USER_NAME,
-                                               authorities,
-                                               userInfo,
-                                               orgProfiles);
+        return new QuickcaseUserAuthentication(ACCESS_TOKEN, authorities, userInfo, orgProfiles);
     }
 }

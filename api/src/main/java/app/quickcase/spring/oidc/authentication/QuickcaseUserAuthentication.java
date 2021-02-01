@@ -24,31 +24,22 @@ public class QuickcaseUserAuthentication extends QuickcaseAuthentication {
                                   .build();
     }
 
-
-    private final String id;
-    private final String name;
     private final Map<String, OrganisationProfile> organisationProfiles;
     private final UserInfo userInfo;
 
     @NonNull
-    public QuickcaseUserAuthentication(String accessToken,
-                                       String id,
-                                       String name,
-                                       Collection<? extends GrantedAuthority> authorities,
-                                       UserInfo userInfo) {
-        this(accessToken, id, name, authorities, userInfo, Collections.emptyMap());
+    public QuickcaseUserAuthentication(@NonNull String accessToken,
+                                       @NonNull Collection<? extends GrantedAuthority> authorities,
+                                       @NonNull UserInfo userInfo) {
+        this(accessToken, authorities, userInfo, Collections.emptyMap());
     }
 
     @NonNull
-    public QuickcaseUserAuthentication(String accessToken,
-                                       String id,
-                                       String name,
-                                       Collection<? extends GrantedAuthority> authorities,
-                                       UserInfo userInfo,
-                                       Map<String, OrganisationProfile> organisationProfiles) {
+    public QuickcaseUserAuthentication(@NonNull String accessToken,
+                                       @NonNull Collection<? extends GrantedAuthority> authorities,
+                                       @NonNull UserInfo userInfo,
+                                       @NonNull Map<String, OrganisationProfile> organisationProfiles) {
         super(authorities, accessToken);
-        this.id = id;
-        this.name = name;
         this.userInfo = userInfo;
         this.organisationProfiles = caseInsensitiveMap(organisationProfiles);
         this.setAuthenticated(true);
@@ -61,17 +52,17 @@ public class QuickcaseUserAuthentication extends QuickcaseAuthentication {
 
     @Override
     public Optional<String> getEmail() {
-        return getUserInfo().map(UserInfo::getEmail);
+        return Optional.ofNullable(userInfo.getEmail());
     }
 
     @Override
     public String getId() {
-        return id;
+        return userInfo.getId();
     }
 
     @Override
     public String getName() {
-        return name;
+        return userInfo.getName();
     }
 
     @Override
