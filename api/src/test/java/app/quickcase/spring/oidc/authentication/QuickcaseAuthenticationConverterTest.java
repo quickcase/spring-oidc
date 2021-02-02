@@ -42,8 +42,7 @@ class QuickcaseAuthenticationConverterTest {
                                                             .securityClassification(SecurityClassification.PRIVATE)
                                                             .group("org-a-group")
                                                             .build();
-        userInfoServiceStub = (sub, token) -> UserInfo.builder()
-                                                      .id(sub)
+        userInfoServiceStub = (sub, token) -> UserInfo.builder(sub)
                                                       .name(USER_NAME)
                                                       .email(USER_EMAIL)
                                                       .authorities(ROLE_1, ROLE_2)
