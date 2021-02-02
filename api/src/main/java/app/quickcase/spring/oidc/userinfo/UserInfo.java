@@ -72,6 +72,10 @@ public class UserInfo implements Principal, UserDetails {
         return true;
     }
 
+    public String getName() {
+        return name != null ? name : subject;
+    }
+
     /**
      * @deprecated To be removed in v2.0.0, {@link #getOrganisationProfiles()} should be used instead.
      * @return Set of organisation IDs, extracted from organisation profiles.

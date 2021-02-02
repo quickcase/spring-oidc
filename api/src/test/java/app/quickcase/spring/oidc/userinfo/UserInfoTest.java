@@ -34,6 +34,25 @@ class UserInfoTest {
     }
 
     @Test
+    @DisplayName("should return name when provided")
+    void shouldReturnName() {
+        final UserInfo userInfo = UserInfo.builder(SUBJECT)
+                                          .name("John Doe")
+                                          .build();
+
+        assertThat(userInfo.getName(), equalTo("John Doe"));
+    }
+
+    @Test
+    @DisplayName("should return subject as name when not provided")
+    void shouldReturnSubjectAsNameWhenMissing() {
+        final UserInfo userInfo = UserInfo.builder(SUBJECT)
+                                          .build();
+
+        assertThat(userInfo.getName(), equalTo(SUBJECT));
+    }
+
+    @Test
     @DisplayName("should return jurisdictions from organisations for backward compatibility")
     void shouldReturnJurisdictionBackwardCompat() {
         final UserInfo userInfo = UserInfo.builder(SUBJECT)
