@@ -57,7 +57,7 @@ public class QuickcaseUserAuthentication extends QuickcaseAuthentication {
 
     @Override
     public String getId() {
-        return userInfo.getId();
+        return userInfo.getSubject();
     }
 
     @Override
