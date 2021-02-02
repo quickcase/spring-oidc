@@ -25,13 +25,12 @@ public class DefaultUserInfoExtractor implements UserInfoExtractor {
     @Override
     public UserInfo extract(Map<String, JsonNode> claims) {
         final ClaimsParser claimsParser = new ClaimsParser(claims);
-        final UserInfo.UserInfoBuilder builder = UserInfo.builder();
 
-        claimsParser.getString(claimNames.sub())
-                    .ifPresentOrElse(builder::id, () -> {
-                        throw new OidcException("Mandatory 'sub' claim missing");
-                    });
+        final String subject = claimsParser.getString(claimNames.sub())
+                                           .orElseThrow(() -> new OidcException("Mandatory subject claim missing: " + claimNames.sub()));
 
+        final UserInfo.UserInfoBuilder builder = UserInfo.builder(subject);
+        
         claimsParser.getString(claimNames.email())
                     .ifPresentOrElse(builder::email, () -> {
                         throw new OidcException("Mandatory 'email' claim missing");

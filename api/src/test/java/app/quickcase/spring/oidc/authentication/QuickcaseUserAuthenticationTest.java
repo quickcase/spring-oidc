@@ -138,8 +138,7 @@ class QuickcaseUserAuthenticationTest {
 
     private QuickcaseAuthentication userAuthentication() {
         final Set<GrantedAuthority> authorities = StringUtils.authorities("ROLE-1", "ROLE-2");
-        final UserInfo userInfo = UserInfo.builder()
-                                          .id(USER_ID)
+        final UserInfo userInfo = UserInfo.builder(USER_ID)
                                           .name(USER_NAME)
                                           .email(USER_EMAIL)
                                           .build();
