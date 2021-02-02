@@ -30,12 +30,9 @@ public class DefaultUserInfoExtractor implements UserInfoExtractor {
                                            .orElseThrow(() -> new OidcException("Mandatory subject claim missing: " + claimNames.sub()));
 
         final UserInfo.UserInfoBuilder builder = UserInfo.builder(subject);
-        
-        claimsParser.getString(claimNames.email())
-                    .ifPresentOrElse(builder::email, () -> {
-                        throw new OidcException("Mandatory 'email' claim missing");
-                    });
+
         claimsParser.getString(claimNames.name()).ifPresent(builder::name);
+        claimsParser.getString(claimNames.email()).ifPresent(builder::email);
 
         claimsParser.getString(claimNames.roles())
                     .map(StringUtils::fromCommaSeparated)

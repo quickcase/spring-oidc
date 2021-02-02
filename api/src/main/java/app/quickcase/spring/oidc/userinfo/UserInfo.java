@@ -76,6 +76,10 @@ public class UserInfo implements Principal, UserDetails {
         return name != null ? name : subject;
     }
 
+    public Optional<String> getEmail() {
+        return Optional.ofNullable(email);
+    }
+
     /**
      * @deprecated To be removed in v2.0.0, {@link #getOrganisationProfiles()} should be used instead.
      * @return Set of organisation IDs, extracted from organisation profiles.

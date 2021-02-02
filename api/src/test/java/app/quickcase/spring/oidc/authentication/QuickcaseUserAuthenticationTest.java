@@ -13,6 +13,7 @@ import org.springframework.security.core.GrantedAuthority;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -51,7 +52,7 @@ class QuickcaseUserAuthenticationTest {
 
         Assertions.assertAll(
                 () -> assertThat(auth.getUserInfo().isPresent(), is(true)),
-                () -> assertThat(auth.getUserInfo().get().getEmail(), equalTo(USER_EMAIL))
+                () -> assertThat(auth.getUserInfo().flatMap(UserInfo::getEmail), equalTo(Optional.of(USER_EMAIL)))
         );
     }
 

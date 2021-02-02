@@ -68,7 +68,7 @@ class DefaultUserInfoExtractorTest {
         assertAll(
                 () -> assertThat(userInfo.getSubject(), equalTo(USER_ID)),
                 () -> assertThat(userInfo.getName(), equalTo(USER_NAME)),
-                () -> assertThat(userInfo.getEmail(), equalTo(USER_EMAIL)),
+                () -> assertThat(userInfo.getEmail().get(), equalTo(USER_EMAIL)),
                 () -> assertThat(userInfo.getAuthorities(), containsInAnyOrder(
                         new SimpleGrantedAuthority("role1"),
                         new SimpleGrantedAuthority("role2")
@@ -122,7 +122,8 @@ class DefaultUserInfoExtractorTest {
         assertThat(userInfo, is(notNullValue()));
         assertAll(
                 () -> assertThat(userInfo.getSubject(), equalTo(USER_ID)),
-                () -> assertThat(userInfo.getEmail(), equalTo(USER_EMAIL))
+                () -> assertThat(userInfo.getName(), equalTo(USER_ID)),
+                () -> assertThat(userInfo.getEmail().isEmpty(), is(true))
         );
     }
 
@@ -135,17 +136,6 @@ class DefaultUserInfoExtractorTest {
         assertThrows(OidcException.class,
                      () -> new DefaultUserInfoExtractor(claimNamesProvider()).extract(claims),
                      "Mandatory 'sub' claim missing");
-    }
-
-    @Test
-    @DisplayName("should throw exception when `email` claim missing")
-    void shouldThrowExceptionWhenNoEmailClaim() throws Exception {
-        final Map<String, JsonNode> claims = minimumClaims();
-        claims.remove(CLAIM_EMAIL);
-
-        assertThrows(OidcException.class,
-                     () -> new DefaultUserInfoExtractor(claimNamesProvider()).extract(claims),
-                     "Mandatory 'email' claim missing");
     }
 
     private Map<String, JsonNode> claims() {
@@ -164,7 +154,6 @@ class DefaultUserInfoExtractorTest {
     private Map<String, JsonNode> minimumClaims() {
         final Map<String, JsonNode> claims = new HashMap<>();
         claims.put(CLAIM_SUB, textNode(USER_ID));
-        claims.put(CLAIM_EMAIL, textNode(USER_EMAIL));
         return claims;
     }
 
