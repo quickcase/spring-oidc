@@ -36,7 +36,7 @@ class DefaultUserInfoServiceTest {
 
         final UserInfo userInfo = userInfoService.loadUserInfo(SUBJECT, ACCESS_TOKEN);
 
-        assertThat(userInfo.getId(), equalTo(SUBJECT));
+        assertThat(userInfo.getSubject(), equalTo(SUBJECT));
         assertThat(userInfo.getName(), equalTo(ACCESS_TOKEN));
     }
 

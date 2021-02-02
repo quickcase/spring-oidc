@@ -66,7 +66,7 @@ class DefaultUserInfoExtractorTest {
 
         assertThat(userInfo, is(notNullValue()));
         assertAll(
-                () -> assertThat(userInfo.getId(), equalTo(USER_ID)),
+                () -> assertThat(userInfo.getSubject(), equalTo(USER_ID)),
                 () -> assertThat(userInfo.getName(), equalTo(USER_NAME)),
                 () -> assertThat(userInfo.getEmail(), equalTo(USER_EMAIL)),
                 () -> assertThat(userInfo.getAuthorities(), containsInAnyOrder(
@@ -121,7 +121,7 @@ class DefaultUserInfoExtractorTest {
 
         assertThat(userInfo, is(notNullValue()));
         assertAll(
-                () -> assertThat(userInfo.getId(), equalTo(USER_ID)),
+                () -> assertThat(userInfo.getSubject(), equalTo(USER_ID)),
                 () -> assertThat(userInfo.getEmail(), equalTo(USER_EMAIL))
         );
     }

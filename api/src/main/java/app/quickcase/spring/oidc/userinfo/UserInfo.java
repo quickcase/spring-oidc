@@ -28,7 +28,7 @@ import java.util.*;
 public class UserInfo implements Principal, UserDetails {
     @NonNull
     @ToString.Include
-    private final String id;
+    private final String subject;
     private final String name;
     private final String email;
     @NonNull
@@ -49,7 +49,7 @@ public class UserInfo implements Principal, UserDetails {
 
     @Override
     public String getUsername() {
-        return email != null ? email : id;
+        return email != null ? email : subject;
     }
 
     @Override
