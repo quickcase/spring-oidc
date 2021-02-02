@@ -52,7 +52,7 @@ public class QuickcaseUserAuthentication extends QuickcaseAuthentication {
 
     @Override
     public Optional<String> getEmail() {
-        return Optional.ofNullable(userInfo.getEmail());
+        return userInfo.getEmail();
     }
 
     @Override
