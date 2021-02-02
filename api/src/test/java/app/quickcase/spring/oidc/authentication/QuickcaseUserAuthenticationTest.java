@@ -1,31 +1,36 @@
 package app.quickcase.spring.oidc.authentication;
 
-import app.quickcase.spring.oidc.organisation.OrganisationProfile;
-import app.quickcase.spring.oidc.SecurityClassification;
-import app.quickcase.spring.oidc.userinfo.UserInfo;
-import app.quickcase.spring.oidc.utils.StringUtils;
 import app.quickcase.spring.oidc.AccessLevel;
+import app.quickcase.spring.oidc.SecurityClassification;
+import app.quickcase.spring.oidc.organisation.OrganisationProfile;
+import app.quickcase.spring.oidc.userinfo.UserInfo;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.security.core.GrantedAuthority;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class QuickcaseUserAuthenticationTest {
     private static final String ACCESS_TOKEN = "access-token-123";
     private static final String USER_ID = "client-123";
     private static final String USER_EMAIL = "test@test";
     private static final String USER_NAME = "Jean Paul";
+
+    @Test
+    @DisplayName("should enforce non-null fields")
+    void shouldEnforceNonNullFields() {
+        Assertions.assertAll(
+                () -> assertThrows(NullPointerException.class, () -> new QuickcaseUserAuthentication(null, UserInfo.builder(USER_ID).build())),
+                () -> assertThrows(NullPointerException.class, () -> new QuickcaseUserAuthentication(ACCESS_TOKEN, null))
+        );
+    }
 
     @Test
     @DisplayName("should have email address")
@@ -126,30 +131,19 @@ class QuickcaseUserAuthenticationTest {
         );
     }
 
-    @Test
-    @DisplayName("should find organisation profile regardless of case")
-    void getOrganisationProfileIgnoreCase() {
-        final QuickcaseAuthentication auth = userAuthentication();
-        final OrganisationProfile orgProfile = auth.getOrganisationProfile("OrG-1");
-
-        assertThat("Not handling organisation IDs as case-insensitive",
-                   orgProfile.getGroup().orElse("no-group"),
-                   equalTo("org-1-group"));
-    }
-
     private QuickcaseAuthentication userAuthentication() {
-        final Set<GrantedAuthority> authorities = StringUtils.authorities("ROLE-1", "ROLE-2");
+        final OrganisationProfile profile = OrganisationProfile.builder()
+                                                               .accessLevel(AccessLevel.GROUP)
+                                                               .group("org-1-group")
+                                                               .securityClassification(SecurityClassification.PRIVATE)
+                                                               .build();
         final UserInfo userInfo = UserInfo.builder(USER_ID)
                                           .name(USER_NAME)
                                           .email(USER_EMAIL)
+                                          .authorities("ROLE-1", "ROLE-2")
+                                          .organisationProfile("org-1", profile)
                                           .build();
-        final Map<String, OrganisationProfile> orgProfiles = new HashMap<>();
-        orgProfiles.put("org-1", OrganisationProfile.builder()
-                                                    .accessLevel(AccessLevel.GROUP)
-                                                    .group("org-1-group")
-                                                    .securityClassification(SecurityClassification.PRIVATE)
-                                                    .build());
 
-        return new QuickcaseUserAuthentication(ACCESS_TOKEN, authorities, userInfo, orgProfiles);
+        return new QuickcaseUserAuthentication(ACCESS_TOKEN, userInfo);
     }
 }

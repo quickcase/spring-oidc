@@ -98,7 +98,7 @@ public class UserInfo implements Principal, UserDetails {
         private String email;
         private Set<GrantedAuthority> authorities = new HashSet<>();
         private UserPreferences preferences;
-        private final Map<String, OrganisationProfile> organisationProfiles = new HashMap<>();
+        private final Map<String, OrganisationProfile> organisationProfiles = new TreeMap<>(String::compareToIgnoreCase);
 
         public UserInfoBuilder name(String name) {
             this.name = name;

@@ -1,18 +1,13 @@
 package app.quickcase.spring.oidc.authentication;
 
 import app.quickcase.spring.oidc.AccessLevel;
-import app.quickcase.spring.oidc.organisation.OrganisationProfile;
 import app.quickcase.spring.oidc.SecurityClassification;
+import app.quickcase.spring.oidc.organisation.OrganisationProfile;
 import app.quickcase.spring.oidc.userinfo.UserInfo;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.GrantedAuthority;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
 import java.util.Optional;
-import java.util.TreeMap;
 
 @Slf4j
 public class QuickcaseUserAuthentication extends QuickcaseAuthentication {
@@ -24,24 +19,11 @@ public class QuickcaseUserAuthentication extends QuickcaseAuthentication {
                                   .build();
     }
 
-    private final Map<String, OrganisationProfile> organisationProfiles;
     private final UserInfo userInfo;
 
-    @NonNull
-    public QuickcaseUserAuthentication(@NonNull String accessToken,
-                                       @NonNull Collection<? extends GrantedAuthority> authorities,
-                                       @NonNull UserInfo userInfo) {
-        this(accessToken, authorities, userInfo, Collections.emptyMap());
-    }
-
-    @NonNull
-    public QuickcaseUserAuthentication(@NonNull String accessToken,
-                                       @NonNull Collection<? extends GrantedAuthority> authorities,
-                                       @NonNull UserInfo userInfo,
-                                       @NonNull Map<String, OrganisationProfile> organisationProfiles) {
-        super(authorities, accessToken);
+    public QuickcaseUserAuthentication(@NonNull String accessToken, @NonNull UserInfo userInfo) {
+        super(userInfo.getAuthorities(), accessToken);
         this.userInfo = userInfo;
-        this.organisationProfiles = caseInsensitiveMap(organisationProfiles);
         this.setAuthenticated(true);
     }
 
@@ -67,7 +49,7 @@ public class QuickcaseUserAuthentication extends QuickcaseAuthentication {
 
     @Override
     public OrganisationProfile getOrganisationProfile(String organisationId) {
-        return Optional.ofNullable(organisationProfiles.get(organisationId))
+        return Optional.ofNullable(userInfo.getOrganisationProfiles().get(organisationId))
                        .orElseGet(() -> {
                            log.debug(
                                    "No profile found for user `{}` and organisation `{}`, " +
@@ -91,12 +73,5 @@ public class QuickcaseUserAuthentication extends QuickcaseAuthentication {
     @Override
     public Boolean isClientOnly() {
         return false;
-    }
-
-    private Map<String, OrganisationProfile> caseInsensitiveMap(
-            Map<String, OrganisationProfile> sourceMap) {
-        final TreeMap<String, OrganisationProfile> treeMap = new TreeMap<>(String::compareToIgnoreCase);
-        treeMap.putAll(sourceMap);
-        return treeMap;
     }
 }

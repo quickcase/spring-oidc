@@ -6,9 +6,11 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 
+import static app.quickcase.spring.oidc.AccessLevel.GROUP;
+import static app.quickcase.spring.oidc.SecurityClassification.PRIVATE;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("UserInfo")
 class UserInfoTest {
@@ -70,6 +72,40 @@ class UserInfoTest {
                                           .build();
 
         assertThat(userInfo.getJurisdictions(), equalTo(Collections.EMPTY_SET));
+    }
+
+    @Test
+    @DisplayName("should give organisation profile when found")
+    void getOrganisationProfileWhenFound() {
+        final OrganisationProfile orgProfile = OrganisationProfile.builder()
+                                                                  .accessLevel(GROUP)
+                                                                  .group("org-1-group")
+                                                                  .securityClassification(PRIVATE)
+                                                                  .build();
+        final UserInfo userInfo = UserInfo.builder(SUBJECT)
+                                          .organisationProfile("org-1", orgProfile)
+                                          .build();
+        final OrganisationProfile actualProfile = userInfo.getOrganisationProfiles().get("org-1");
+
+        assertAll(
+                () -> assertThat(actualProfile.getAccessLevel(), is(GROUP)),
+                () -> assertThat(actualProfile.getSecurityClassification(), is(PRIVATE)),
+                () -> assertThat(actualProfile.getGroup().get(), equalTo("org-1-group"))
+        );
+    }
+
+    @Test
+    @DisplayName("should find organisation profile regardless of case")
+    void getOrganisationProfileIgnoreCase() {
+        final OrganisationProfile orgProfile = OrganisationProfile.builder().build();
+        final UserInfo userInfo = UserInfo.builder(SUBJECT)
+                                          .organisationProfile("org-1", orgProfile)
+                                          .build();
+        final OrganisationProfile actualProfile = userInfo.getOrganisationProfiles().get("OrG-1");
+
+        assertThat("Not handling organisation IDs as case-insensitive",
+                   actualProfile,
+                   equalTo(orgProfile));
     }
 
 }
