@@ -1,13 +1,10 @@
 package app.quickcase.spring.oidc.authentication;
 
-import app.quickcase.spring.oidc.organisation.OrganisationProfile;
 import app.quickcase.spring.oidc.userinfo.UserInfo;
 import app.quickcase.spring.oidc.userinfo.UserInfoService;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
 
-import java.util.Map;
 import java.util.Set;
 
 import static app.quickcase.spring.oidc.utils.StringUtils.authorities;
@@ -50,12 +47,7 @@ public class QuickcaseAuthenticationConverter implements Converter<Jwt, Quickcas
         final String subject = source.getSubject();
         final String accessToken = source.getTokenValue();
         final UserInfo userInfo = userInfoService.loadUserInfo(subject, accessToken);
-        final Set<GrantedAuthority> authorities = userInfo.getAuthorities();
-        final Map<String, OrganisationProfile> orgProfiles = userInfo.getOrganisationProfiles();
 
-        return new QuickcaseUserAuthentication(accessToken,
-                                               authorities,
-                                               userInfo,
-                                               orgProfiles);
+        return new QuickcaseUserAuthentication(accessToken, userInfo);
     }
 }
