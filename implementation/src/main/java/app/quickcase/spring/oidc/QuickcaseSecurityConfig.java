@@ -4,6 +4,7 @@ import app.quickcase.spring.oidc.authentication.QuickcaseAuthenticationConverter
 import app.quickcase.spring.oidc.claims.ClaimNamesProvider;
 import app.quickcase.spring.oidc.claims.ConfigDrivenClaimNamesProvider;
 import app.quickcase.spring.oidc.userinfo.*;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
@@ -21,6 +22,7 @@ import java.net.URISyntaxException;
  * @since 0.1
  */
 @Configuration
+@EnableConfigurationProperties(OidcConfig.class)
 public class QuickcaseSecurityConfig {
     @Bean
     public UserInfoGateway createUserInfoGateway(OidcConfig oidcConfig) throws URISyntaxException {
