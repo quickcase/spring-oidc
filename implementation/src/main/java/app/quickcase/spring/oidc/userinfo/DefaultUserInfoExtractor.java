@@ -39,7 +39,7 @@ public class DefaultUserInfoExtractor implements UserInfoExtractor {
                     .ifPresent(builder::authorities);
 
         return builder.preferences(extractPreferences(claimsParser))
-                      .organisationProfiles(extractProfiles(claimsParser))
+                      .organisationProfiles(extractProfiles(subject, claimsParser))
                       .build();
     }
 
@@ -53,9 +53,13 @@ public class DefaultUserInfoExtractor implements UserInfoExtractor {
         return builder.build();
     }
 
-    private Map<String, OrganisationProfile> extractProfiles(ClaimsParser claimsParser) {
-        return claimsParser.getNode(claimNames.organisations())
+    private Map<String, OrganisationProfile> extractProfiles(String subject, ClaimsParser claimsParser) {
+        log.debug("Extracting organisation profiles for subject `{}`", subject);
+        return claimsParser.getObject(claimNames.organisations())
                            .map(ORG_PARSER::parse)
-                           .orElse(Collections.emptyMap());
+                           .orElseGet(() -> {
+                               log.warn("No organisation profiles extracted for subject `{}`", subject);
+                               return Collections.emptyMap();
+                           });
     }
 }
