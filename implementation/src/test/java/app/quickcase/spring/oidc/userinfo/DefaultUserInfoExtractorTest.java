@@ -3,9 +3,7 @@ package app.quickcase.spring.oidc.userinfo;
 import app.quickcase.spring.oidc.claims.ClaimNamesProvider;
 import app.quickcase.spring.oidc.organisation.OrganisationProfile;
 import app.quickcase.spring.oidc.OidcException;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.TextNode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,8 +26,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("DefaultUserInfoExtractor")
 class DefaultUserInfoExtractorTest {
-    private static final ObjectMapper MAPPER = new ObjectMapper();
-
     private static final String CLAIM_SUB = "conf-sub";
     private static final String CLAIM_NAME = "conf-name";
     private static final String CLAIM_EMAIL = "conf-email";
@@ -46,18 +42,10 @@ class DefaultUserInfoExtractorTest {
     private static final String DEFAULT_JURISDICTION = "jid1";
     private static final String DEFAULT_CASE_TYPE = "ct1";
     private static final String DEFAULT_STATE = "stateA";
-    private static final JsonNode USER_ORGANISATIONS;
-
-    static {
-        try {
-            USER_ORGANISATIONS = MAPPER.readTree("{" +
-                        "\"org-1\": {\"access\": \"organisation\", \"classification\": \"private\"}," +
-                        "\"org-2\": {\"access\": \"group\", \"classification\": \"public\", \"group\": \"group-1\"}" +
-                        "}");
-        } catch (JsonProcessingException e) {
-            throw new AssertionError(e);
-        }
-    }
+    private static final String USER_ORGANISATIONS = "{" +
+            "\"org-1\": {\"access\": \"organisation\", \"classification\": \"private\"}," +
+            "\"org-2\": {\"access\": \"group\", \"classification\": \"public\", \"group\": \"group-1\"}" +
+            "}";
 
     @Test
     @DisplayName("should extract userInfo from claims")
@@ -144,7 +132,7 @@ class DefaultUserInfoExtractorTest {
         claims.put(CLAIM_NAME, textNode(USER_NAME));
         claims.put(CLAIM_EMAIL, textNode(USER_EMAIL));
         claims.put(CLAIM_ROLES, textNode(USER_APP_ROLES));
-        claims.put(CLAIM_ORGS, USER_ORGANISATIONS);
+        claims.put(CLAIM_ORGS, textNode(USER_ORGANISATIONS));
         claims.put(CLAIM_DEF_JURISDICTION, textNode(DEFAULT_JURISDICTION));
         claims.put(CLAIM_DEF_CASE_TYPE, textNode(DEFAULT_CASE_TYPE));
         claims.put(CLAIM_DEF_STATE, textNode(DEFAULT_STATE));
