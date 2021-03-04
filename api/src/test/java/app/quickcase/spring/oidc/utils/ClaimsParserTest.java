@@ -1,6 +1,7 @@
 package app.quickcase.spring.oidc.utils;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
@@ -77,6 +78,78 @@ class ClaimsParserTest {
             assertThat(claim1.orElseThrow(), equalTo(node));
         }
 
+    }
+
+    @Nested
+    @DisplayName("getObject")
+    class GetObject {
+        @Test
+        @DisplayName("should return empty optional when claim missing")
+        void claimMissing() {
+            final ClaimsParser parser = new ClaimsParser(new HashMap<>());
+
+            final Optional<ObjectNode> missingClaim = parser.getObject("any");
+
+            assertThat(missingClaim.isEmpty(), is(true));
+        }
+
+        @Test
+        @DisplayName("should return ObjectNode claim as ObjectNode when present")
+        void claimPresentAsObject() {
+            final ObjectNode node = new ObjectNode(new JsonNodeFactory(true));
+            final ClaimsParser parser = new ClaimsParser(mapWith("claim1", node));
+
+            final Optional<ObjectNode> claim1 = parser.getObject("claim1");
+
+            assertThat(claim1.orElseThrow(), equalTo(node));
+        }
+
+        @Test
+        @DisplayName("should return empty optional when claim is non-object")
+        void claimMissingAsNonObject() {
+            final ArrayNode node = new ArrayNode(new JsonNodeFactory(true));
+            final ClaimsParser parser = new ClaimsParser(mapWith("claim1", node));
+
+            final Optional<ObjectNode> claim1 = parser.getObject("claim1");
+
+            assertThat(claim1.isEmpty(), is(true));
+        }
+
+        @Test
+        @DisplayName("should parse valid TextNode to return as ObjectNode")
+        void claimPresentAsObjectString() {
+            final TextNode node = new TextNode("{\"key\": \"value\"}");
+            final ClaimsParser parser = new ClaimsParser(mapWith("claim1", node));
+
+            final Optional<ObjectNode> claim1 = parser.getObject("claim1");
+
+            final ObjectNode expected = new ObjectNode(new JsonNodeFactory(true)).put("key", "value");
+
+            assertThat(claim1.orElseThrow(), equalTo(expected));
+        }
+
+        @Test
+        @DisplayName("should ignore TextNode representing non-objects")
+        void claimMissingAsArrayString() {
+            final TextNode node = new TextNode("[]");
+            final ClaimsParser parser = new ClaimsParser(mapWith("claim1", node));
+
+            final Optional<ObjectNode> claim1 = parser.getObject("claim1");
+
+            assertThat(claim1.isEmpty(), is(true));
+        }
+
+
+        @Test
+        @DisplayName("should ignore non-parseable TextNode")
+        void claimMissingAsNonParseableString() {
+            final TextNode node = new TextNode("{\"key\"");
+            final ClaimsParser parser = new ClaimsParser(mapWith("claim1", node));
+
+            final Optional<ObjectNode> claim1 = parser.getObject("claim1");
+
+            assertThat(claim1.isEmpty(), is(true));
+        }
     }
 
     private Map<String, JsonNode> mapWith(String key, JsonNode value) {
