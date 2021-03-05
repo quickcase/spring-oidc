@@ -1,7 +1,7 @@
 name: Publish tag
 on:
-  push:
-    tags: ['**']
+  release:
+    types: [ prereleased, released ]
 env:
   GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
   GITHUB_PACKAGE_TOKEN: ${{ secrets.GITHUB_PACKAGE_TOKEN }}
