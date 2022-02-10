@@ -7,7 +7,7 @@ wrapper {
 }
 
 ext.libVersions = [
-        junit: '5.7.0',
+        junit: '5.8.2',
         spring: '2.6.3',
         mockito: '3.7.7'
 ]
