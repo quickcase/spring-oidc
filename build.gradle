@@ -71,7 +71,7 @@ subprojects {
         dependsOn test
 
         reports {
-            html.enabled true
+            html.required = true
         }
     }
 
