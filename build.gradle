@@ -30,6 +30,10 @@ subprojects {
     sourceCompatibility = 11
     targetCompatibility = 11
 
+    repositories {
+        mavenCentral()
+    }
+
     dependencies {
         // Spring
         api "org.springframework.boot:spring-boot-starter-security:${libVersions['spring']}"
