@@ -1,0 +1,120 @@
+name: CI
+on:
+  release:
+    types: [released, prereleased]
+  push:
+    branches:
+      - main
+  pull_request:
+  schedule:
+    - cron: '0 0 * * *'
+permissions:
+  contents: read
+  packages: write
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.4.0
+
+      - uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+#          cache: 'gradle'
+
+      - name: Compile and test
+        run: ./gradlew build --info
+
+      - name: Check coverage
+        run: ./gradlew jacocoTestCoverageVerification --info
+
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: build-reports
+          path: '*/build/reports'
+          retention-days: 1
+
+  dependency_check:
+    name: Dependency checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.4.0
+
+      - uses: actions/cache@v2.1.6
+        with:
+          path: ~/.gradle/dependency-check-data
+          key: ${{ runner.os }}-dep_check-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-dep_check-
+
+      - uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+#          cache: 'gradle'
+
+      - name: Analyse dependencies
+        run: ./gradlew dependencyCheckAggregate --info --no-daemon
+
+  publish:
+    name: Publish
+    needs: [test, dependency_check]
+    if: github.event_name == 'release'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.4.0
+
+      - uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+#          cache: 'gradle'
+
+      - name: Gradle publish
+        run: ./gradlew publish --info --no-daemon
+        env:
+          GH_USERNAME: ${{ secrets.GH_USERNAME }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
+  end:
+    name: End
+    needs: [test, dependency_check, publish]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+    steps:
+      - name: Build summary
+        id: summary
+        env:
+          TEST: ${{ needs.test.result }}
+          DEPENDENCY_CHECK: ${{ needs.dependency_check.result }}
+          PUBLISH: ${{ needs.publish.result }}
+        run: |
+          echo ::set-output name=success::$(if [[ "$TEST$DEPENDENCY_CHECK$PUBLISH" =~ ^(success|skipped)+$ ]]; then echo "true"; else echo "false"; fi)
+
+      - name: Notify slack of release success
+        if: steps.summary.outputs.success == 'true' && github.event_name == 'release' && env.SLACK_BOT_TOKEN != 0
+        uses: voxmedia/github-action-slack-notify-build@v1
+        with:
+          channel: dev
+          status: SUCCESS
+          color: good
+      - name: Notify slack fail
+        if: steps.summary.outputs.success != 'true' && env.SLACK_BOT_TOKEN != 0
+        uses: voxmedia/github-action-slack-notify-build@v1
+        with:
+          channel: dev
+          status: FAILED
+          color: danger
