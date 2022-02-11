@@ -1,6 +1,6 @@
 # spring-oidc
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Build status](https://github.com/quickcase/spring-oidc/workflows/Quality%20checks/badge.svg)](https://github.com/quickcase/spring-oidc/actions)
+[![Build status](https://github.com/quickcase/spring-oidc/workflows/CI/badge.svg)](https://github.com/quickcase/spring-oidc/actions)
 
 Provider-agnostic [OIDC](https://openid.net/connect/) integration using [Spring Security](https://spring.io/projects/spring-security) for QuickCase APIs.
 
