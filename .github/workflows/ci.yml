@@ -24,7 +24,7 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '11'
-#          cache: 'gradle'
+          cache: 'gradle'
 
       - name: Compile and test
         run: ./gradlew build --info
@@ -59,7 +59,7 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '11'
-#          cache: 'gradle'
+          cache: 'gradle'
 
       - name: Analyse dependencies
         run: ./gradlew dependencyCheckAggregate --info --no-daemon
@@ -78,7 +78,7 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '11'
-#          cache: 'gradle'
+          cache: 'gradle'
 
       - name: Gradle publish
         run: ./gradlew publish --info --no-daemon
