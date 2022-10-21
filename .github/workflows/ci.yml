@@ -106,14 +106,14 @@ jobs:
 
       - name: Notify slack of release success
         if: steps.summary.outputs.success == 'true' && github.event_name == 'release' && env.SLACK_BOT_TOKEN != 0
-        uses: voxmedia/github-action-slack-notify-build@v1
+        uses: voxmedia/github-action-slack-notify-build@v2
         with:
           channel: dev
           status: SUCCESS
           color: good
       - name: Notify slack fail
         if: steps.summary.outputs.success != 'true' && env.SLACK_BOT_TOKEN != 0
-        uses: voxmedia/github-action-slack-notify-build@v1
+        uses: voxmedia/github-action-slack-notify-build@v2
         with:
           channel: dev
           status: FAILED
