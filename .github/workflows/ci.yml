@@ -34,7 +34,7 @@ jobs:
         run: ./gradlew jacocoTestCoverageVerification --info
 
       - name: Archive code coverage results
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: failure()
         with:
           name: build-reports
