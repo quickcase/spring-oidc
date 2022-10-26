@@ -2,6 +2,16 @@
 <suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
     <suppress>
         <notes><![CDATA[
+            file name: All Spring JARs
+
+            This CVE is addressed in Spring 6 (yet to be released).
+            This project is not affected as it makes no use of `RemoteInvocationSerializingExporter` or `HTTPInvokerServiceExporter`
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.springframework/.*@.*$</packageUrl>
+        <cve>CVE-2016-1000027</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
             file name: spring-*.jar
 
             This suppresses a false-positive identifying Spring 5.x.x as 5.0.5 for a CVE related to the use
