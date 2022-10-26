@@ -50,4 +50,13 @@
         <packageUrl regex="true">^pkg:maven/org\.springframework\.security/spring\-security\-crypto@.*$</packageUrl>
         <vulnerabilityName>CVE-2020-5408</vulnerabilityName>
     </suppress>
+    <suppress>
+        <notes><![CDATA[
+            file name: snakeyaml-1.33.jar
+
+            False positive, CVE-2022-38752 was fixed in 1.32
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.yaml/snakeyaml@1.33$</packageUrl>
+        <vulnerabilityName>CVE-2022-38752</vulnerabilityName>
+    </suppress>
 </suppressions>
