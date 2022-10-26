@@ -12,6 +12,17 @@
     </suppress>
     <suppress>
         <notes><![CDATA[
+            file name: All Spring Boot JARs
+
+            False positive misidentifying Spring Boot artifacts as Spring Security.
+            The Spring Security versions are not aligned with Spring Boot.
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.springframework\.boot/.*@.*$</packageUrl>
+        <cpe>cpe:/a:pivotal_software:spring_security</cpe>
+        <cpe>cpe:/a:vmware:spring_security</cpe>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
             file name: spring-*.jar
 
             This suppresses a false-positive identifying Spring 5.x.x as 5.0.5 for a CVE related to the use
