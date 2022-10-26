@@ -23,26 +23,6 @@
     </suppress>
     <suppress>
         <notes><![CDATA[
-            file name: spring-*.jar
-
-            This suppresses a false-positive identifying Spring 5.x.x as 5.0.5 for a CVE related to the use
-            of method security. In addition, method security is not used in this project.
-            https://github.com/jeremylong/DependencyCheck/issues/1827
-        ]]></notes>
-        <cve>CVE-2018-1258</cve>
-    </suppress>
-    <suppress>
-        <notes><![CDATA[
-            file name: spring-boot-starter-oauth2-resource-server-*.jar
-
-            This suppresses a false-positive identifying spring-boot-starter-oauth2-resource-server-2.6.3.jar as Spring Security 2.6.3,
-            whereas the version of Spring Security used is actually 5.6.1 which is not affected by CVE-2021-22112.
-        ]]></notes>
-        <packageUrl regex="true">^pkg:maven/org\.springframework\.boot/spring\-boot\-starter\-oauth2\-resource\-server@.*$</packageUrl>
-        <cve>CVE-2021-22112</cve>
-    </suppress>
-    <suppress>
-        <notes><![CDATA[
             file name: spring-security-crypto-5.7.4.jar
 
             False positive, fixed since spring-security 5.3.2
