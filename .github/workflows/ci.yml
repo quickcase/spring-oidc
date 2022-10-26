@@ -105,7 +105,7 @@ jobs:
           DEPENDENCY_CHECK: ${{ needs.dependency_check.result }}
           PUBLISH: ${{ needs.publish.result }}
         run: |
-          echo ::set-output name=success::$(if [[ "$TEST$DEPENDENCY_CHECK$PUBLISH" =~ ^(success|skipped)+$ ]]; then echo "true"; else echo "false"; fi)
+          echo "success=$(if [[ "$TEST$DEPENDENCY_CHECK$PUBLISH" =~ ^(success|skipped)+$ ]]; then echo "true"; else echo "false"; fi)" >> $GITHUB_OUTPUT
 
       - name: Notify slack fail
         if: steps.summary.outputs.success != 'true' && env.SLACK_BOT_TOKEN != 0
