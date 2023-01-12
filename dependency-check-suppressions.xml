@@ -35,8 +35,14 @@
             file name: snakeyaml-1.33.jar
 
             False positive, CVE-2022-38752 was fixed in 1.32
+            CVE-2021-4235: False positive, affects package yaml-go
+            CVE-2022-3064: False positive, affects package yaml-go
+            CVE-2022-1471: False positive, Spring uses recommended SafeConstructor (https://bitbucket.org/snakeyaml/snakeyaml/wiki/CVE-2022-1471)
         ]]></notes>
         <packageUrl regex="true">^pkg:maven/org\.yaml/snakeyaml@1.33$</packageUrl>
         <vulnerabilityName>CVE-2022-38752</vulnerabilityName>
+        <vulnerabilityName>CVE-2021-4235</vulnerabilityName>
+        <vulnerabilityName>CVE-2022-3064</vulnerabilityName>
+        <vulnerabilityName>CVE-2022-1471</vulnerabilityName>
     </suppress>
 </suppressions>
