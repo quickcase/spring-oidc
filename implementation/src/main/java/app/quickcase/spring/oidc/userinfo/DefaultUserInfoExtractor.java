@@ -2,6 +2,7 @@ package app.quickcase.spring.oidc.userinfo;
 
 import app.quickcase.spring.oidc.OidcException;
 import app.quickcase.spring.oidc.claims.ClaimNamesProvider;
+import app.quickcase.spring.oidc.claims.JsonClaimsParser;
 import app.quickcase.spring.oidc.organisation.JsonOrganisationProfilesParser;
 import app.quickcase.spring.oidc.organisation.OrganisationProfile;
 import app.quickcase.spring.oidc.claims.ClaimsParser;
@@ -24,7 +25,7 @@ public class DefaultUserInfoExtractor implements UserInfoExtractor {
 
     @Override
     public UserInfo extract(Map<String, JsonNode> claims) {
-        final ClaimsParser claimsParser = new ClaimsParser(claims);
+        final ClaimsParser claimsParser = new JsonClaimsParser(claims);
 
         final String subject = claimsParser.getString(claimNames.sub())
                                            .orElseThrow(() -> new OidcException("Mandatory subject claim missing: " + claimNames.sub()));
