@@ -13,13 +13,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import app.quickcase.spring.oidc.claims.ClaimsParser;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-@DisplayName("ClaimsParser")
-class ClaimsParserTest {
+@DisplayName("JsonClaimsParser")
+class JsonClaimsParserTest {
 
     @Nested
     @DisplayName("getString")
@@ -27,7 +25,7 @@ class ClaimsParserTest {
         @Test
         @DisplayName("should return empty optional when claim missing")
         void claimMissing() {
-            final ClaimsParser parser = new ClaimsParser(new HashMap<>());
+            final ClaimsParser parser = new JsonClaimsParser(new HashMap<>());
 
             final Optional<String> missingClaim = parser.getString("any");
 
@@ -37,7 +35,7 @@ class ClaimsParserTest {
         @Test
         @DisplayName("should return claim as String when present and textual")
         void claimPresentAsText() {
-            final ClaimsParser parser = new ClaimsParser(mapWith("claim1", new TextNode("value1")));
+            final ClaimsParser parser = new JsonClaimsParser(mapWith("claim1", new TextNode("value1")));
 
             final Optional<String> claim1 = parser.getString("claim1");
 
@@ -47,7 +45,7 @@ class ClaimsParserTest {
         @Test
         @DisplayName("should return empty optional when present but not textual")
         void claimPresentAsObject() {
-            final ClaimsParser parser = new ClaimsParser(mapWith("claim1", new ObjectNode(new JsonNodeFactory(true))));
+            final ClaimsParser parser = new JsonClaimsParser(mapWith("claim1", new ObjectNode(new JsonNodeFactory(true))));
 
             final Optional<String> claim1 = parser.getString("claim1");
 
@@ -61,7 +59,7 @@ class ClaimsParserTest {
         @Test
         @DisplayName("should return empty optional when claim missing")
         void claimMissing() {
-            final ClaimsParser parser = new ClaimsParser(new HashMap<>());
+            final JsonClaimsParser parser = new JsonClaimsParser(new HashMap<>());
 
             final Optional<JsonNode> missingClaim = parser.getNode("any");
 
@@ -73,7 +71,7 @@ class ClaimsParserTest {
         void claimPresentAsNode() {
             final ObjectNode node = new ObjectNode(new JsonNodeFactory(true));
 
-            final ClaimsParser parser = new ClaimsParser(mapWith("claim1", node));
+            final JsonClaimsParser parser = new JsonClaimsParser(mapWith("claim1", node));
 
             final Optional<JsonNode> claim1 = parser.getNode("claim1");
 
@@ -88,7 +86,7 @@ class ClaimsParserTest {
         @Test
         @DisplayName("should return empty optional when claim missing")
         void claimMissing() {
-            final ClaimsParser parser = new ClaimsParser(new HashMap<>());
+            final ClaimsParser parser = new JsonClaimsParser(new HashMap<>());
 
             final Optional<ObjectNode> missingClaim = parser.getObject("any");
 
@@ -99,7 +97,7 @@ class ClaimsParserTest {
         @DisplayName("should return ObjectNode claim as ObjectNode when present")
         void claimPresentAsObject() {
             final ObjectNode node = new ObjectNode(new JsonNodeFactory(true));
-            final ClaimsParser parser = new ClaimsParser(mapWith("claim1", node));
+            final ClaimsParser parser = new JsonClaimsParser(mapWith("claim1", node));
 
             final Optional<ObjectNode> claim1 = parser.getObject("claim1");
 
@@ -110,7 +108,7 @@ class ClaimsParserTest {
         @DisplayName("should return empty optional when claim is non-object")
         void claimMissingAsNonObject() {
             final ArrayNode node = new ArrayNode(new JsonNodeFactory(true));
-            final ClaimsParser parser = new ClaimsParser(mapWith("claim1", node));
+            final ClaimsParser parser = new JsonClaimsParser(mapWith("claim1", node));
 
             final Optional<ObjectNode> claim1 = parser.getObject("claim1");
 
@@ -121,7 +119,7 @@ class ClaimsParserTest {
         @DisplayName("should parse valid TextNode to return as ObjectNode")
         void claimPresentAsObjectString() {
             final TextNode node = new TextNode("{\"key\": \"value\"}");
-            final ClaimsParser parser = new ClaimsParser(mapWith("claim1", node));
+            final ClaimsParser parser = new JsonClaimsParser(mapWith("claim1", node));
 
             final Optional<ObjectNode> claim1 = parser.getObject("claim1");
 
@@ -134,7 +132,7 @@ class ClaimsParserTest {
         @DisplayName("should ignore TextNode representing non-objects")
         void claimMissingAsArrayString() {
             final TextNode node = new TextNode("[]");
-            final ClaimsParser parser = new ClaimsParser(mapWith("claim1", node));
+            final ClaimsParser parser = new JsonClaimsParser(mapWith("claim1", node));
 
             final Optional<ObjectNode> claim1 = parser.getObject("claim1");
 
@@ -146,7 +144,7 @@ class ClaimsParserTest {
         @DisplayName("should ignore non-parseable TextNode")
         void claimMissingAsNonParseableString() {
             final TextNode node = new TextNode("{\"key\"");
-            final ClaimsParser parser = new ClaimsParser(mapWith("claim1", node));
+            final ClaimsParser parser = new JsonClaimsParser(mapWith("claim1", node));
 
             final Optional<ObjectNode> claim1 = parser.getObject("claim1");
 
