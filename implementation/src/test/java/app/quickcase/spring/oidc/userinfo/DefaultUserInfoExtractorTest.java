@@ -1,6 +1,8 @@
 package app.quickcase.spring.oidc.userinfo;
 
 import app.quickcase.spring.oidc.claims.ClaimNamesProvider;
+import app.quickcase.spring.oidc.claims.ClaimsParser;
+import app.quickcase.spring.oidc.claims.JsonClaimsParser;
 import app.quickcase.spring.oidc.organisation.OrganisationProfile;
 import app.quickcase.spring.oidc.OidcException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -118,15 +120,14 @@ class DefaultUserInfoExtractorTest {
     @Test
     @DisplayName("should throw exception when `sub` claim missing")
     void shouldThrowExceptionWhenNoSubClaim() throws Exception {
-        final Map<String, JsonNode> claims = minimumClaims();
-        claims.remove(CLAIM_SUB);
+        final ClaimsParser emptyClaims = new JsonClaimsParser(new HashMap<>());
 
         assertThrows(OidcException.class,
-                     () -> new DefaultUserInfoExtractor(claimNamesProvider()).extract(claims),
+                     () -> new DefaultUserInfoExtractor(claimNamesProvider()).extract(emptyClaims),
                      "Mandatory 'sub' claim missing");
     }
 
-    private Map<String, JsonNode> claims() {
+    private ClaimsParser claims() {
         final Map<String, JsonNode> claims = new HashMap<>();
         claims.put(CLAIM_SUB, textNode(USER_ID));
         claims.put(CLAIM_NAME, textNode(USER_NAME));
@@ -136,13 +137,13 @@ class DefaultUserInfoExtractorTest {
         claims.put(CLAIM_DEF_JURISDICTION, textNode(DEFAULT_JURISDICTION));
         claims.put(CLAIM_DEF_CASE_TYPE, textNode(DEFAULT_CASE_TYPE));
         claims.put(CLAIM_DEF_STATE, textNode(DEFAULT_STATE));
-        return claims;
+        return new JsonClaimsParser(claims);
     }
 
-    private Map<String, JsonNode> minimumClaims() {
+    private ClaimsParser minimumClaims() {
         final Map<String, JsonNode> claims = new HashMap<>();
         claims.put(CLAIM_SUB, textNode(USER_ID));
-        return claims;
+        return new JsonClaimsParser(claims);
     }
 
     private JsonNode textNode(String value) {

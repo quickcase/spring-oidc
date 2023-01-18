@@ -1,17 +1,16 @@
 package app.quickcase.spring.oidc.userinfo;
 
-import app.quickcase.spring.oidc.OidcException;
-import app.quickcase.spring.oidc.claims.ClaimNamesProvider;
-import app.quickcase.spring.oidc.claims.JsonClaimsParser;
-import app.quickcase.spring.oidc.organisation.JsonOrganisationProfilesParser;
-import app.quickcase.spring.oidc.organisation.OrganisationProfile;
-import app.quickcase.spring.oidc.claims.ClaimsParser;
-import app.quickcase.spring.oidc.utils.StringUtils;
-import com.fasterxml.jackson.databind.JsonNode;
-import lombok.extern.slf4j.Slf4j;
-
 import java.util.Collections;
 import java.util.Map;
+
+import app.quickcase.spring.oidc.OidcException;
+import app.quickcase.spring.oidc.claims.ClaimNamesProvider;
+import app.quickcase.spring.oidc.claims.ClaimsParser;
+import app.quickcase.spring.oidc.organisation.JsonOrganisationProfilesParser;
+import app.quickcase.spring.oidc.organisation.OrganisationProfile;
+import app.quickcase.spring.oidc.utils.StringUtils;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class DefaultUserInfoExtractor implements UserInfoExtractor {
@@ -24,9 +23,7 @@ public class DefaultUserInfoExtractor implements UserInfoExtractor {
     }
 
     @Override
-    public UserInfo extract(Map<String, JsonNode> claims) {
-        final ClaimsParser claimsParser = new JsonClaimsParser(claims);
-
+    public UserInfo extract(ClaimsParser claimsParser) {
         final String subject = claimsParser.getString(claimNames.sub())
                                            .orElseThrow(() -> new OidcException("Mandatory subject claim missing: " + claimNames.sub()));
 
