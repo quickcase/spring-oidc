@@ -1,10 +1,12 @@
 package app.quickcase.spring.oidc.userinfo;
 
-import app.quickcase.spring.oidc.OidcException;
-import com.fasterxml.jackson.databind.JsonNode;
-import org.springframework.security.core.AuthenticationException;
+import java.util.Optional;
 
-import java.util.Map;
+import app.quickcase.spring.oidc.OidcException;
+import app.quickcase.spring.oidc.claims.ClaimsParser;
+import app.quickcase.spring.oidc.claims.JsonClaimsParser;
+
+import org.springframework.security.core.AuthenticationException;
 
 public class DefaultUserInfoService implements UserInfoService {
     private static final String CLAIM_SUB = "sub";
@@ -19,9 +21,9 @@ public class DefaultUserInfoService implements UserInfoService {
 
     @Override
     public UserInfo loadUserInfo(String expectedSubject, String accessToken) {
-        final Map<String, JsonNode> claims = gateway.getClaims(accessToken);
+        final ClaimsParser claims = new JsonClaimsParser(gateway.getClaims(accessToken));
 
-        validateSubject(expectedSubject, claims.get(CLAIM_SUB).textValue());
+        validateSubject(expectedSubject, claims);
 
         return extractor.extract(claims);
     }
@@ -30,11 +32,13 @@ public class DefaultUserInfoService implements UserInfoService {
      * Prevent token substitution attacks by validating sub claim.
      *
      * @param expectedSubject Subject expected by caller
-     * @param actualSubject Subject received from userInfo endpoint
+     * @param claims Claims received from userInfo endpoint
      * @throws AuthenticationException When subjects cannot be compared or do not match.
      */
-    private void validateSubject(String expectedSubject, Object actualSubject) {
-        if(!expectedSubject.equals(actualSubject)) {
+    private void validateSubject(String expectedSubject, ClaimsParser claims) {
+        final Optional<String> actualSubject = claims.getString(CLAIM_SUB);
+
+        if(actualSubject.isEmpty() || !expectedSubject.equals(actualSubject.get())) {
             throw new OidcException("User info subject does match expected subject");
         }
     }

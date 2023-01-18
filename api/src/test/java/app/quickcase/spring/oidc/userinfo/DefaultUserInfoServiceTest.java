@@ -24,8 +24,8 @@ class DefaultUserInfoServiceTest {
         return claims;
     };
 
-    private final UserInfoExtractor stubExtractor = claims -> UserInfo.builder(claims.get("sub").textValue())
-                                                                      .name(claims.get("name").textValue())
+    private final UserInfoExtractor stubExtractor = claims -> UserInfo.builder(claims.getString("sub").get())
+                                                                      .name(claims.getString("name").get())
                                                                       .build();
 
     @Test
