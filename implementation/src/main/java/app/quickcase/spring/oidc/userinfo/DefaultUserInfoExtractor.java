@@ -4,7 +4,7 @@ import app.quickcase.spring.oidc.OidcException;
 import app.quickcase.spring.oidc.claims.ClaimNamesProvider;
 import app.quickcase.spring.oidc.organisation.JsonOrganisationProfilesParser;
 import app.quickcase.spring.oidc.organisation.OrganisationProfile;
-import app.quickcase.spring.oidc.utils.ClaimsParser;
+import app.quickcase.spring.oidc.claims.ClaimsParser;
 import app.quickcase.spring.oidc.utils.StringUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
