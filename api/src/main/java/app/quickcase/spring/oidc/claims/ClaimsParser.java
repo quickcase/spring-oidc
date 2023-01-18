@@ -1,4 +1,4 @@
-package app.quickcase.spring.oidc.utils;
+package app.quickcase.spring.oidc.claims;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;

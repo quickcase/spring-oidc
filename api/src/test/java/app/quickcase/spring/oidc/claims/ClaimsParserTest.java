@@ -1,4 +1,4 @@
-package app.quickcase.spring.oidc.utils;
+package app.quickcase.spring.oidc.claims;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+
+import app.quickcase.spring.oidc.claims.ClaimsParser;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
