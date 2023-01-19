@@ -24,6 +24,12 @@ This limitation will be lifted as part of [#59](https://github.com/quickcase/spr
 
 ## How to use
 
+### Mode
+
+The mode used controls where required claims are read from.
+The following modes are currently supported:
+- `user-info` (default): Extracts QuickCase claims from the OpenID UserInfo endpoint
+
 ### Private claims
 
 QuickCase relies on each users having private claims exposed through OpenID Connect by the identity provider.
@@ -72,6 +78,7 @@ By default, the decision to fetch `/userinfo` is controlled by the presence of t
 
 |Config|Default|Description|
 |---|---|---|
+|quickcase.oidc.mode <br> _QUICKCASE_OIDC_MODE_|`user-info`|Optional. Mode to use for integration with OIDC provider|
 |quickcase.oidc.jwk-set-uri <br> _QUICKCASE_OIDC_JWKSETURI_||Required. URL of the OIDC provider's JWK set endpoint|
 |quickcase.oidc.user-info-uri <br> _QUICKCASE_OIDC_USERINFOURI_||Required. URL of the OIDC provider's user info endpoint|
 |quickcase.oidc.openid-scope <br> _QUICKCASE_OIDC_OPENIDSCOPE_|`openid`|Optional. Scope controlling whether `/userinfo` is queried to extract ID claims|
