@@ -29,6 +29,13 @@ This limitation will be lifted as part of [#59](https://github.com/quickcase/spr
 The mode used controls where required claims are read from.
 The following modes are currently supported:
 - `user-info` (default): Extracts QuickCase claims from the OpenID UserInfo endpoint
+- `jwt-access-token`: Extracts claims from the JWT Access token
+
+The choice of the mode should be made depending on the OpenID Connect provider.
+Some providers, such as Azure AD, do not support custom claims in UserInfo endpoint and thus can only be used with the mode `jwt-access-token`.
+Other providers, such as AWS Cognito, do not support custom claims in access tokens and thus can only be used with the mode `user-info`.
+
+The mode `jwt-access-token` offers better performances as it doesn't require an API call to be made to the UserInfo endpoint on the OpenID Connect provider.
 
 ### Private claims
 

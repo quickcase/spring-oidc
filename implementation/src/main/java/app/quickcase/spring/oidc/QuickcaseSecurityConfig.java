@@ -1,5 +1,6 @@
 package app.quickcase.spring.oidc;
 
+import app.quickcase.spring.oidc.authentication.converter.AccessTokenAuthenticationConverter;
 import app.quickcase.spring.oidc.authentication.converter.QuickcaseAuthenticationConverter;
 import app.quickcase.spring.oidc.authentication.converter.UserInfoAuthenticationConverter;
 import app.quickcase.spring.oidc.claims.ClaimNamesProvider;
@@ -57,6 +58,15 @@ public class QuickcaseSecurityConfig {
             OidcConfig oidcConfig
     ) {
         return new UserInfoAuthenticationConverter(userInfoService, oidcConfig.getOpenidScope());
+    }
+
+    @Bean
+    @ConditionalOnProperty(prefix = "quickcase.oidc", name = "mode", havingValue = "jwt-access-token")
+    public AccessTokenAuthenticationConverter createAccessTokenAuthenticationConverter(
+            UserInfoExtractor userInfoExtractor,
+            OidcConfig oidcConfig
+    ) {
+        return new AccessTokenAuthenticationConverter(userInfoExtractor, oidcConfig.getOpenidScope());
     }
 
     @Bean
