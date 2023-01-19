@@ -5,6 +5,8 @@ import app.quickcase.spring.oidc.authentication.converter.UserInfoAuthentication
 import app.quickcase.spring.oidc.claims.ClaimNamesProvider;
 import app.quickcase.spring.oidc.claims.ConfigDrivenClaimNamesProvider;
 import app.quickcase.spring.oidc.userinfo.*;
+
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,10 +27,6 @@ import java.net.URISyntaxException;
 @Configuration
 @EnableConfigurationProperties(OidcConfig.class)
 public class QuickcaseSecurityConfig {
-    @Bean
-    public UserInfoGateway createUserInfoGateway(OidcConfig oidcConfig) throws URISyntaxException {
-        return new DefaultUserInfoGateway(new URI(oidcConfig.getUserInfoUri()), new RestTemplate());
-    }
 
     @Bean
     public ClaimNamesProvider createClaimNamesProvider(OidcConfig oidcConfig) {
@@ -41,11 +39,19 @@ public class QuickcaseSecurityConfig {
     }
 
     @Bean
+    @ConditionalOnProperty(prefix = "quickcase.oidc", name = "mode", havingValue = "user-info", matchIfMissing = true)
+    public UserInfoGateway createUserInfoGateway(OidcConfig oidcConfig) throws URISyntaxException {
+        return new DefaultUserInfoGateway(new URI(oidcConfig.getUserInfoUri()), new RestTemplate());
+    }
+
+    @Bean
+    @ConditionalOnProperty(prefix = "quickcase.oidc", name = "mode", havingValue = "user-info", matchIfMissing = true)
     public UserInfoService createUserInfoService(UserInfoGateway gateway, UserInfoExtractor extractor) {
         return new DefaultUserInfoService(gateway, extractor);
     }
 
     @Bean
+    @ConditionalOnProperty(prefix = "quickcase.oidc", name = "mode", havingValue = "user-info", matchIfMissing = true)
     public UserInfoAuthenticationConverter createUserInfoAuthenticationConverter(
             UserInfoService userInfoService,
             OidcConfig oidcConfig
