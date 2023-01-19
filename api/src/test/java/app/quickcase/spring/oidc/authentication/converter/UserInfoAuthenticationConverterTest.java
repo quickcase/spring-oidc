@@ -1,5 +1,8 @@
-package app.quickcase.spring.oidc.authentication;
+package app.quickcase.spring.oidc.authentication.converter;
 
+import app.quickcase.spring.oidc.authentication.QuickcaseAuthentication;
+import app.quickcase.spring.oidc.authentication.QuickcaseClientAuthentication;
+import app.quickcase.spring.oidc.authentication.QuickcaseUserAuthentication;
 import app.quickcase.spring.oidc.organisation.OrganisationProfile;
 import app.quickcase.spring.oidc.userinfo.UserInfo;
 import app.quickcase.spring.oidc.userinfo.UserInfoService;
@@ -21,7 +24,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 @DisplayName("QuickcaseAuthenticationConverter")
-class QuickcaseAuthenticationConverterTest {
+class UserInfoAuthenticationConverterTest {
     private static final String ACCESS_TOKEN = "token123";
     private static final String CLIENT_ID = "clientId";
     private static final String SCOPE_1 = "scope-1";
@@ -33,7 +36,7 @@ class QuickcaseAuthenticationConverterTest {
     private static final String ROLE_2 = "role-2";
 
     private UserInfoService userInfoServiceStub;
-    private QuickcaseAuthenticationConverter converter;
+    private UserInfoAuthenticationConverter converter;
 
     @BeforeEach
     void setUp() {
@@ -49,7 +52,7 @@ class QuickcaseAuthenticationConverterTest {
                                                       .organisationProfile("org-a", orgA)
                                                       .build();
 
-        converter = new QuickcaseAuthenticationConverter(userInfoServiceStub);
+        converter = new UserInfoAuthenticationConverter(userInfoServiceStub);
     }
 
     @Nested
@@ -106,7 +109,7 @@ class QuickcaseAuthenticationConverterTest {
     class WhenUserCredentials {
 
         private QuickcaseAuthentication userAuthentication() {
-            return userAuthentication(QuickcaseAuthenticationConverter.OPENID_SCOPE);
+            return userAuthentication(UserInfoAuthenticationConverter.OPENID_SCOPE);
         }
 
         private QuickcaseAuthentication userAuthentication(String openidScope) {
@@ -196,7 +199,7 @@ class QuickcaseAuthenticationConverterTest {
         @Test
         @DisplayName("should accept custom scope for openid")
         void shouldAcceptCustomOpenIdScope() {
-            converter = new QuickcaseAuthenticationConverter(userInfoServiceStub, "custom-openid");
+            converter = new UserInfoAuthenticationConverter(userInfoServiceStub, "custom-openid");
 
             final QuickcaseAuthentication authentication = userAuthentication("custom-openid");
 

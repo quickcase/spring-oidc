@@ -1,6 +1,6 @@
 package app.quickcase.spring.oidc;
 
-import app.quickcase.spring.oidc.authentication.QuickcaseAuthenticationConverter;
+import app.quickcase.spring.oidc.authentication.converter.UserInfoAuthenticationConverter;
 import lombok.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;
@@ -28,7 +28,7 @@ public class OidcConfig {
     public OidcConfig(
             String jwkSetUri,
             String userInfoUri,
-            @DefaultValue(QuickcaseAuthenticationConverter.OPENID_SCOPE) String openidScope,
+            @DefaultValue(UserInfoAuthenticationConverter.OPENID_SCOPE) String openidScope,
             @DefaultValue Claims claims
     ) {
         this.jwkSetUri = jwkSetUri;

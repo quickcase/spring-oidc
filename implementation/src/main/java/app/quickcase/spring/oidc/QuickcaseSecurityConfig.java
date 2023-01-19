@@ -1,6 +1,7 @@
 package app.quickcase.spring.oidc;
 
-import app.quickcase.spring.oidc.authentication.QuickcaseAuthenticationConverter;
+import app.quickcase.spring.oidc.authentication.converter.QuickcaseAuthenticationConverter;
+import app.quickcase.spring.oidc.authentication.converter.UserInfoAuthenticationConverter;
 import app.quickcase.spring.oidc.claims.ClaimNamesProvider;
 import app.quickcase.spring.oidc.claims.ConfigDrivenClaimNamesProvider;
 import app.quickcase.spring.oidc.userinfo.*;
@@ -45,11 +46,11 @@ public class QuickcaseSecurityConfig {
     }
 
     @Bean
-    public QuickcaseAuthenticationConverter createAuthenticationConverter(
+    public UserInfoAuthenticationConverter createUserInfoAuthenticationConverter(
             UserInfoService userInfoService,
             OidcConfig oidcConfig
     ) {
-        return new QuickcaseAuthenticationConverter(userInfoService, oidcConfig.getOpenidScope());
+        return new UserInfoAuthenticationConverter(userInfoService, oidcConfig.getOpenidScope());
     }
 
     @Bean
