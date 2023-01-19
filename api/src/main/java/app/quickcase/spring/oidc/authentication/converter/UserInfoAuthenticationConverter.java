@@ -1,26 +1,29 @@
-package app.quickcase.spring.oidc.authentication;
-
-import app.quickcase.spring.oidc.userinfo.UserInfo;
-import app.quickcase.spring.oidc.userinfo.UserInfoService;
-import org.springframework.core.convert.converter.Converter;
-import org.springframework.security.oauth2.jwt.Jwt;
+package app.quickcase.spring.oidc.authentication.converter;
 
 import java.util.Set;
+
+import app.quickcase.spring.oidc.authentication.QuickcaseAuthentication;
+import app.quickcase.spring.oidc.authentication.QuickcaseClientAuthentication;
+import app.quickcase.spring.oidc.authentication.QuickcaseUserAuthentication;
+import app.quickcase.spring.oidc.userinfo.UserInfo;
+import app.quickcase.spring.oidc.userinfo.UserInfoService;
+
+import org.springframework.security.oauth2.jwt.Jwt;
 
 import static app.quickcase.spring.oidc.utils.StringUtils.authorities;
 import static app.quickcase.spring.oidc.utils.StringUtils.fromSpaceSeparated;
 
-public class QuickcaseAuthenticationConverter implements Converter<Jwt, QuickcaseAuthentication> {
+public class UserInfoAuthenticationConverter implements QuickcaseAuthenticationConverter {
     public static final String OPENID_SCOPE = "openid";
 
     private final UserInfoService userInfoService;
     private final String openidScope;
 
-    public QuickcaseAuthenticationConverter(UserInfoService userInfoService) {
+    public UserInfoAuthenticationConverter(UserInfoService userInfoService) {
         this(userInfoService, OPENID_SCOPE);
     }
 
-    public QuickcaseAuthenticationConverter(UserInfoService userInfoService, String openidScope) {
+    public UserInfoAuthenticationConverter(UserInfoService userInfoService, String openidScope) {
         this.userInfoService = userInfoService;
         this.openidScope = openidScope;
     }

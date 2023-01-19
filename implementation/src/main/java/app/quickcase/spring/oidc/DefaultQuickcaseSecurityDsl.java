@@ -1,6 +1,6 @@
 package app.quickcase.spring.oidc;
 
-import app.quickcase.spring.oidc.authentication.QuickcaseAuthenticationConverter;
+import app.quickcase.spring.oidc.authentication.converter.QuickcaseAuthenticationConverter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 
 public class DefaultQuickcaseSecurityDsl implements QuickcaseSecurityDsl {
