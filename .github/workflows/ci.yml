@@ -49,7 +49,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3.3.0
 
-      - uses: actions/cache@v3.2.3
+      - uses: actions/cache@v3.3.1
         with:
           path: ~/.gradle/dependency-check-data
           key: ${{ runner.os }}-dep_check-${{ github.run_id }}
