@@ -20,6 +20,10 @@ allprojects {
 dependencyCheck {
     failBuildOnCVSS = 0
     suppressionFile = 'dependency-check-suppressions.xml'
+
+    nvd {
+        apiKey = System.getenv("NVD_API_KEY")
+    }
 }
 
 subprojects {
