@@ -8,7 +8,7 @@ wrapper {
 
 ext.libVersions = [
         junit: '5.9.1',
-        spring: '2.7.7',
+        spring: '3.3.4',
         mockito: '4.3.1',
 ]
 
@@ -58,6 +58,12 @@ subprojects {
         // Mockito
         testImplementation "org.mockito:mockito-core:${libVersions['mockito']}"
         testImplementation "org.mockito:mockito-junit-jupiter:${libVersions['mockito']}"
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        // Explicitly required since Spring 6.1 for mapping of application properties
+        // https://github.com/spring-projects/spring-framework/wiki/Upgrading-to-Spring-Framework-6.x#parameter-name-retention
+        options.compilerArgs.add("-parameters")
     }
 
     test {
