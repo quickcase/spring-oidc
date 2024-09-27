@@ -3,7 +3,7 @@ package app.quickcase.spring.oidc;
 import app.quickcase.spring.oidc.authentication.converter.UserInfoAuthenticationConverter;
 import lombok.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.ConstructorBinding;
+import org.springframework.boot.context.properties.bind.ConstructorBinding;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import static app.quickcase.spring.oidc.OidcConfigDefault.Claims.*;
@@ -17,7 +17,6 @@ import static app.quickcase.spring.oidc.OidcConfigDefault.PREFIX;
  * @since 1.0
  */
 @Value
-@ConstructorBinding
 @ConfigurationProperties(prefix = "quickcase.oidc")
 public class OidcConfig {
     private final String jwkSetUri;
@@ -25,6 +24,7 @@ public class OidcConfig {
     private final String openidScope;
     private final Claims claims;
 
+    @ConstructorBinding
     public OidcConfig(
             String jwkSetUri,
             String userInfoUri,
