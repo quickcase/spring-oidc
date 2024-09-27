@@ -48,10 +48,6 @@ subprojects {
         // Jackson
         implementation 'com.fasterxml.jackson.core:jackson-databind:2.18.0'
 
-        // Transitive dependency of Spring Boot afflicted by CVE-2022-25857
-        // TODO remove explicit declaration once Spring Boot upgrade to 3.0.0 or greater
-        implementation 'org.yaml:snakeyaml:1.33'
-
         // JUnit
         testImplementation "org.junit.jupiter:junit-jupiter-api:${libVersions['junit']}"
         testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${libVersions['junit']}"
