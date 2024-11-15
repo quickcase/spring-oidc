@@ -111,7 +111,7 @@ jobs:
 
       - name: Notify slack fail
         if: steps.summary.outputs.success != 'true' && env.SLACK_BOT_TOKEN != 0
-        uses: slackapi/slack-github-action@v1.27.0
+        uses: slackapi/slack-github-action@v2.0.0
         with:
           channel-id: dev
           payload: |
