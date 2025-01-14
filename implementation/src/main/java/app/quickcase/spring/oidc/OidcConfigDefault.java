@@ -11,6 +11,7 @@ public interface OidcConfigDefault {
         String EMAIL = "email";
         // Private claims
         String QC_ROLES = NAMESPACE + "roles";
+        String QC_GROUPS = NAMESPACE + "groups";
         String QC_ORGANISATIONS = NAMESPACE + "organisations";
         String QC_USER_DEFAULT_JURISDICTION = NAMESPACE + "default_jurisdiction";
         String QC_USER_DEFAULT_CASE_TYPE = NAMESPACE + "default_case_type";

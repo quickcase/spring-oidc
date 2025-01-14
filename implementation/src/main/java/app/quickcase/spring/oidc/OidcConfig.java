@@ -62,6 +62,7 @@ public class OidcConfig {
         private final String name;
         private final String email;
         private final String roles;
+        private final String groups;
         private final String organisations;
         private final String defaultJurisdiction;
         private final String defaultCaseType;
@@ -71,6 +72,7 @@ public class OidcConfig {
                           @DefaultValue(NAME) String name,
                           @DefaultValue(EMAIL) String email,
                           @DefaultValue(QC_ROLES) String roles,
+                          @DefaultValue(QC_GROUPS) String groups,
                           @DefaultValue(QC_ORGANISATIONS) String organisations,
                           @DefaultValue(QC_USER_DEFAULT_JURISDICTION) String defaultJurisdiction,
                           @DefaultValue(QC_USER_DEFAULT_CASE_TYPE) String defaultCaseType,
@@ -79,6 +81,7 @@ public class OidcConfig {
             this.name = name;
             this.email = email;
             this.roles = roles;
+            this.groups = groups;
             this.organisations = organisations;
             this.defaultJurisdiction = defaultJurisdiction;
             this.defaultCaseType = defaultCaseType;

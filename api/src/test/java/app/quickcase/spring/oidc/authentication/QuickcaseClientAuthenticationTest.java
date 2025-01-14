@@ -1,19 +1,18 @@
 package app.quickcase.spring.oidc.authentication;
 
+import java.util.Set;
+
 import app.quickcase.spring.oidc.AccessLevel;
-import app.quickcase.spring.oidc.organisation.OrganisationProfile;
 import app.quickcase.spring.oidc.SecurityClassification;
+import app.quickcase.spring.oidc.organisation.OrganisationProfile;
 import app.quickcase.spring.oidc.utils.StringUtils;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.GrantedAuthority;
 
-import java.util.Set;
-
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 class QuickcaseClientAuthenticationTest {
@@ -32,6 +31,13 @@ class QuickcaseClientAuthenticationTest {
     void getId() {
         final QuickcaseAuthentication auth = clientAuthentication();
         assertThat(auth.getId(), equalTo(CLIENT_ID));
+    }
+
+    @Test
+    @DisplayName("should not have groups")
+    void getGroups() {
+        final QuickcaseAuthentication auth = clientAuthentication();
+        assertThat(auth.getGroups(), is(emptyCollectionOf(String.class)));
     }
 
     @Test

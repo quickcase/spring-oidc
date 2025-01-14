@@ -1,14 +1,25 @@
 package app.quickcase.spring.oidc.userinfo;
 
+import java.security.Principal;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeMap;
+
 import app.quickcase.spring.oidc.UserAuthenticationToken;
 import app.quickcase.spring.oidc.organisation.OrganisationProfile;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+import lombok.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import java.security.Principal;
-import java.util.*;
 
 /**
  * Provides QuickCase user information.
@@ -34,6 +45,9 @@ public class UserInfo implements Principal, UserDetails {
     @NonNull
     @ToString.Include
     private final Set<GrantedAuthority> authorities;
+    @NonNull
+    @ToString.Include
+    private final Set<String> groups;
     private final UserPreferences preferences;
     @NonNull
     private final Map<String, OrganisationProfile> organisationProfiles;
@@ -97,6 +111,7 @@ public class UserInfo implements Principal, UserDetails {
         private String name;
         private String email;
         private Set<GrantedAuthority> authorities = new HashSet<>();
+        private Set<String> groups = new HashSet<>();
         private UserPreferences preferences;
         private final Map<String, OrganisationProfile> organisationProfiles = new TreeMap<>(String::compareToIgnoreCase);
 
@@ -122,6 +137,16 @@ public class UserInfo implements Principal, UserDetails {
             return this;
         }
 
+        public UserInfoBuilder groups(Set<String> groups) {
+            this.groups.addAll(groups);
+            return this;
+        }
+
+        public UserInfoBuilder groups(String... groups) {
+            this.groups.addAll(Arrays.asList(groups));
+            return this;
+        }
+
         public UserInfoBuilder preferences(UserPreferences preferences) {
             this.preferences = preferences;
             return this;
@@ -138,7 +163,7 @@ public class UserInfo implements Principal, UserDetails {
         }
 
         public UserInfo build() {
-            return new UserInfo(subject, name, email, authorities, preferences, organisationProfiles);
+            return new UserInfo(subject, name, email, authorities, groups, preferences, organisationProfiles);
         }
     }
 }

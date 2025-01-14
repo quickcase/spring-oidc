@@ -14,6 +14,7 @@ class ConfigDrivenClaimNamesProviderTest {
     private static final String NAME = "conf-name";
     private static final String EMAIL = "conf-email";
     private static final String ROLES = "conf-roles";
+    private static final String GROUPS = "conf-groups";
     private static final String ORGS = "conf-orgs";
     private static final String DEF_JURISDICTION = "conf-jurisdiction";
     private static final String DEF_CASE_TYPE = "conf-case-type";
@@ -26,19 +27,21 @@ class ConfigDrivenClaimNamesProviderTest {
                                                                            NAME,
                                                                            EMAIL,
                                                                            ROLES,
+                                                                           GROUPS,
                                                                            ORGS,
                                                                            DEF_JURISDICTION,
                                                                            DEF_CASE_TYPE,
                                                                            DEF_STATE);
         final OidcConfig.Claims claimsConfig = new OidcConfig.Claims(PREFIX, claimNames);
 
-        final ConfigDrivenClaimNamesProvider claimNamesProvider = new ConfigDrivenClaimNamesProvider(claimsConfig);
+        final ClaimNamesProvider claimNamesProvider = new ConfigDrivenClaimNamesProvider(claimsConfig);
 
         assertAll(
                 () -> assertThat(claimNamesProvider.sub(), equalTo(SUB)),
                 () -> assertThat(claimNamesProvider.name(), equalTo(NAME)),
                 () -> assertThat(claimNamesProvider.email(), equalTo(EMAIL)),
                 () -> assertThat(claimNamesProvider.roles(), equalTo(PREFIX + ROLES)),
+                () -> assertThat(claimNamesProvider.groups(), equalTo(PREFIX + GROUPS)),
                 () -> assertThat(claimNamesProvider.organisations(), equalTo(PREFIX + ORGS)),
                 () -> assertThat(claimNamesProvider.defaultJurisdiction(), equalTo(PREFIX + DEF_JURISDICTION)),
                 () -> assertThat(claimNamesProvider.defaultCaseType(), equalTo(PREFIX + DEF_CASE_TYPE)),

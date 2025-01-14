@@ -12,8 +12,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -104,6 +103,13 @@ class QuickcaseUserAuthenticationTest {
     }
 
     @Test
+    @DisplayName("should have groups")
+    void getGroups() {
+        final QuickcaseAuthentication auth = userAuthentication();
+        assertThat(auth.getGroups(), containsInAnyOrder("group1", "group2"));
+    }
+
+    @Test
     @DisplayName("should give default organisation profile when org not found")
     void getOrganisationProfileWhenNotFound() {
         final QuickcaseAuthentication auth = userAuthentication();
@@ -141,6 +147,7 @@ class QuickcaseUserAuthenticationTest {
                                           .name(USER_NAME)
                                           .email(USER_EMAIL)
                                           .authorities("ROLE-1", "ROLE-2")
+                                          .groups("group1", "group2")
                                           .organisationProfile("org-1", profile)
                                           .build();
 

@@ -32,12 +32,14 @@ class DefaultUserInfoExtractorTest {
     private static final String CLAIM_NAME = "conf-name";
     private static final String CLAIM_EMAIL = "conf-email";
     private static final String CLAIM_ROLES = "conf-roles";
+    private static final String CLAIM_GROUPS = "conf-groups";
     private static final String CLAIM_ORGS = "conf-orgs";
     private static final String CLAIM_DEF_JURISDICTION = "conf-jurisdiction";
     private static final String CLAIM_DEF_CASE_TYPE = "conf-case-type";
     private static final String CLAIM_DEF_STATE = "conf-state";
 
     private static final String USER_APP_ROLES = "role1,role2";
+    private static final String USER_GROUPS = "group1,group2";
     private static final String USER_ID = "eec55037-bac7-46b4-9849-f063e627e4f3";
     private static final String USER_NAME = "Test User";
     private static final String USER_EMAIL = "test@quickcase.app";
@@ -63,6 +65,7 @@ class DefaultUserInfoExtractorTest {
                         new SimpleGrantedAuthority("role1"),
                         new SimpleGrantedAuthority("role2")
                 )),
+                () -> assertThat(userInfo.getGroups(), containsInAnyOrder("group1", "group2")),
                 () -> assertThat(userInfo.getJurisdictions(),
                         containsInAnyOrder("org-1", "org-2"))
         );
@@ -133,6 +136,7 @@ class DefaultUserInfoExtractorTest {
         claims.put(CLAIM_NAME, textNode(USER_NAME));
         claims.put(CLAIM_EMAIL, textNode(USER_EMAIL));
         claims.put(CLAIM_ROLES, textNode(USER_APP_ROLES));
+        claims.put(CLAIM_GROUPS, textNode(USER_GROUPS));
         claims.put(CLAIM_ORGS, textNode(USER_ORGANISATIONS));
         claims.put(CLAIM_DEF_JURISDICTION, textNode(DEFAULT_JURISDICTION));
         claims.put(CLAIM_DEF_CASE_TYPE, textNode(DEFAULT_CASE_TYPE));
@@ -170,6 +174,11 @@ class DefaultUserInfoExtractorTest {
             @Override
             public String roles() {
                 return CLAIM_ROLES;
+            }
+
+            @Override
+            public String groups() {
+                return CLAIM_GROUPS;
             }
 
             @Override

@@ -9,7 +9,6 @@ import app.quickcase.spring.oidc.claims.ClaimsParser;
 import app.quickcase.spring.oidc.organisation.JsonOrganisationProfilesParser;
 import app.quickcase.spring.oidc.organisation.OrganisationProfile;
 import app.quickcase.spring.oidc.utils.StringUtils;
-
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -35,6 +34,10 @@ public class DefaultUserInfoExtractor implements UserInfoExtractor {
         claimsParser.getString(claimNames.roles())
                     .map(StringUtils::fromCommaSeparated)
                     .ifPresent(builder::authorities);
+
+        claimsParser.getString(claimNames.groups())
+                    .map((str) -> StringUtils.fromString(str, ","))
+                    .ifPresent(builder::groups);
 
         return builder.preferences(extractPreferences(claimsParser))
                       .organisationProfiles(extractProfiles(subject, claimsParser))

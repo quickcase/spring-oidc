@@ -1,13 +1,14 @@
 package app.quickcase.spring.oidc.authentication;
 
-import app.quickcase.spring.oidc.AccessLevel;
-import app.quickcase.spring.oidc.organisation.OrganisationProfile;
-import app.quickcase.spring.oidc.SecurityClassification;
-import app.quickcase.spring.oidc.userinfo.UserInfo;
-import org.springframework.security.core.GrantedAuthority;
-
 import java.util.Collection;
 import java.util.Optional;
+import java.util.Set;
+
+import app.quickcase.spring.oidc.AccessLevel;
+import app.quickcase.spring.oidc.SecurityClassification;
+import app.quickcase.spring.oidc.organisation.OrganisationProfile;
+import app.quickcase.spring.oidc.userinfo.UserInfo;
+import org.springframework.security.core.GrantedAuthority;
 
 public class QuickcaseClientAuthentication extends QuickcaseAuthentication {
     private static final String DEFAULT_NAME = "System";
@@ -48,6 +49,11 @@ public class QuickcaseClientAuthentication extends QuickcaseAuthentication {
     @Override
     public String getName() {
         return DEFAULT_NAME;
+    }
+
+    @Override
+    public Set<String> getGroups() {
+        return Set.of();
     }
 
     @Override
