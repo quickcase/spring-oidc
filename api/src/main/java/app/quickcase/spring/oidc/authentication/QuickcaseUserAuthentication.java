@@ -49,6 +49,11 @@ public class QuickcaseUserAuthentication extends QuickcaseAuthentication {
     }
 
     @Override
+    public Set<String> getRoles() {
+        return userInfo.getRoles();
+    }
+
+    @Override
     public Set<String> getGroups() {
         return userInfo.getGroups();
     }

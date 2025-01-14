@@ -35,6 +35,10 @@ public class DefaultUserInfoExtractor implements UserInfoExtractor {
                     .map(StringUtils::fromCommaSeparated)
                     .ifPresent(builder::authorities);
 
+        claimsParser.getString(claimNames.roles())
+                    .map((str) -> StringUtils.fromString(str, ","))
+                    .ifPresent(builder::roles);
+
         claimsParser.getString(claimNames.groups())
                     .map((str) -> StringUtils.fromString(str, ","))
                     .ifPresent(builder::groups);

@@ -103,6 +103,13 @@ class QuickcaseUserAuthenticationTest {
     }
 
     @Test
+    @DisplayName("should have roles")
+    void getRoles() {
+        final QuickcaseAuthentication auth = userAuthentication();
+        assertThat(auth.getRoles(), containsInAnyOrder("role1", "role2"));
+    }
+
+    @Test
     @DisplayName("should have groups")
     void getGroups() {
         final QuickcaseAuthentication auth = userAuthentication();
@@ -147,6 +154,7 @@ class QuickcaseUserAuthenticationTest {
                                           .name(USER_NAME)
                                           .email(USER_EMAIL)
                                           .authorities("ROLE-1", "ROLE-2")
+                                          .roles("role1", "role2")
                                           .groups("group1", "group2")
                                           .organisationProfile("org-1", profile)
                                           .build();

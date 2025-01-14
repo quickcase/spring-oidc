@@ -38,6 +38,8 @@ public abstract class QuickcaseAuthentication extends AbstractAuthenticationToke
 
     public abstract String getId();
 
+    public abstract Set<String> getRoles();
+
     public abstract Set<String> getGroups();
 
     public abstract OrganisationProfile getOrganisationProfile(String organisationId);
