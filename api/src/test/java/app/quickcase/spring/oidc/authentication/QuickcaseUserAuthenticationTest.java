@@ -8,8 +8,11 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Optional;
+import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -26,8 +29,9 @@ class QuickcaseUserAuthenticationTest {
     @DisplayName("should enforce non-null fields")
     void shouldEnforceNonNullFields() {
         Assertions.assertAll(
-                () -> assertThrows(NullPointerException.class, () -> new QuickcaseUserAuthentication(null, UserInfo.builder(USER_ID).build())),
-                () -> assertThrows(NullPointerException.class, () -> new QuickcaseUserAuthentication(ACCESS_TOKEN, null))
+                () -> assertThrows(NullPointerException.class, () -> new QuickcaseUserAuthentication(null, Set.of(), UserInfo.builder(USER_ID).build())),
+                () -> assertThrows(NullPointerException.class, () -> new QuickcaseUserAuthentication(ACCESS_TOKEN, null, UserInfo.builder(USER_ID).build())),
+                () -> assertThrows(NullPointerException.class, () -> new QuickcaseUserAuthentication(ACCESS_TOKEN, Set.of(), null))
         );
     }
 
@@ -89,6 +93,16 @@ class QuickcaseUserAuthenticationTest {
     }
 
     @Test
+    @DisplayName("should have authorities")
+    void getAuthorities() {
+        final QuickcaseAuthentication auth = userAuthentication();
+        assertThat(auth.getAuthorities(), containsInAnyOrder(
+                new SimpleGrantedAuthority("SCOPE-1"),
+                new SimpleGrantedAuthority("SCOPE-2")
+        ));
+    }
+
+    @Test
     @DisplayName("should use user name")
     void getName() {
         final QuickcaseAuthentication auth = userAuthentication();
@@ -145,6 +159,11 @@ class QuickcaseUserAuthenticationTest {
     }
 
     private QuickcaseAuthentication userAuthentication() {
+        final Set<GrantedAuthority> authorities = Set.of(
+                new SimpleGrantedAuthority("SCOPE-1"),
+                new SimpleGrantedAuthority("SCOPE-2")
+        );
+
         final OrganisationProfile profile = OrganisationProfile.builder()
                                                                .accessLevel(AccessLevel.GROUP)
                                                                .group("org-1-group")
@@ -159,6 +178,6 @@ class QuickcaseUserAuthenticationTest {
                                           .organisationProfile("org-1", profile)
                                           .build();
 
-        return new QuickcaseUserAuthentication(ACCESS_TOKEN, userInfo);
+        return new QuickcaseUserAuthentication(ACCESS_TOKEN, authorities, userInfo);
     }
 }

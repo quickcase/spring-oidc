@@ -53,6 +53,7 @@ public class AccessTokenAuthenticationConverter implements QuickcaseAuthenticati
 
     private QuickcaseAuthentication userAuthentication(Jwt source) {
         final ClaimsParser claims = new JwtClaimsParser(source.getClaims());
-        return new QuickcaseUserAuthentication(source.getTokenValue(), userInfoExtractor.extract(claims));
+        final Set<String> scopes = fromSpaceSeparated(source.getClaimAsString("scope"));
+        return new QuickcaseUserAuthentication(source.getTokenValue(), authorities(scopes), userInfoExtractor.extract(claims));
     }
 }

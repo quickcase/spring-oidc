@@ -52,6 +52,7 @@ class AccessTokenAuthenticationConverterTest {
                     .name(claimsParser.getString("name").orElseThrow())
                     .email(claimsParser.getString("email").orElseThrow())
                     .authorities(authorities)
+                    .roles(ROLE_1, ROLE_2)
                     .preferences(preferences)
                     .build();
         };
@@ -140,11 +141,11 @@ class AccessTokenAuthenticationConverterTest {
             assertThat(authentication.getId(), equalTo(USER_ID));
             assertThat(authentication.getName(), equalTo(USER_NAME));
             assertThat(authentication.getEmail().get(), equalTo(USER_EMAIL));
+            assertThat(authentication.getAuthorities(), containsInAnyOrder(authorities(AccessTokenAuthenticationConverter.OPENID_SCOPE, SCOPE_2)));
+            assertThat(authentication.getRoles(), containsInAnyOrder(ROLE_1, ROLE_2));
             assertThat(authentication.getUserInfo()
                                      .get()
                                      .getPreferences().getDefaultJurisdiction(), equalTo(DEFAULT_JURISDICTION));
-            final GrantedAuthority[] roles = authorities(ROLE_1, ROLE_2);
-            assertThat(authentication.getAuthorities(), containsInAnyOrder(roles));
         }
 
         @Test

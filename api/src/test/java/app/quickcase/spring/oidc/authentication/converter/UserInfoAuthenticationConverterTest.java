@@ -158,12 +158,11 @@ class UserInfoAuthenticationConverterTest {
         }
 
         @Test
-        @DisplayName("should use user roles as authorities")
+        @DisplayName("should use scopes as authorities")
         void shouldUseRolesAsAuthorities() {
             final QuickcaseAuthentication authentication = userAuthentication();
 
-            final GrantedAuthority[] roles = authorities(ROLE_1, ROLE_2);
-            assertThat(authentication.getAuthorities(), containsInAnyOrder(roles));
+            assertThat(authentication.getAuthorities(), containsInAnyOrder(authorities("openid", SCOPE_2)));
         }
 
         @Test
