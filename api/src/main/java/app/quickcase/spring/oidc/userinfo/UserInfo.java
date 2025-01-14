@@ -47,6 +47,9 @@ public class UserInfo implements Principal, UserDetails {
     private final Set<GrantedAuthority> authorities;
     @NonNull
     @ToString.Include
+    private final Set<String> roles;
+    @NonNull
+    @ToString.Include
     private final Set<String> groups;
     private final UserPreferences preferences;
     @NonNull
@@ -111,6 +114,7 @@ public class UserInfo implements Principal, UserDetails {
         private String name;
         private String email;
         private Set<GrantedAuthority> authorities = new HashSet<>();
+        private Set<String> roles = new HashSet<>();
         private Set<String> groups = new HashSet<>();
         private UserPreferences preferences;
         private final Map<String, OrganisationProfile> organisationProfiles = new TreeMap<>(String::compareToIgnoreCase);
@@ -134,6 +138,16 @@ public class UserInfo implements Principal, UserDetails {
             Arrays.stream(authorities)
                   .map(SimpleGrantedAuthority::new)
                   .forEach(this.authorities::add);
+            return this;
+        }
+
+        public UserInfoBuilder roles(Set<String> roles) {
+            this.roles.addAll(roles);
+            return this;
+        }
+
+        public UserInfoBuilder roles(String... roles) {
+            this.roles.addAll(Arrays.asList(roles));
             return this;
         }
 
@@ -163,7 +177,7 @@ public class UserInfo implements Principal, UserDetails {
         }
 
         public UserInfo build() {
-            return new UserInfo(subject, name, email, authorities, groups, preferences, organisationProfiles);
+            return new UserInfo(subject, name, email, authorities, roles, groups, preferences, organisationProfiles);
         }
     }
 }

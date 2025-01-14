@@ -34,6 +34,13 @@ class QuickcaseClientAuthenticationTest {
     }
 
     @Test
+    @DisplayName("should expose authorities as roles")
+    void getRoles() {
+        final QuickcaseAuthentication auth = clientAuthentication();
+        assertThat(auth.getRoles(), containsInAnyOrder("ROLE-1", "ROLE-2"));
+    }
+
+    @Test
     @DisplayName("should not have groups")
     void getGroups() {
         final QuickcaseAuthentication auth = clientAuthentication();

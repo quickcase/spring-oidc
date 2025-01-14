@@ -65,6 +65,7 @@ class DefaultUserInfoExtractorTest {
                         new SimpleGrantedAuthority("role1"),
                         new SimpleGrantedAuthority("role2")
                 )),
+                () -> assertThat(userInfo.getRoles(), containsInAnyOrder("role1", "role2")),
                 () -> assertThat(userInfo.getGroups(), containsInAnyOrder("group1", "group2")),
                 () -> assertThat(userInfo.getJurisdictions(),
                         containsInAnyOrder("org-1", "org-2"))
