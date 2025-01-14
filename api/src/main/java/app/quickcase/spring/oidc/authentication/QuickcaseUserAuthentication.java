@@ -9,6 +9,7 @@ import app.quickcase.spring.oidc.organisation.OrganisationProfile;
 import app.quickcase.spring.oidc.userinfo.UserInfo;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.GrantedAuthority;
 
 @Slf4j
 public class QuickcaseUserAuthentication extends QuickcaseAuthentication {
@@ -22,8 +23,8 @@ public class QuickcaseUserAuthentication extends QuickcaseAuthentication {
 
     private final UserInfo userInfo;
 
-    public QuickcaseUserAuthentication(@NonNull String accessToken, @NonNull UserInfo userInfo) {
-        super(userInfo.getAuthorities(), accessToken);
+    public QuickcaseUserAuthentication(@NonNull String accessToken, @NonNull Set<GrantedAuthority> authorities, @NonNull UserInfo userInfo) {
+        super(authorities, accessToken);
         this.userInfo = userInfo;
         this.setAuthenticated(true);
     }

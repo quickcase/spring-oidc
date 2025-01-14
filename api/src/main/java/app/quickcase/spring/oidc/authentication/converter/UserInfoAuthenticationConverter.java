@@ -49,8 +49,9 @@ public class UserInfoAuthenticationConverter implements QuickcaseAuthenticationC
     private QuickcaseUserAuthentication userAuthentication(Jwt source) {
         final String subject = source.getSubject();
         final String accessToken = source.getTokenValue();
+        final Set<String> scopes = fromSpaceSeparated(source.getClaimAsString("scope"));
         final UserInfo userInfo = userInfoService.loadUserInfo(subject, accessToken);
 
-        return new QuickcaseUserAuthentication(accessToken, userInfo);
+        return new QuickcaseUserAuthentication(accessToken, authorities(scopes), userInfo);
     }
 }
