@@ -15,6 +15,7 @@ public class ConfigDrivenClaimNamesProvider implements ClaimNamesProvider {
     private final String name;
     private final String email;
     private final String roles;
+    private final String groups;
     private final String organisations;
     private final String defaultJurisdiction;
     private final String defaultCaseType;
@@ -28,6 +29,7 @@ public class ConfigDrivenClaimNamesProvider implements ClaimNamesProvider {
         this.name = names.getName();
         this.email = names.getEmail();
         this.roles = names.getRoles();
+        this.groups = names.getGroups();
         this.organisations = names.getOrganisations();
         this.defaultJurisdiction = names.getDefaultJurisdiction();
         this.defaultCaseType = names.getDefaultCaseType();
@@ -52,6 +54,11 @@ public class ConfigDrivenClaimNamesProvider implements ClaimNamesProvider {
     @Override
     public String roles() {
         return prefix + roles;
+    }
+
+    @Override
+    public String groups() {
+        return prefix + groups;
     }
 
     @Override

@@ -20,6 +20,7 @@ public interface ClaimNamesProvider {
     }
 
     String roles();
+    String groups();
     String organisations();
     String defaultJurisdiction();
     String defaultCaseType();

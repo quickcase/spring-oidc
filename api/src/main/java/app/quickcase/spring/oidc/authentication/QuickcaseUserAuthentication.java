@@ -1,13 +1,14 @@
 package app.quickcase.spring.oidc.authentication;
 
+import java.util.Optional;
+import java.util.Set;
+
 import app.quickcase.spring.oidc.AccessLevel;
 import app.quickcase.spring.oidc.SecurityClassification;
 import app.quickcase.spring.oidc.organisation.OrganisationProfile;
 import app.quickcase.spring.oidc.userinfo.UserInfo;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.Optional;
 
 @Slf4j
 public class QuickcaseUserAuthentication extends QuickcaseAuthentication {
@@ -45,6 +46,11 @@ public class QuickcaseUserAuthentication extends QuickcaseAuthentication {
     @Override
     public String getName() {
         return userInfo.getName();
+    }
+
+    @Override
+    public Set<String> getGroups() {
+        return userInfo.getGroups();
     }
 
     @Override

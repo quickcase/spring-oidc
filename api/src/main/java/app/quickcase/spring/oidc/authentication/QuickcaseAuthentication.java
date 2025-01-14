@@ -1,12 +1,13 @@
 package app.quickcase.spring.oidc.authentication;
 
+import java.util.Collection;
+import java.util.Optional;
+import java.util.Set;
+
 import app.quickcase.spring.oidc.organisation.OrganisationProfile;
 import app.quickcase.spring.oidc.userinfo.UserInfo;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
-
-import java.util.Collection;
-import java.util.Optional;
 
 /**
  * QuickCase-flavoured authentication. This aims at providing a best-effort in consistency
@@ -36,6 +37,8 @@ public abstract class QuickcaseAuthentication extends AbstractAuthenticationToke
     public abstract Optional<String> getEmail();
 
     public abstract String getId();
+
+    public abstract Set<String> getGroups();
 
     public abstract OrganisationProfile getOrganisationProfile(String organisationId);
 
