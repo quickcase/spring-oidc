@@ -42,6 +42,10 @@ public abstract class QuickcaseAuthentication extends AbstractAuthenticationToke
 
     public abstract Set<String> getGroups();
 
+    /**
+     * @deprecated Organisation profiles are being phased out in favour of fully role-driven authorisation.
+     */
+    @Deprecated
     public abstract OrganisationProfile getOrganisationProfile(String organisationId);
 
     public abstract Optional<UserInfo> getUserInfo();
