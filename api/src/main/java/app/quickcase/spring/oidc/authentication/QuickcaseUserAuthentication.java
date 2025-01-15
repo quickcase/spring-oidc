@@ -59,6 +59,10 @@ public class QuickcaseUserAuthentication extends QuickcaseAuthentication {
         return userInfo.getGroups();
     }
 
+    /**
+     * @deprecated Organisation profiles are being phased out in favour of fully role-driven authorisation.
+     */
+    @Deprecated
     @Override
     public OrganisationProfile getOrganisationProfile(String organisationId) {
         return Optional.ofNullable(userInfo.getOrganisationProfiles().get(organisationId))

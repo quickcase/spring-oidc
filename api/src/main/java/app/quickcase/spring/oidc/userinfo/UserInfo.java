@@ -51,6 +51,11 @@ public class UserInfo implements Principal, UserDetails {
     @ToString.Include
     private final Set<String> groups;
     private final UserPreferences preferences;
+
+    /**
+     * @deprecated Organisation profiles are being phased out in favour of fully role-driven authorisation.
+     */
+    @Deprecated
     @NonNull
     private final Map<String, OrganisationProfile> organisationProfiles;
 
