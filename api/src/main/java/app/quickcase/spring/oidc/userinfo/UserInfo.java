@@ -2,7 +2,6 @@ package app.quickcase.spring.oidc.userinfo;
 
 import java.security.Principal;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
@@ -95,17 +94,6 @@ public class UserInfo implements Principal, UserDetails {
 
     public Optional<String> getEmail() {
         return Optional.ofNullable(email);
-    }
-
-    /**
-     * @deprecated To be removed in v2.0.0, {@link #getOrganisationProfiles()} should be used instead.
-     * @return Set of organisation IDs, extracted from organisation profiles.
-     */
-    @Deprecated
-    public Set<String> getJurisdictions() {
-        return Optional.ofNullable(organisationProfiles)
-                       .map(Map::keySet)
-                       .orElse(Collections.emptySet());
     }
 
     @RequiredArgsConstructor

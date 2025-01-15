@@ -4,12 +4,11 @@ import app.quickcase.spring.oidc.organisation.OrganisationProfile;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collections;
-
 import static app.quickcase.spring.oidc.AccessLevel.GROUP;
 import static app.quickcase.spring.oidc.SecurityClassification.PRIVATE;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("UserInfo")
@@ -52,26 +51,6 @@ class UserInfoTest {
                                           .build();
 
         assertThat(userInfo.getName(), equalTo(SUBJECT));
-    }
-
-    @Test
-    @DisplayName("should return jurisdictions from organisations for backward compatibility")
-    void shouldReturnJurisdictionBackwardCompat() {
-        final UserInfo userInfo = UserInfo.builder(SUBJECT)
-                                          .organisationProfile("Juris-1", OrganisationProfile.builder().build())
-                                          .organisationProfile("Juris-2", OrganisationProfile.builder().build())
-                                          .build();
-
-        assertThat(userInfo.getJurisdictions(), hasItems("Juris-1", "Juris-2"));
-    }
-
-    @Test
-    @DisplayName("should return empty jurisdictions when no organisations")
-    void shouldReturnEmptyJurisdictionWhenNoOrganisations() {
-        final UserInfo userInfo = UserInfo.builder(SUBJECT)
-                                          .build();
-
-        assertThat(userInfo.getJurisdictions(), equalTo(Collections.EMPTY_SET));
     }
 
     @Test

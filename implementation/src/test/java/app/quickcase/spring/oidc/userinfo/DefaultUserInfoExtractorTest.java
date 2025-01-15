@@ -1,28 +1,25 @@
 package app.quickcase.spring.oidc.userinfo;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import app.quickcase.spring.oidc.OidcException;
 import app.quickcase.spring.oidc.claims.ClaimNamesProvider;
 import app.quickcase.spring.oidc.claims.ClaimsParser;
 import app.quickcase.spring.oidc.claims.JsonClaimsParser;
 import app.quickcase.spring.oidc.organisation.OrganisationProfile;
-import app.quickcase.spring.oidc.OidcException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static app.quickcase.spring.oidc.AccessLevel.GROUP;
 import static app.quickcase.spring.oidc.AccessLevel.ORGANISATION;
 import static app.quickcase.spring.oidc.SecurityClassification.PRIVATE;
 import static app.quickcase.spring.oidc.SecurityClassification.PUBLIC;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -66,9 +63,7 @@ class DefaultUserInfoExtractorTest {
                         new SimpleGrantedAuthority("role2")
                 )),
                 () -> assertThat(userInfo.getRoles(), containsInAnyOrder("role1", "role2")),
-                () -> assertThat(userInfo.getGroups(), containsInAnyOrder("group1", "group2")),
-                () -> assertThat(userInfo.getJurisdictions(),
-                        containsInAnyOrder("org-1", "org-2"))
+                () -> assertThat(userInfo.getGroups(), containsInAnyOrder("group1", "group2"))
         );
     }
 
