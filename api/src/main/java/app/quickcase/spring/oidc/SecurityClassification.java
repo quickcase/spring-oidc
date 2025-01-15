@@ -1,5 +1,24 @@
 package app.quickcase.spring.oidc;
 
+import lombok.Getter;
+
+@Getter
 public enum SecurityClassification {
-    PUBLIC, PRIVATE, RESTRICTED;
+    RESTRICTED(10),
+    PRIVATE(20),
+    PUBLIC(30);
+
+    private final int precedence;
+
+    SecurityClassification(int precedence) {
+        this.precedence = precedence;
+    }
+
+    public boolean highestPrecedenceThan(SecurityClassification classification) {
+        return precedence > classification.getPrecedence();
+    }
+
+    public boolean lowestPrecedenceThan(SecurityClassification classification) {
+        return precedence < classification.getPrecedence();
+    }
 }
