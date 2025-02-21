@@ -63,7 +63,7 @@ public class DefaultUserInfoExtractor implements UserInfoExtractor {
         return claimsParser.getObject(claimNames.organisations())
                            .map(ORG_PARSER::parse)
                            .orElseGet(() -> {
-                               log.warn("No organisation profiles extracted for subject `{}`", subject);
+                               log.debug("No organisation profiles extracted for subject `{}`", subject);
                                return Collections.emptyMap();
                            });
     }
