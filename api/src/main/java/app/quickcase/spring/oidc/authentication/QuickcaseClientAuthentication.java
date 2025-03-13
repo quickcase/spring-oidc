@@ -3,7 +3,6 @@ package app.quickcase.spring.oidc.authentication;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import app.quickcase.spring.oidc.AccessLevel;
 import app.quickcase.spring.oidc.SecurityClassification;
@@ -23,12 +22,17 @@ public class QuickcaseClientAuthentication extends QuickcaseAuthentication {
     }
 
     private final String clientId;
+    private final Set<String> roles;
 
-    public QuickcaseClientAuthentication(String accessToken,
-                                         String clientId,
-                                         Collection<? extends GrantedAuthority> authorities) {
+    public QuickcaseClientAuthentication(
+            String accessToken,
+            String clientId,
+            Collection<? extends GrantedAuthority> authorities,
+            Set<String> roles
+    ) {
         super(authorities, accessToken);
         this.clientId = clientId;
+        this.roles = roles;
         this.setAuthenticated(true);
     }
 
@@ -54,9 +58,7 @@ public class QuickcaseClientAuthentication extends QuickcaseAuthentication {
 
     @Override
     public Set<String> getRoles() {
-        return getAuthorities().stream()
-                               .map(GrantedAuthority::getAuthority)
-                               .collect(Collectors.toSet());
+        return roles;
     }
 
     @Override

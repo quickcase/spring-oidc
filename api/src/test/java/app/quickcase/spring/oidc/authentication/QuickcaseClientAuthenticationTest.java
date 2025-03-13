@@ -111,7 +111,8 @@ class QuickcaseClientAuthenticationTest {
     }
 
     private QuickcaseAuthentication clientAuthentication() {
-        final Set<GrantedAuthority> authorities = StringUtils.authorities("ROLE-1", "ROLE-2");
-        return new QuickcaseClientAuthentication(ACCESS_TOKEN, CLIENT_ID, authorities);
+        final Set<String> scopes = Set.of("ROLE-1", "ROLE-2");
+        final Set<GrantedAuthority> authorities = StringUtils.authorities(scopes);
+        return new QuickcaseClientAuthentication(ACCESS_TOKEN, CLIENT_ID, authorities, scopes);
     }
 }
