@@ -8,7 +8,6 @@ import app.quickcase.spring.oidc.authentication.QuickcaseUserAuthentication;
 import app.quickcase.spring.oidc.userinfo.UserInfo;
 import app.quickcase.spring.oidc.userinfo.UserInfoExtractor;
 import app.quickcase.spring.oidc.userinfo.UserPreferences;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -18,9 +17,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.*;
 
 class AccessTokenAuthenticationConverterTest {
     private static final String ACCESS_TOKEN = "token123";
@@ -84,12 +81,22 @@ class AccessTokenAuthenticationConverterTest {
         }
 
         @Test
-        @DisplayName("should use scopes as authorities")
+        @DisplayName("should use scopes as prefixed authorities")
         void shouldUseScopesAsAuthorities() {
             final QuickcaseAuthentication authentication = clientAuthentication();
 
-            final GrantedAuthority[] scopes = authorities(SCOPE_1, SCOPE_2);
-            assertThat(authentication.getAuthorities(), containsInAnyOrder(scopes));
+            assertThat(authentication.getAuthorities(), containsInAnyOrder(authorities(
+                    "SCOPE_" + SCOPE_1,
+                    "SCOPE_" + SCOPE_2
+            )));
+        }
+
+        @Test
+        @DisplayName("should use scopes as roles")
+        void shouldUseScopesAsRoles() {
+            final QuickcaseAuthentication authentication = clientAuthentication();
+
+            assertThat(authentication.getRoles(), containsInAnyOrder(SCOPE_1, SCOPE_2));
         }
 
         @Test
@@ -132,6 +139,27 @@ class AccessTokenAuthenticationConverterTest {
         }
 
         @Test
+        @DisplayName("should combine prefixed scopes and roles as authorities")
+        void shouldUseRolesAsAuthorities() {
+            final QuickcaseAuthentication authentication = userAuthentication();
+
+            assertThat(authentication.getAuthorities(), containsInAnyOrder(authorities(
+                    "SCOPE_openid",
+                    "SCOPE_" + SCOPE_2,
+                    "ROLE_" + ROLE_1,
+                    "ROLE_" + ROLE_2
+            )));
+        }
+
+        @Test
+        @DisplayName("should expose user roles")
+        void shouldUseScopesAsRoles() {
+            final QuickcaseAuthentication authentication = userAuthentication();
+
+            assertThat(authentication.getRoles(), containsInAnyOrder(ROLE_1, ROLE_2));
+        }
+
+        @Test
         @DisplayName("should populate user authentication from access token")
         void shouldGetIdFromUser() {
             final QuickcaseAuthentication authentication = userAuthentication();
@@ -141,7 +169,6 @@ class AccessTokenAuthenticationConverterTest {
             assertThat(authentication.getId(), equalTo(USER_ID));
             assertThat(authentication.getName(), equalTo(USER_NAME));
             assertThat(authentication.getEmail().get(), equalTo(USER_EMAIL));
-            assertThat(authentication.getAuthorities(), containsInAnyOrder(authorities(AccessTokenAuthenticationConverter.OPENID_SCOPE, SCOPE_2)));
             assertThat(authentication.getRoles(), containsInAnyOrder(ROLE_1, ROLE_2));
             assertThat(authentication.getUserInfo()
                                      .get()

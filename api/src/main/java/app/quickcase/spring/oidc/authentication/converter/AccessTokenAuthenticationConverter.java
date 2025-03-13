@@ -7,11 +7,11 @@ import app.quickcase.spring.oidc.authentication.QuickcaseClientAuthentication;
 import app.quickcase.spring.oidc.authentication.QuickcaseUserAuthentication;
 import app.quickcase.spring.oidc.claims.ClaimsParser;
 import app.quickcase.spring.oidc.claims.JwtClaimsParser;
+import app.quickcase.spring.oidc.userinfo.UserInfo;
 import app.quickcase.spring.oidc.userinfo.UserInfoExtractor;
-
 import org.springframework.security.oauth2.jwt.Jwt;
 
-import static app.quickcase.spring.oidc.utils.StringUtils.authorities;
+import static app.quickcase.spring.oidc.authentication.converter.QuickcaseAuthenticationConverter.authorities;
 import static app.quickcase.spring.oidc.utils.StringUtils.fromSpaceSeparated;
 
 /**
@@ -48,12 +48,13 @@ public class AccessTokenAuthenticationConverter implements QuickcaseAuthenticati
         final String accessToken = source.getTokenValue();
         final String subject = source.getSubject();
         final Set<String> scopes = fromSpaceSeparated(source.getClaimAsString("scope"));
-        return new QuickcaseClientAuthentication(accessToken, subject, authorities(scopes));
+        return new QuickcaseClientAuthentication(accessToken, subject, authorities(scopes), scopes);
     }
 
     private QuickcaseAuthentication userAuthentication(Jwt source) {
         final ClaimsParser claims = new JwtClaimsParser(source.getClaims());
         final Set<String> scopes = fromSpaceSeparated(source.getClaimAsString("scope"));
-        return new QuickcaseUserAuthentication(source.getTokenValue(), authorities(scopes), userInfoExtractor.extract(claims));
+        final UserInfo userInfo = userInfoExtractor.extract(claims);
+        return new QuickcaseUserAuthentication(source.getTokenValue(), authorities(scopes, userInfo.getRoles()), userInfo);
     }
 }
