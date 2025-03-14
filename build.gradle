@@ -46,7 +46,7 @@ subprojects {
         testImplementation "org.springframework.boot:spring-boot-starter-test:${libVersions['spring']}"
 
         // Jackson
-        implementation 'com.fasterxml.jackson.core:jackson-databind:2.18.2'
+        implementation 'com.fasterxml.jackson.core:jackson-databind:2.18.3'
 
         // JUnit
         testImplementation "org.junit.jupiter:junit-jupiter-api:${libVersions['junit']}"
